@@ -15,7 +15,7 @@
     "preview": "astro preview",
     "format": "prettier --write \"{src,tests,scripts}/**/*.{astro,css,js,json,mjs,ts,yaml,yml}\" \".github/**/*.{yaml,yml}\" \"public/**/*.{json,yaml,yml}\" \"docs/**/*.{json,yaml,yml}\" \"*.{js,json,mjs,ts,yaml,yml}\"",
     "format:check": "prettier --check \"{src,tests,scripts}/**/*.{astro,css,js,json,mjs,ts,yaml,yml}\" \".github/**/*.{yaml,yml}\" \"public/**/*.{json,yaml,yml}\" \"docs/**/*.{json,yaml,yml}\" \"*.{js,json,mjs,ts,yaml,yml}\"",
-    "lint": "eslint . --max-warnings 0",
+    "lint": "astro sync && eslint . --max-warnings 0",
     "typecheck": "astro check",
     "test": "vitest run --coverage",
     "test:watch": "vitest",
