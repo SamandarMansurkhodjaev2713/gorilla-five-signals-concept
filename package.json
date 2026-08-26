@@ -35,9 +35,12 @@
     "media:fonts": "python scripts/build-fonts.py",
     "generate:sbom": "node scripts/generate-sbom.mjs",
     "verify:sbom": "node --test scripts/sbom-core.test.mjs && node scripts/verify-sbom.mjs",
-    "verify": "corepack pnpm run verify:links && corepack pnpm run verify:budgets && corepack pnpm run verify:content && corepack pnpm run verify:fonts && corepack pnpm run verify:film-toolchain && corepack pnpm run verify:provenance && corepack pnpm run verify:sbom",
+    "verify:artifact": "corepack pnpm run verify:links && corepack pnpm run verify:budgets && corepack pnpm run verify:content && corepack pnpm run verify:fonts && corepack pnpm run verify:provenance && corepack pnpm run verify:sbom",
+    "verify": "corepack pnpm run verify:artifact && corepack pnpm run verify:film-toolchain",
     "audit": "pnpm audit --audit-level high",
-    "quality": "corepack pnpm run format:check && corepack pnpm run lint && corepack pnpm run typecheck && corepack pnpm run test && corepack pnpm run build && corepack pnpm run verify && corepack pnpm run audit"
+    "quality:source": "corepack pnpm run format:check && corepack pnpm run lint && corepack pnpm run typecheck && corepack pnpm run test && corepack pnpm run build",
+    "quality": "corepack pnpm run quality:source && corepack pnpm run verify && corepack pnpm run audit",
+    "quality:pages": "corepack pnpm run quality:source && corepack pnpm run verify:artifact && corepack pnpm run audit"
   },
   "dependencies": {
     "astro": "7.1.3",

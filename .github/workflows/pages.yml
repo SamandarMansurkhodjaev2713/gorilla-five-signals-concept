@@ -48,7 +48,7 @@ jobs:
           PUBLIC_BASE_PATH: /gorilla-five-signals-concept
           PUBLIC_RELEASE_MODE: public
           PUBLIC_SITE_ORIGIN: https://samandarmansurkhodjaev2713.github.io
-        run: pnpm quality
+        run: pnpm quality:pages
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0

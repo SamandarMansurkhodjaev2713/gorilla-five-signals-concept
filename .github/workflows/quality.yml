@@ -16,7 +16,7 @@ concurrency:
 jobs:
   quality:
     name: Source quality gates
-    runs-on: ubuntu-24.04
+    runs-on: windows-2022
     timeout-minutes: 20
 
     steps:

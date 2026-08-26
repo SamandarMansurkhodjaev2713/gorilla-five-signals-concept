@@ -64,6 +64,9 @@ pnpm test:lighthouse
 `pnpm quality` checks formatting, linting, strict types, unit coverage, the
 static build, links, budgets, content integrity, font and media provenance,
 the SBOM, dependency licenses, and high-severity dependency advisories.
+The host-specific film generator is verified only on its registered Windows
+toolchain; the Linux Pages builder verifies immutable shipped-media checksums
+and never regenerates release media.
 
 ## Architecture
 
