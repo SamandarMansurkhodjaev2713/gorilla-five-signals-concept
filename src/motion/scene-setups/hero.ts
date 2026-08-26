@@ -1,197 +1,166 @@
 import type { SceneSetup } from "../create-scene";
-import {
-  MOTION_DURATION_SECONDS,
-  MOTION_EASE,
-  MOTION_ROTATION_DEGREES,
-} from "../tokens";
+import { MOTION_DURATION_SECONDS, MOTION_EASE } from "../tokens";
 import { markSceneReady } from "./shared";
 
-const CAN_SELECTOR = "[data-hero-can]";
-const TICKER_SELECTOR = "[data-hero-ticker]";
-const SIGNAL_FIELD_SELECTOR = "[data-motion-hero-signals] > span";
-const WORD_SELECTOR = "[data-motion-hero-word]";
-const BAND_SELECTOR = "[data-motion-hero-band]";
-const SUPPORTING_COPY_SELECTOR = ".hero-kicker, .hero-intro, .hero-actions";
-const POINTER_DEPTH_PX = 9;
-const FLOAT_DISTANCE_PX = 18;
-const CAN_ENTRY_ROTATION_DEGREES = 2;
-const TICKER_SETTLE_X_PERCENT = -12;
-const SIGNAL_STAGGER_SECONDS = 0.055;
-const SUPPORTING_COPY_STAGGER_SECONDS = 0.07;
-const WORD_ENTRY_Y_PERCENT = 28;
-const BAND_ENTRY_ROTATION_DEGREES = -7;
-const COPY_ENTRY_Y_PX = 22;
+const FREQUENCY_SELECTOR = "[data-motion-hero-frequency]";
+const GHOST_CAN_SELECTOR = "[data-hero-ghost]";
+const ORBIT_SELECTOR = "[data-motion-hero-orbit]";
+const PRIMARY_CAN_SELECTOR = "[data-hero-primary-can]";
+const SIGNAL_PLATE_SELECTOR = "[data-motion-hero-band]";
+const SUPPORT_SELECTOR = "[data-motion-hero-support]";
+const TITLE_SELECTOR = "[data-motion-hero-title]";
+const FINE_POINTER_QUERY = "(hover: hover) and (pointer: fine)";
+const CAN_ENTRY_ROTATION_DEGREES = -7;
+const CAN_ENTRY_SCALE = 0.76;
+const CAN_ENTRY_Y_PX = 112;
+const FREQUENCY_STAGGER_SECONDS = 0.045;
+const GHOST_ENTRY_SCALE = 0.82;
+const GHOST_ENTRY_X_PX = 44;
+const GHOST_STAGGER_SECONDS = 0.04;
+const POINTER_CAN_ROTATION_DEGREES = 2.2;
+const POINTER_CAN_X_PX = 10;
+const POINTER_ORBIT_X_PX = 16;
+const SUPPORT_ENTRY_Y_PX = 18;
+const SUPPORT_STAGGER_SECONDS = 0.05;
+const TITLE_ENTRY_Y_PERCENT = 104;
 
-function canDepth(can: HTMLElement): number {
-  const parsedIndex = Number.parseInt(can.dataset.canIndex ?? "0", 10);
-  return Number.isNaN(parsedIndex) ? 1 : parsedIndex + 1;
-}
-
-function animateCanSettle(
-  context: Parameters<SceneSetup>[0],
-  cans: readonly HTMLElement[],
-): void {
-  cans.forEach((can, index): void => {
-    context.gsap.from(can, {
-      duration: MOTION_DURATION_SECONDS.entranceMax,
-      ease: MOTION_EASE.settle,
-      rotate:
-        index % 2 === 0
-          ? -CAN_ENTRY_ROTATION_DEGREES
-          : CAN_ENTRY_ROTATION_DEGREES,
-      y: index % 2 === 0 ? FLOAT_DISTANCE_PX : -FLOAT_DISTANCE_PX,
-    });
-  });
-}
-
-function animateTicker(context: Parameters<SceneSetup>[0]): void {
-  const items = context.queryAll<HTMLElement>(TICKER_SELECTOR);
-  if (items.length === 0) {
-    return;
-  }
-
-  context.gsap.fromTo(
-    items,
-    { xPercent: 0 },
-    {
-      duration: MOTION_DURATION_SECONDS.entranceMax,
-      ease: MOTION_EASE.material,
-      xPercent: TICKER_SETTLE_X_PERCENT,
-    },
-  );
-}
-
-function animateSignalCapture(context: Parameters<SceneSetup>[0]): void {
-  const signalFields = context.queryAll<HTMLElement>(SIGNAL_FIELD_SELECTOR);
-  const word = context.query<HTMLElement>(WORD_SELECTOR);
-  const band = context.query<HTMLElement>(BAND_SELECTOR);
-  const supportingCopy = context.queryAll<HTMLElement>(
-    SUPPORTING_COPY_SELECTOR,
-  );
+function animateSignalBoot(context: Parameters<SceneSetup>[0]): void {
+  const primaryCan = context.query<HTMLElement>(PRIMARY_CAN_SELECTOR);
+  const signalPlate = context.query<HTMLElement>(SIGNAL_PLATE_SELECTOR);
   const timeline = context.gsap.timeline();
 
   timeline
-    .from(signalFields, {
+    .from(context.queryAll(FREQUENCY_SELECTOR), {
       duration: MOTION_DURATION_SECONDS.standard,
       ease: MOTION_EASE.material,
       scaleY: 0,
-      stagger: SIGNAL_STAGGER_SECONDS,
-      transformOrigin: "bottom center",
+      stagger: FREQUENCY_STAGGER_SECONDS,
+      transformOrigin: "top center",
     })
     .from(
-      word,
+      context.queryAll(TITLE_SELECTOR),
       {
-        autoAlpha: 0,
+        clipPath: "inset(0 0 100% 0)",
         duration: MOTION_DURATION_SECONDS.scene,
-        ease: MOTION_EASE.settle,
-        yPercent: WORD_ENTRY_Y_PERCENT,
+        ease: MOTION_EASE.enter,
+        stagger: FREQUENCY_STAGGER_SECONDS,
+        yPercent: TITLE_ENTRY_Y_PERCENT,
       },
-      "-=0.28",
-    )
-    .from(
-      band,
+      "-=0.12",
+    );
+
+  if (primaryCan !== null) {
+    timeline.from(
+      primaryCan,
+      {
+        duration: MOTION_DURATION_SECONDS.entranceMax,
+        ease: MOTION_EASE.settle,
+        rotate: CAN_ENTRY_ROTATION_DEGREES,
+        scale: CAN_ENTRY_SCALE,
+        y: CAN_ENTRY_Y_PX,
+      },
+      "-=0.58",
+    );
+  }
+
+  if (signalPlate !== null) {
+    timeline.from(
+      signalPlate,
       {
         clipPath: "inset(0 100% 0 0)",
         duration: MOTION_DURATION_SECONDS.scene,
         ease: MOTION_EASE.material,
-        rotate: BAND_ENTRY_ROTATION_DEGREES,
       },
-      "-=0.62",
-    )
+      "-=0.54",
+    );
+  }
+
+  timeline
     .from(
-      supportingCopy,
+      context.queryAll(GHOST_CAN_SELECTOR),
       {
         autoAlpha: 0,
         duration: MOTION_DURATION_SECONDS.standard,
         ease: MOTION_EASE.enter,
-        stagger: SUPPORTING_COPY_STAGGER_SECONDS,
-        y: COPY_ENTRY_Y_PX,
+        scale: GHOST_ENTRY_SCALE,
+        stagger: GHOST_STAGGER_SECONDS,
+        x: GHOST_ENTRY_X_PX,
       },
-      "-=0.34",
+      "-=0.3",
+    )
+    .from(
+      context.queryAll(SUPPORT_SELECTOR),
+      {
+        autoAlpha: 0,
+        duration: MOTION_DURATION_SECONDS.standard,
+        ease: MOTION_EASE.enter,
+        stagger: SUPPORT_STAGGER_SECONDS,
+        y: SUPPORT_ENTRY_Y_PX,
+      },
+      "-=0.18",
     );
 }
 
-function mountPointerParallax(
-  context: Parameters<SceneSetup>[0],
-  cans: readonly HTMLElement[],
-): void {
-  let pendingEvent: PointerEvent | null = null;
-  let framePending = false;
-  let cachedBounds: DOMRect | null = null;
-  const setters = cans.map((can) => ({
-    depth: canDepth(can),
-    rotateY: context.gsap.quickSetter(can, "rotateY", "deg"),
-    x: context.gsap.quickSetter(can, "x", "px"),
-  }));
-  const invalidateBounds = (): void => {
-    cachedBounds = null;
-  };
+function mountPointerDepth(context: Parameters<SceneSetup>[0]): void {
+  const windowValue = context.root.ownerDocument.defaultView;
+  const primaryCan = context.query<HTMLElement>(PRIMARY_CAN_SELECTOR);
+  const orbit = context.query<HTMLElement>(ORBIT_SELECTOR);
+  if (
+    windowValue === null ||
+    primaryCan === null ||
+    !windowValue.matchMedia(FINE_POINTER_QUERY).matches
+  ) {
+    return;
+  }
 
+  const canRotation = context.gsap.quickSetter(primaryCan, "rotateY", "deg");
+  const canX = context.gsap.quickSetter(primaryCan, "x", "px");
+  const orbitX =
+    orbit === null ? null : context.gsap.quickSetter(orbit, "x", "px");
+  let bounds: DOMRect | null = null;
+  let pendingEvent: PointerEvent | null = null;
+  let pendingFrame = false;
+
+  const reset = (): void => {
+    Reflect.apply(canRotation, undefined, [0]);
+    Reflect.apply(canX, undefined, [0]);
+    if (orbitX !== null) Reflect.apply(orbitX, undefined, [0]);
+  };
   const render = (): void => {
-    framePending = false;
+    pendingFrame = false;
     const event = pendingEvent;
     pendingEvent = null;
-    if (event === null) {
-      return;
-    }
-
-    const bounds = cachedBounds ?? context.root.getBoundingClientRect();
-    cachedBounds = bounds;
-    const xRatio = (event.clientX - bounds.left) / bounds.width - 0.5;
-    setters.forEach((setter): void => {
-      Reflect.apply(setter.rotateY, undefined, [
-        xRatio * MOTION_ROTATION_DEGREES.productTilt * setter.depth * 0.35,
-      ]);
-      Reflect.apply(setter.x, undefined, [
-        xRatio * POINTER_DEPTH_PX * setter.depth,
-      ]);
-    });
+    const frame = bounds ?? context.root.getBoundingClientRect();
+    bounds = frame;
+    if (event === null || frame.width <= 0) return;
+    const ratio = (event.clientX - frame.left) / frame.width - 0.5;
+    Reflect.apply(canRotation, undefined, [
+      ratio * POINTER_CAN_ROTATION_DEGREES,
+    ]);
+    Reflect.apply(canX, undefined, [ratio * POINTER_CAN_X_PX]);
+    if (orbitX !== null)
+      Reflect.apply(orbitX, undefined, [-ratio * POINTER_ORBIT_X_PX]);
   };
 
   context.listen(context.root, "pointermove", (event): void => {
-    if (!(event instanceof PointerEvent)) {
-      return;
-    }
+    if (!(event instanceof PointerEvent)) return;
     pendingEvent = event;
-    if (!framePending) {
-      framePending = true;
-      context.requestFrame(render);
-    }
+    if (pendingFrame) return;
+    pendingFrame = true;
+    context.requestFrame(render);
   });
-  context.listen(context.root, "pointerleave", (): void => {
-    pendingEvent = null;
-    setters.forEach((setter): void => {
-      Reflect.apply(setter.rotateY, undefined, [0]);
-      Reflect.apply(setter.x, undefined, [0]);
-    });
+  context.listen(context.root, "pointerleave", reset);
+  context.listen(windowValue, "resize", (): void => {
+    bounds = null;
   });
-  const windowValue = context.root.ownerDocument.defaultView;
-  if (windowValue !== null) {
-    context.listen(windowValue, "resize", invalidateBounds, { passive: true });
-    context.listen(windowValue, "scroll", invalidateBounds, { passive: true });
-  }
-  context.onCleanup((): void => {
-    setters.forEach((setter): void => {
-      Reflect.apply(setter.rotateY, undefined, [0]);
-      Reflect.apply(setter.x, undefined, [0]);
-    });
-  });
+  context.onCleanup(reset);
 }
 
 export const setupHero: SceneSetup = (context): (() => void) => {
   const cleanupReady = markSceneReady(context);
-  if (context.capability.kind === "reduced") {
-    return cleanupReady;
-  }
+  if (context.capability.kind !== "full") return cleanupReady;
 
-  const cans = context.queryAll<HTMLElement>(CAN_SELECTOR);
-
-  if (context.capability.kind === "full") {
-    animateSignalCapture(context);
-    animateCanSettle(context, cans);
-    animateTicker(context);
-    mountPointerParallax(context, cans);
-  }
-
+  animateSignalBoot(context);
+  mountPointerDepth(context);
   return cleanupReady;
 };

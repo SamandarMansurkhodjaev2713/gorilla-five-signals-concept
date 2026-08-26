@@ -5,6 +5,7 @@ export const SCENE_IDS = [
   "range-manifesto",
   "flavor-explorer",
   "product-lab",
+  "product-world",
   "product-compare",
   "material-film",
   "culture-signal",

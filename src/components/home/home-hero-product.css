@@ -1,0 +1,100 @@
+.hero-product-stage {
+  position: absolute;
+  z-index: 3;
+  inset: 5% 0 0;
+  pointer-events: none;
+}
+
+.hero-orbit {
+  position: absolute;
+  inset-block-start: 47%;
+  inset-inline-start: 50%;
+  inline-size: clamp(23rem, 39vw, 42rem);
+  aspect-ratio: 1;
+  border: var(--size-rule-hairline) solid rgb(5 6 5 / 48%);
+  border-radius: 50%;
+  translate: -50% -50%;
+}
+
+.hero-orbit::before,
+.hero-orbit::after {
+  position: absolute;
+  inset: 12%;
+  border: inherit;
+  border-radius: inherit;
+  content: "";
+}
+
+.hero-orbit::after {
+  inset: 28%;
+}
+
+.hero-primary-can,
+.hero-ghost-can {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  transform-origin: center;
+}
+
+.hero-primary-can {
+  --hero-can-height: min(63svh, 42rem);
+
+  z-index: 3;
+  inset-block-start: 48%;
+  inset-inline-start: 50%;
+  block-size: var(--hero-can-height);
+  filter: drop-shadow(1.2rem 1.6rem 1.6rem rgb(5 6 5 / 28%));
+  transform: translate(-50%, -50%) rotate(2deg);
+}
+
+.hero-primary-can::after {
+  position: absolute;
+  z-index: -1;
+  inset: auto 10% -2% 10%;
+  block-size: 8%;
+  border-radius: 50%;
+  background: rgb(5 6 5 / 32%);
+  filter: blur(0.6rem);
+  content: "";
+}
+
+.hero-primary-can img {
+  inline-size: auto;
+  block-size: var(--hero-can-height);
+}
+
+.hero-ghost-can {
+  --hero-ghost-height: min(29svh, 19rem);
+
+  z-index: 1;
+  block-size: var(--hero-ghost-height);
+  opacity: 0.09;
+  filter: grayscale(1) contrast(1.25);
+}
+
+.hero-ghost-can img {
+  inline-size: auto;
+  block-size: var(--hero-ghost-height);
+}
+
+.hero-ghost-can:nth-of-type(3) {
+  inset: 6% auto auto -3rem;
+  rotate: -18deg;
+}
+
+.hero-ghost-can:nth-of-type(4) {
+  inset: auto auto 3% 6%;
+  rotate: 14deg;
+}
+
+.hero-ghost-can:nth-of-type(5) {
+  inset: 3% -2rem auto auto;
+  rotate: 17deg;
+}
+
+.hero-ghost-can:nth-of-type(6) {
+  inset: auto 2% 4% auto;
+  rotate: -12deg;
+}

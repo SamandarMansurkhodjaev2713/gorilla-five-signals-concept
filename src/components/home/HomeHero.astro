@@ -4,6 +4,13 @@ import type { ProductView } from "@/features/site/catalog";
 import type { SiteCopy } from "@/features/site/copy";
 import { localePath } from "@/features/site/localization";
 
+import "./home-hero.css";
+import "./home-hero-fallbacks.css";
+import "./home-hero-interface.css";
+import "./home-hero-motion.css";
+import "./home-hero-product.css";
+import "./home-hero-responsive.css";
+
 interface Props {
   copy: SiteCopy;
   locale: SupportedLocale;
@@ -13,22 +20,31 @@ interface Props {
 const { copy, locale, products } = Astro.props;
 const heroCopy = {
   en: {
-    headline: "Catch the signal",
+    headline: ["Catch", "the signal"],
+    scrollCue: "Enter the range",
     signal: "Five states. One instinct.",
   },
   ru: {
-    headline: "Поймай сигнал",
+    headline: ["Лови", "сигнал"],
+    scrollCue: "Открыть линейку",
     signal: "Пять состояний. Один инстинкт.",
   },
   uz: {
-    headline: "Signalni ushla",
+    headline: ["Signalni", "ushla"],
+    scrollCue: "Qatorni oching",
     signal: "Besh holat. Bir instinkt.",
   },
 }[locale];
 
-if (products.length < 5) {
+if (products.length !== 5) {
   throw new Error("Home hero requires the complete five-product range.");
 }
+
+const primaryProduct = products[0];
+if (primaryProduct === undefined) {
+  throw new Error("Home hero requires a primary product.");
+}
+const ghostProducts = products.slice(1);
 ---
 
 <section
@@ -37,534 +53,88 @@ if (products.length < 5) {
   data-flavor="original"
 >
   <div class="hero-frame" data-motion-hero-frame>
-    <div class="hero-signals" data-motion-hero-signals aria-hidden="true">
-      <span></span><span></span><span></span><span></span><span></span>
+    <div class="hero-frequency-field" aria-hidden="true">
+      <span data-motion-hero-frequency></span>
+      <span data-motion-hero-frequency></span>
+      <span data-motion-hero-frequency></span>
+      <span data-motion-hero-frequency></span>
+      <span data-motion-hero-frequency></span>
     </div>
 
-    <div class="hero-stage" data-motion-hero-stage aria-hidden="true">
+    <p class="hero-kicker type-label" data-motion-hero-support>
+      Gorilla Energy · Uzbekistan · 01—05
+    </p>
+
+    <div class="hero-heading">
+      <h1 tabindex="-1">
+        <span data-motion-hero-title>{heroCopy.headline[0]}</span>
+        <span data-motion-hero-title>{heroCopy.headline[1]}</span>
+      </h1>
+      <p class="hero-signal-plate" data-motion-hero-band>
+        {heroCopy.signal}
+      </p>
+    </div>
+
+    <div class="hero-product-stage" aria-hidden="true">
+      <span class="hero-orbit" data-motion-hero-orbit></span>
+      <figure
+        class="hero-primary-can"
+        data-hero-can
+        data-hero-primary-can
+        data-flavor={primaryProduct.slug}
+      >
+        <img
+          src={primaryProduct.imagePath}
+          srcset={primaryProduct.imageSrcSet}
+          sizes="(min-width: 64rem) 31rem, (min-width: 48rem) 24rem, 17rem"
+          width={primaryProduct.width}
+          height={primaryProduct.height}
+          alt=""
+          fetchpriority="high"
+          loading="eager"
+          decoding="sync"
+        />
+      </figure>
       {
-        products.map((product, index) => (
-          <div
-            class="hero-can"
-            data-hero-can
-            data-can-index={String(index)}
+        ghostProducts.map((product) => (
+          <figure
+            class="hero-ghost-can"
+            data-hero-ghost
             data-flavor={product.slug}
           >
             <img
               src={product.imagePath}
               srcset={product.imageSrcSet}
-              sizes={
-                index === 0
-                  ? "(min-width: 64rem) 19rem, 10rem"
-                  : "(min-width: 64rem) 11rem, 7rem"
-              }
+              sizes="(min-width: 64rem) 12rem, 7rem"
               width={product.width}
               height={product.height}
               alt=""
-              fetchpriority={index === 0 ? "high" : "auto"}
-              loading={index === 0 ? "eager" : "lazy"}
-              decoding={index === 0 ? "sync" : "async"}
+              loading="lazy"
+              decoding="async"
             />
-          </div>
+          </figure>
         ))
       }
     </div>
 
-    <div class="hero-copy">
-      <p class="type-label hero-kicker" data-motion-copy>
-        Gorilla Energy · Uzbekistan · 01—05
-      </p>
-      <h1 data-motion-copy tabindex="-1">
-        <span class="hero-word" data-motion-hero-word>{heroCopy.headline}</span>
-        <span class="hero-band" data-motion-hero-band>{heroCopy.signal}</span>
-      </h1>
-      <p class="type-body-lg measure-compact hero-intro" data-motion-copy>
-        {copy.homeIntro}
-      </p>
-      <div class="hero-actions" data-motion-copy>
+    <div class="hero-copydeck" data-motion-hero-support>
+      <p class="type-body-lg">{copy.homeIntro}</p>
+      <div class="hero-actions">
         <a
-          class="control control--primary"
+          class="control hero-primary-action"
           href={localePath(locale, "/products")}
         >
           {copy.allProducts}
         </a>
-        <a class="text-link" href={localePath(locale, "/find")}>
-          {copy.navigation.find}
-        </a>
+        <a class="text-link" href={localePath(locale, "/find")}
+          >{copy.navigation.find}</a
+        >
       </div>
     </div>
 
-    <div class="hero-ticker" aria-hidden="true">
-      <span data-hero-ticker>
-        {
-          products
-            .map(
-              (product, index) =>
-                `${String(index + 1).padStart(2, "0")} ${product.name}`,
-            )
-            .join(" · ")
-        }
-      </span>
-      <span data-hero-ticker>
-        {
-          products
-            .map(
-              (product, index) =>
-                `${String(index + 1).padStart(2, "0")} ${product.name}`,
-            )
-            .join(" · ")
-        }
-      </span>
+    <div class="hero-scroll-cue type-label" data-motion-hero-support>
+      <span>{heroCopy.scrollCue}</span>
+      <i aria-hidden="true">↓</i>
     </div>
-
-    <nav class="signal-tabs" aria-label={copy.chooseSignal}>
-      {
-        products.map((product, index) => (
-          <a
-            href={localePath(locale, `/products/${product.slug}`)}
-            data-flavor={product.slug}
-            data-motion-signal
-            data-motion-select
-          >
-            <span>{String(index + 1).padStart(2, "0")}</span>
-            {product.name}
-          </a>
-        ))
-      }
-    </nav>
   </div>
 </section>
-
-<style>
-  .hero {
-    position: relative;
-    min-block-size: max(48rem, calc(100svh - var(--size-header)));
-    contain: paint;
-    overflow: clip;
-    color: var(--color-text-on-paper);
-    background:
-      radial-gradient(circle at 50% 48%, rgb(145 212 1 / 26%), transparent 28%),
-      var(--color-paper-50);
-    view-timeline: --hero-exit block;
-  }
-
-  .hero-frame {
-    position: relative;
-    display: grid;
-    min-block-size: max(48rem, calc(100svh - var(--size-header)));
-    grid-template-columns: minmax(0, 1fr);
-    overflow: clip;
-  }
-
-  .hero-signals {
-    position: absolute;
-    z-index: 0;
-    inset: 0;
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    opacity: 0.16;
-    transform: skewY(-6deg) scale(1.15);
-  }
-
-  .hero-signals span {
-    border-inline-end: 1px solid rgb(5 6 5 / 18%);
-  }
-
-  .hero-signals span:nth-child(1) {
-    background: var(--color-marker-original);
-  }
-
-  .hero-signals span:nth-child(2) {
-    background: var(--color-marker-zero);
-  }
-
-  .hero-signals span:nth-child(3) {
-    background: var(--color-marker-extra);
-  }
-
-  .hero-signals span:nth-child(4) {
-    background: var(--color-marker-tropical);
-  }
-
-  .hero-signals span:nth-child(5) {
-    background: var(--color-marker-lychee);
-  }
-
-  .hero-stage {
-    position: absolute;
-    z-index: 1;
-    inset: 0;
-    perspective: 75rem;
-    pointer-events: none;
-    will-change: transform;
-  }
-
-  .hero-can {
-    position: absolute;
-    isolation: isolate;
-    display: grid;
-    place-items: center;
-    transform-origin: center;
-    will-change: transform;
-  }
-
-  .hero-can::before {
-    position: absolute;
-    z-index: 0;
-    inset-inline: 13%;
-    inset-block-end: 1%;
-    block-size: 13%;
-    border-radius: 50%;
-    background: radial-gradient(
-      ellipse,
-      rgb(5 6 5 / 34%) 0%,
-      rgb(5 6 5 / 12%) 42%,
-      transparent 74%
-    );
-    content: "";
-    transform: translateY(38%);
-  }
-
-  .hero-can img {
-    position: relative;
-    inline-size: auto;
-    block-size: 100%;
-    z-index: 1;
-  }
-
-  .hero-can:nth-child(1) {
-    inset-inline-end: 4%;
-    inset-block-end: 12%;
-    block-size: min(51svh, 31rem);
-    transform: rotate(8deg);
-  }
-
-  .hero-can:nth-child(2) {
-    inset-inline-start: -2.5rem;
-    inset-block-end: 4%;
-    block-size: min(30svh, 18rem);
-    transform: rotate(-16deg);
-  }
-
-  .hero-can:nth-child(3) {
-    inset-inline-start: 4%;
-    inset-block-start: -4rem;
-    block-size: min(25svh, 15rem);
-    opacity: 0.9;
-    transform: rotate(22deg);
-  }
-
-  .hero-can:nth-child(4),
-  .hero-can:nth-child(5) {
-    display: none;
-  }
-
-  .hero-copy {
-    position: relative;
-    z-index: 3;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    align-content: center;
-    justify-items: center;
-    gap: var(--space-4);
-    padding: 8rem var(--space-gutter) 15rem;
-    text-align: center;
-  }
-
-  .hero-kicker {
-    color: var(--color-text-on-paper);
-  }
-
-  .hero-copy h1 {
-    display: grid;
-    max-inline-size: 100%;
-    justify-items: center;
-    gap: 0;
-    margin: 0;
-    font-family: var(--font-display);
-    font-weight: 700;
-    letter-spacing: -0.055em;
-    line-height: 0.82;
-    text-transform: uppercase;
-  }
-
-  .hero-word {
-    max-inline-size: 100%;
-    font-size: clamp(5rem, 11.5vw, 12rem);
-    white-space: nowrap;
-    will-change: transform;
-  }
-
-  .hero-band {
-    padding: 0.08em 0.18em 0.14em;
-    color: var(--color-text-on-paper);
-    background: var(--color-marker-tropical);
-    font-size: clamp(2.4rem, 1.1rem + 6vw, 7.25rem);
-    transform: rotate(-2.5deg);
-    box-shadow: 0.12em 0.12em 0 var(--color-ink-950);
-    will-change: transform;
-  }
-
-  .hero-intro {
-    color: var(--color-text-muted-on-paper);
-  }
-
-  .hero-actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-4);
-  }
-
-  .hero-actions .text-link {
-    color: var(--color-text-on-paper);
-  }
-
-  .hero-ticker {
-    position: absolute;
-    z-index: 3;
-    inset-inline: 0;
-    inset-block-end: 4.5rem;
-    display: flex;
-    overflow: hidden;
-    border-block: var(--size-rule-hairline) solid rgb(5 6 5 / 42%);
-    color: var(--color-text-on-paper);
-    background: rgb(244 244 237 / 78%);
-    font-family: var(--font-display);
-    font-size: 1.15rem;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    line-height: 2.35rem;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-
-  .hero-ticker span {
-    min-inline-size: max-content;
-    padding-inline-end: 2rem;
-  }
-
-  .signal-tabs {
-    position: absolute;
-    z-index: 4;
-    inset-inline: 0;
-    inset-block-end: 0;
-    display: flex;
-    overflow-x: auto;
-    scroll-padding-inline: var(--space-gutter);
-    scroll-snap-type: inline proximity;
-    color: var(--color-text-primary);
-    background: var(--color-surface-page);
-    scrollbar-width: none;
-  }
-
-  .signal-tabs::-webkit-scrollbar {
-    display: none;
-  }
-
-  .signal-tabs a {
-    display: grid;
-    min-block-size: 4.5rem;
-    min-inline-size: 9rem;
-    flex: 1 0 auto;
-    grid-template-columns: auto 1fr;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-3) var(--space-4);
-    border-block-start: var(--size-rule-hairline) solid var(--flavor-border);
-    border-inline-end: var(--size-rule-hairline) solid
-      var(--color-border-subtle);
-    color: inherit;
-    font-size: var(--font-size-caption);
-    font-weight: 700;
-    text-decoration: none;
-    scroll-snap-align: start;
-  }
-
-  .signal-tabs a span {
-    color: var(--flavor-signal);
-  }
-
-  @supports (animation-timeline: view(block)) {
-    .hero[data-motion-ready="full"]
-      :is(.hero-word, .hero-band, .hero-stage, .hero-signals),
-    .hero[data-motion-ready="lite"]
-      :is(.hero-word, .hero-band, .hero-stage, .hero-signals) {
-      animation-duration: 1ms;
-      animation-fill-mode: both;
-      animation-timing-function: linear;
-      animation-timeline: --hero-exit;
-      animation-range: exit 0% exit 100%;
-    }
-
-    .hero[data-motion-ready="full"] .hero-word,
-    .hero[data-motion-ready="lite"] .hero-word {
-      animation-name: hero-word-exit;
-    }
-
-    .hero[data-motion-ready="full"] .hero-band,
-    .hero[data-motion-ready="lite"] .hero-band {
-      animation-name: hero-band-exit;
-    }
-
-    .hero[data-motion-ready="full"] .hero-stage,
-    .hero[data-motion-ready="lite"] .hero-stage {
-      animation-name: hero-stage-exit;
-    }
-
-    .hero[data-motion-ready="full"] .hero-signals,
-    .hero[data-motion-ready="lite"] .hero-signals {
-      animation-name: hero-signals-exit;
-    }
-  }
-
-  @media (max-width: 31.25rem) {
-    .hero-word {
-      max-inline-size: 8ch;
-      font-size: clamp(4.25rem, 18vw, 6rem);
-      text-wrap: balance;
-      white-space: normal;
-    }
-
-    .hero-band {
-      max-inline-size: 9ch;
-      font-size: clamp(2.15rem, 10vw, 3.5rem);
-    }
-  }
-
-  @media (max-width: 47.99rem) {
-    .hero-can:nth-child(1) {
-      inset-inline-end: -8%;
-      inset-block-end: 5%;
-      block-size: min(43svh, 23rem);
-    }
-
-    .hero-kicker {
-      padding: 0.32rem 0.5rem;
-      color: var(--color-paper-50);
-      background: var(--color-ink-950);
-    }
-
-    .hero-intro {
-      padding: 0.35rem 0.55rem;
-      color: var(--color-text-on-paper);
-      background: rgb(244 244 237 / 94%);
-      box-shadow: 0 0 0 var(--size-rule-hairline) rgb(5 6 5 / 12%);
-    }
-
-    .hero-actions .text-link {
-      padding: 0.25rem 0.45rem;
-      background: rgb(244 244 237 / 96%);
-    }
-  }
-
-  @media (min-width: 48rem) {
-    .hero-can:nth-child(1) {
-      inset-inline-end: 7%;
-      block-size: min(62svh, 42rem);
-    }
-
-    .hero-can:nth-child(2) {
-      inset-inline-start: 2%;
-      block-size: min(38svh, 26rem);
-    }
-
-    .hero-can:nth-child(3) {
-      inset-inline-start: 11%;
-      block-size: min(30svh, 20rem);
-    }
-
-    .hero-can:nth-child(4),
-    .hero-can:nth-child(5) {
-      display: grid;
-    }
-
-    .hero-can:nth-child(4) {
-      inset-inline-end: 18%;
-      inset-block-start: -5rem;
-      block-size: min(27svh, 18rem);
-      opacity: 0.86;
-      transform: rotate(-18deg);
-    }
-
-    .hero-can:nth-child(5) {
-      inset-inline-end: -3rem;
-      inset-block-start: 19%;
-      block-size: min(30svh, 20rem);
-      transform: rotate(20deg);
-    }
-
-    .hero-copy {
-      padding-block-end: 13rem;
-    }
-
-    .hero-copy h1 {
-      margin-block-end: clamp(1.25rem, 2vw, 2rem);
-    }
-
-    .signal-tabs a {
-      min-inline-size: 0;
-    }
-  }
-
-  @media (min-width: 64rem) {
-    :global(html[data-motion-tier="full"]:not([data-motion-static])) .hero {
-      min-block-size: 138svh;
-    }
-
-    :global(html[data-motion-tier="full"]:not([data-motion-static]))
-      .hero-frame {
-      position: sticky;
-      inset-block-start: var(--size-header);
-      min-block-size: calc(100svh - var(--size-header));
-      max-block-size: calc(100svh - var(--size-header));
-    }
-  }
-
-  @media (forced-colors: active) {
-    .hero {
-      color: CanvasText;
-      background: Canvas;
-    }
-
-    .hero-signals {
-      display: none;
-    }
-
-    .hero-band {
-      color: CanvasText;
-      background: Canvas;
-      box-shadow: none;
-      outline: 2px solid CanvasText;
-    }
-  }
-
-  @keyframes hero-word-exit {
-    to {
-      translate: -10% 0;
-    }
-  }
-
-  @keyframes hero-band-exit {
-    to {
-      rotate: 4deg;
-      translate: 13% 0;
-    }
-  }
-
-  @keyframes hero-stage-exit {
-    to {
-      scale: 1.18;
-      translate: 0 24%;
-    }
-  }
-
-  @keyframes hero-signals-exit {
-    to {
-      opacity: 0.04;
-      scale: 1.18;
-      translate: 0 12%;
-    }
-  }
-</style>

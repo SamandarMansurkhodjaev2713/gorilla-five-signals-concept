@@ -57,6 +57,12 @@ export function createOwnedScene(options: {
   let phase: ScenePhase = "mounting";
   let context: ReturnType<MotionEngine["gsap"]["context"]> | undefined;
 
+  const runOwned = (callback: () => void): void => {
+    if (!abortController.signal.aborted) {
+      context?.add(callback);
+    }
+  };
+
   const requestFrame = (callback: FrameRequestCallback): Cleanup => {
     let frameId = 0;
     const cancel = (): void => {
@@ -66,7 +72,7 @@ export function createOwnedScene(options: {
 
     frameId = windowValue.requestAnimationFrame((time): void => {
       cleanups.delete(cancel);
-      callback(time);
+      runOwned((): void => callback(time));
     });
     cleanups.add(cancel);
     return cancel;
@@ -91,7 +97,10 @@ export function createOwnedScene(options: {
       listener: EventListener,
       listenerOptions: AddEventListenerOptions = {},
     ): void => {
-      target.addEventListener(type, listener, {
+      const ownedListener: EventListener = (event): void => {
+        runOwned((): void => listener.call(target, event));
+      };
+      target.addEventListener(type, ownedListener, {
         ...listenerOptions,
         signal: abortController.signal,
       });
@@ -103,11 +112,7 @@ export function createOwnedScene(options: {
       cleanups.add((): void => observer.disconnect());
     },
     requestFrame,
-    runOwned: (callback: () => void): void => {
-      if (!abortController.signal.aborted) {
-        context?.add(callback);
-      }
-    },
+    runOwned,
   };
 
   try {
@@ -122,9 +127,9 @@ export function createOwnedScene(options: {
   } catch (setupError: unknown) {
     abortController.abort();
     const emergencyCleanups: Cleanup[] = [
-      ...cleanups,
-      (): void => media.revert(),
       (): void => context?.revert(),
+      (): void => media.revert(),
+      ...cleanups,
     ];
     cleanups.clear();
 
@@ -160,9 +165,9 @@ export function createOwnedScene(options: {
       abortController.abort();
 
       const ownedCleanups: Cleanup[] = [
-        ...cleanups,
-        (): void => media.revert(),
         (): void => context?.revert(),
+        (): void => media.revert(),
+        ...cleanups,
       ];
       cleanups.clear();
 

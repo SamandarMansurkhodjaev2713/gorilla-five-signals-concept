@@ -3,6 +3,7 @@ import { test } from "@playwright/test";
 import { localizedPath } from "./support/site";
 
 const CHAPTERS = [
+  "hero",
   "manifesto",
   "flavor-reactor",
   "home-truth-duel",

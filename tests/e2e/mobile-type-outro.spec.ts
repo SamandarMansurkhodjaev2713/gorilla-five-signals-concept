@@ -82,29 +82,33 @@ async function expectMobileTypeIntegrity(page: Page): Promise<void> {
   expect(contact.lineCount).toBe(1);
 }
 
-async function expectMobileRailAndOutro(page: Page): Promise<void> {
-  const rail = page.locator(".manifesto-rail ol");
-  const railState = await rail.evaluate((element) => {
-    const style = getComputedStyle(element);
-    return {
-      isScrollable: element.scrollWidth > element.clientWidth,
-      scrollSnapType: style.scrollSnapType,
-      scrollbarWidth: style.scrollbarWidth,
-      tabIndex: element.getAttribute("tabindex"),
-    };
-  });
+async function expectMobileManifestoAndOutro(page: Page): Promise<void> {
+  const manifesto = page.locator(".manifesto");
+  const thought = await readTextMetrics(
+    manifesto.locator(".manifesto-thought"),
+  );
+  const lineMetrics = await manifesto
+    .locator(".manifesto-line")
+    .evaluateAll((elements) =>
+      elements.map((element) => ({
+        clientWidth: element.clientWidth,
+        scrollWidth: element.scrollWidth,
+      })),
+    );
   const footer = page.locator("footer.site-footer");
   await footer.scrollIntoViewIfNeeded();
   const footerHeight = await footer.evaluate(
     (element) => element.getBoundingClientRect().height,
   );
 
-  await expect(page.locator(".manifesto-rail-hint")).toBeVisible();
+  await expect(manifesto.locator(".manifesto-carrier img")).toBeVisible();
+  await expect(manifesto.locator(".manifesto-rail")).toHaveCount(0);
   await expect(page.locator(".footer-notes-disclosure")).toBeVisible();
-  expect(railState.isScrollable).toBe(true);
-  expect(railState.scrollSnapType).toContain("mandatory");
-  expect(railState.scrollbarWidth).toBe("none");
-  expect(railState.tabIndex).toBe("0");
+  expect(thought.inlineOverflow).toBeLessThanOrEqual(1);
+  expect(lineMetrics).toHaveLength(3);
+  for (const line of lineMetrics) {
+    expect(line.scrollWidth).toBeLessThanOrEqual(line.clientWidth + 1);
+  }
   expect(footerHeight).toBeLessThanOrEqual(800);
 }
 
@@ -121,11 +125,11 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
 
         if (viewport.width <= 412) {
           await expectMobileTypeIntegrity(page);
-          await expectMobileRailAndOutro(page);
+          await expectMobileManifestoAndOutro(page);
         }
 
         if (reducedMotion === "reduce" && viewport.width <= 412) {
-          await expect(page.locator(".manifesto-rail-hint b")).toHaveCSS(
+          await expect(page.locator(".manifesto-carrier")).toHaveCSS(
             "animation-name",
             "none",
           );
@@ -155,9 +159,7 @@ test.describe("mobile outro without JavaScript", () => {
     await expect(disclosure.locator(".footer-notes")).toBeHidden();
     await disclosure.locator("summary").click();
     await expect(disclosure.locator(".footer-notes")).toBeVisible();
-    await expect(page.locator(".manifesto-rail ol")).toHaveAttribute(
-      "tabindex",
-      "0",
-    );
+    await expect(page.locator(".manifesto-carrier img")).toBeVisible();
+    await expect(page.locator(".manifesto-rail")).toHaveCount(0);
   });
 });

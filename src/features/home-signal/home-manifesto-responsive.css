@@ -1,0 +1,167 @@
+@media (min-width: 64rem) {
+  .manifesto {
+    min-block-size: 100svh;
+  }
+
+  html[data-motion-tier="full"]:not([data-motion-static]) .manifesto {
+    min-block-size: 118svh;
+  }
+
+  .manifesto-frame {
+    position: sticky;
+    inset-block-start: var(--size-header);
+    min-block-size: calc(100svh - var(--size-header));
+    max-block-size: calc(100svh - var(--size-header));
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-content: center;
+    overflow: clip;
+    padding-block: clamp(5rem, 8svh, 7rem) var(--space-6);
+  }
+
+  .manifesto-kicker {
+    grid-column: 1 / -1;
+  }
+
+  .manifesto-thought {
+    grid-column: 1 / 11;
+    font-size: clamp(6rem, 8.6vw, 10rem);
+  }
+
+  .manifesto-carrier {
+    inset-block-start: -5rem;
+    inset-inline-start: 63%;
+    inline-size: clamp(17rem, 20vw, 23rem);
+  }
+
+  @supports (animation-timeline: view(block)) {
+    .manifesto[data-motion-ready="full"] .manifesto-carrier {
+      animation-name: manifesto-carrier-handoff;
+    }
+  }
+
+  .manifesto-intro {
+    grid-column: 9 / 13;
+    grid-row: 2;
+    align-self: end;
+    margin-block-end: var(--space-3);
+  }
+
+  .manifesto-transmission,
+  .manifesto-output {
+    grid-column: 1 / -1;
+  }
+}
+
+@keyframes manifesto-carrier-handoff {
+  from {
+    transform: translate3d(-14vw, -12%, 0) rotate(-2deg) scale(1.45);
+  }
+
+  to {
+    transform: translate3d(0, 34%, 0) rotate(4deg) scale(1.06);
+  }
+}
+
+@media (max-width: 63.99rem) {
+  .manifesto-carrier {
+    opacity: 0.82;
+  }
+
+  .manifesto-thought {
+    margin-block-start: 8rem;
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .manifesto,
+  .manifesto-frame {
+    min-block-size: max(48rem, 100svh);
+  }
+
+  .manifesto-frame {
+    align-content: start;
+    gap: var(--space-5);
+    padding-block: clamp(6.5rem, 14svh, 8.5rem) var(--space-7);
+  }
+
+  .manifesto-handoff {
+    block-size: 4.5rem;
+  }
+
+  .manifesto-carrier {
+    inset-block-start: 1.5rem;
+    inset-inline-start: auto;
+    inset-inline-end: -1rem;
+    inline-size: clamp(9.5rem, 42vw, 12rem);
+    translate: 0;
+  }
+
+  .manifesto-carrier__trace {
+    inset-block-start: -5rem;
+  }
+
+  .manifesto-carrier__echo {
+    inset-inline: -14% -22%;
+  }
+
+  .manifesto-thought {
+    margin-block-start: clamp(16rem, 42svh, 22rem);
+    font-size: clamp(3.4rem, 15vw, 5.3rem);
+    line-height: 0.78;
+  }
+
+  .manifesto-line:nth-child(2) {
+    justify-self: start;
+    margin-inline-start: clamp(1.5rem, 12vw, 4rem);
+  }
+
+  .manifesto-line:nth-child(3) {
+    justify-self: end;
+  }
+
+  .manifesto-intro {
+    max-inline-size: 31ch;
+    padding-block-start: var(--space-4);
+    border-block-start: var(--size-rule-hairline) solid
+      var(--color-border-subtle);
+  }
+
+  .manifesto-output {
+    font-size: 0.6875rem;
+  }
+}
+
+@media (max-width: 22.5rem) {
+  .manifesto-thought {
+    font-size: clamp(3.15rem, 14.6vw, 4.25rem);
+  }
+
+  .manifesto-line {
+    white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .manifesto-carrier,
+  .manifesto-transmission i {
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .manifesto {
+    color: CanvasText;
+    background: Canvas;
+  }
+
+  .manifesto::before,
+  .manifesto-carrier__echo {
+    display: none;
+  }
+
+  .manifesto-line--signal {
+    color: CanvasText;
+    outline: var(--size-rule-strong) solid CanvasText;
+    outline-offset: 0.08em;
+  }
+}

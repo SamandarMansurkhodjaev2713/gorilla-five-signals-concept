@@ -24,6 +24,7 @@ async function openWorld(page: Page, slug: string): Promise<Locator> {
   await page.goto(localizedPath("uz", `/products/${slug}`));
   const world = page.locator("[data-product-world]");
   await expect(world).toHaveAttribute("data-product-world", slug);
+  await expect(world).toHaveAttribute("data-motion-scene", "product-world");
   return world;
 }
 

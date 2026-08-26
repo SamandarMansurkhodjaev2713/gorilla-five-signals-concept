@@ -1,0 +1,36 @@
+@media (max-height: 45rem) and (orientation: landscape) {
+  .hero,
+  .hero-frame {
+    min-block-size: 41rem;
+  }
+
+  .hero-primary-can {
+    --hero-can-height: 28rem;
+  }
+
+  .hero-heading {
+    inset-block-start: 11%;
+  }
+}
+
+@media (forced-colors: active) {
+  .hero {
+    color: CanvasText;
+    background: Canvas;
+  }
+
+  .hero-frame::before,
+  .hero-frame::after,
+  .hero-frequency-field,
+  .hero-ghost-can {
+    display: none;
+  }
+
+  .hero-signal-plate,
+  .hero-copydeck {
+    color: CanvasText;
+    background: Canvas;
+    box-shadow: none;
+    outline: 2px solid CanvasText;
+  }
+}

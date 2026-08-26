@@ -6,7 +6,6 @@ import {
   MOTION_EASE,
 } from "../tokens";
 import { markSceneReady, playOnceWhenVisible } from "./shared";
-export { setupProductDetailWorld as setupProductLab } from "./product-detail-world-motion";
 
 const SELECTOR_SELECTOR = "[data-motion-select]";
 const SELECTED_SELECTOR = "[data-motion-selected]";

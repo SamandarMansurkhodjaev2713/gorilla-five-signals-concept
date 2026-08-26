@@ -11,7 +11,7 @@ import { SCENE_SETUPS } from "../scene-setups";
 import { mountMaterialFilmController } from "../scene-setups/media";
 
 const PROXIMITY_MARGIN = "320px 0px";
-const PRODUCT_WORLD_SCENE = "product-lab";
+const PRODUCT_WORLD_SCENE = "product-world";
 const REDUCED_MOTION_READY = "reduced";
 const STATIC_WORLD_ENTRANCE = "static";
 

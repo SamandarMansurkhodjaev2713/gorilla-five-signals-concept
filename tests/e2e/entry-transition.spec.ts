@@ -168,6 +168,42 @@ test.describe("responsible entry and route signal continuity", () => {
       .toBe("full");
   });
 
+  test("GIVEN Reduced is selected inside the checkpoint WHEN the system allows motion THEN entry and release CSS choreography stop immediately", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await expectSemanticPage(page, "uz");
+    const dialog = page.locator("[data-responsible-entry]");
+
+    await dialog.locator('[data-motion-preference="reduced"]').click();
+    await expect(page.locator("html")).toHaveAttribute(
+      "data-motion-preference",
+      "reduced",
+    );
+    await expect
+      .poll(() =>
+        dialog
+          .locator(".entry-scan")
+          .evaluate((element) => getComputedStyle(element).animationName),
+      )
+      .toBe("none");
+
+    await dialog.locator("[data-responsible-continue]").click();
+
+    await expect(page.locator("html")).toHaveAttribute(
+      "data-motion-tier",
+      "reduced",
+    );
+    await expect
+      .poll(() =>
+        page
+          .locator("[data-entry-release] span")
+          .first()
+          .evaluate((element) => getComputedStyle(element).animationName),
+      )
+      .toBe("none");
+  });
+
   test("GIVEN System is retained with reduced motion WHEN entry completes THEN content stays usable and the reduced tier is explicit", async ({
     page,
   }) => {
@@ -230,7 +266,11 @@ test.describe("responsible entry and route signal continuity", () => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await expectSemanticPage(page, "uz");
 
-    await page.locator('.desktop-navigation a[href="/uz/faq/"]').click();
+    const menu = page.locator("[data-motion-menu]");
+    await menu.locator(":scope > summary").click();
+    await expect(menu).toHaveAttribute("open", "");
+    await expect(menu.locator("[data-motion-menu-panel]")).toBeVisible();
+    await menu.locator('nav a[href="/uz/faq/"]').click();
 
     await expect(page).toHaveURL(/\/uz\/faq\/$/u);
     await expect(page.locator("main h1")).toBeFocused();

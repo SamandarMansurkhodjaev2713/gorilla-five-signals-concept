@@ -12,7 +12,8 @@ import { setupHero } from "./hero";
 import { setupManifesto } from "./manifesto";
 import { setupMaterialFilm } from "./media";
 import { setupNavigation } from "./navigation";
-import { setupInteractiveProduct, setupProductLab } from "./product";
+import { setupInteractiveProduct } from "./product";
+import { setupProductDetailWorld } from "./product-detail-world-motion";
 import {
   createFiniteReveal,
   createSignalSequence,
@@ -42,7 +43,8 @@ export const SCENE_SETUPS: Readonly<Record<SceneId, SceneSetup>> = {
   hero: setupHero,
   "range-manifesto": setupManifesto,
   "flavor-explorer": setupInteractiveProduct,
-  "product-lab": setupProductLab,
+  "product-lab": setupRevealScene,
+  "product-world": setupProductDetailWorld,
   "product-compare": setupInteractiveProduct,
   "material-film": setupMaterialFilm,
   "culture-signal": setupCultureScene,

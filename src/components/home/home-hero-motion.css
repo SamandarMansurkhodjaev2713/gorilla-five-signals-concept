@@ -1,0 +1,108 @@
+@supports (animation-timeline: view(block)) {
+  .hero[data-motion-ready="full"]
+    :is(
+      .hero-heading h1 span,
+      .hero-signal-plate,
+      .hero-primary-can,
+      .hero-orbit,
+      .hero-ghost-can
+    ),
+  .hero[data-motion-ready="lite"]
+    :is(
+      .hero-heading h1 span,
+      .hero-signal-plate,
+      .hero-primary-can,
+      .hero-orbit,
+      .hero-ghost-can
+    ) {
+    animation-duration: 1ms;
+    animation-fill-mode: both;
+    animation-timing-function: linear;
+    animation-timeline: --hero-exit;
+    animation-range: exit 0% exit 100%;
+  }
+
+  .hero[data-motion-ready="full"] .hero-heading h1 span:first-child,
+  .hero[data-motion-ready="lite"] .hero-heading h1 span:first-child {
+    animation-name: hero-title-left-exit;
+  }
+
+  .hero[data-motion-ready="full"] .hero-heading h1 span:last-child,
+  .hero[data-motion-ready="lite"] .hero-heading h1 span:last-child {
+    animation-name: hero-title-right-exit;
+  }
+
+  .hero[data-motion-ready="full"] .hero-signal-plate,
+  .hero[data-motion-ready="lite"] .hero-signal-plate {
+    animation-name: hero-plate-exit;
+  }
+
+  .hero[data-motion-ready="full"] .hero-primary-can,
+  .hero[data-motion-ready="lite"] .hero-primary-can {
+    animation-name: hero-can-handoff;
+  }
+
+  .hero[data-motion-ready="full"] .hero-orbit,
+  .hero[data-motion-ready="lite"] .hero-orbit {
+    animation-name: hero-orbit-exit;
+  }
+
+  .hero[data-motion-ready="full"] .hero-ghost-can,
+  .hero[data-motion-ready="lite"] .hero-ghost-can {
+    animation-name: hero-ghost-exit;
+  }
+}
+
+.hero[data-motion-ready="full"]
+  :is(.hero-primary-can, .hero-orbit, .hero-heading h1 span),
+.hero[data-motion-ready="lite"]
+  :is(.hero-primary-can, .hero-orbit, .hero-heading h1 span) {
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero :is(.hero-primary-can, .hero-orbit, .hero-heading h1 span) {
+    animation: none;
+  }
+}
+
+@keyframes hero-title-left-exit {
+  to {
+    translate: -14% 0;
+  }
+}
+
+@keyframes hero-title-right-exit {
+  to {
+    translate: 14% 0;
+  }
+}
+
+@keyframes hero-plate-exit {
+  to {
+    opacity: 0;
+    rotate: 3deg;
+    translate: 0 -90%;
+  }
+}
+
+@keyframes hero-can-handoff {
+  to {
+    scale: 0.78;
+    translate: -50% 43%;
+  }
+}
+
+@keyframes hero-orbit-exit {
+  to {
+    opacity: 0.12;
+    scale: 1.38;
+  }
+}
+
+@keyframes hero-ghost-exit {
+  to {
+    opacity: 0;
+    scale: 1.15;
+  }
+}

@@ -94,6 +94,11 @@ Scene hooks belong to the scene root. No global selector or cross-scene query is
 
 **Root:** `product-lab`
 
+Product overview and truth compositions use `product-lab` for finite reveals.
+Product-detail routes use the separate `product-world` scene and must provide a
+recognized `data-product-world` slug; an absent or unknown specification fails
+the dedicated scene mount instead of silently selecting another product.
+
 **Dominant idea:** a single light sweep maps packaging material to verified facts.
 
 - Full: one finite sweep on product change; optional `3°` inspection tilt.
@@ -243,21 +248,21 @@ Responsive rebuilding is debounced at the orchestration boundary. Scene-local Re
 All hooks are optional progressive-enhancement targets. Server-rendered
 content is the final readable state when a hook is absent or JavaScript fails.
 
-| Scene | Supported owned hooks |
-| --- | --- |
-| responsible entry | `data-motion-signal`, `data-motion-copy` |
-| navigation | `data-motion-menu` |
-| hero | `data-motion-signal`, `data-motion-copy`, `data-motion-product` |
-| range manifesto | `data-motion-signal`, `data-motion-copy` |
-| flavor explorer | `data-motion-reveal`, `data-motion-select`, `data-motion-selected` |
-| product lab | `data-motion-product` |
-| product compare | `data-motion-reveal`, `data-motion-select`, `data-motion-result` |
-| material film | `data-motion-product` still lineup, or `data-motion-media`, `data-motion-media-play`, `data-motion-media-pause` |
-| culture signal | `data-motion-reveal` |
-| store locator | `data-motion-reveal`, `data-motion-select`, `data-motion-result` |
-| FAQ and safety | native `details`/`summary`; no visibility dependency |
-| contact and partnership | `data-motion-reveal`, `data-motion-select`, `data-motion-result` |
-| footer | `data-motion-signal`, `data-motion-copy` |
+| Scene                   | Supported owned hooks                                                                                           |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------- |
+| responsible entry       | `data-motion-signal`, `data-motion-copy`                                                                        |
+| navigation              | `data-motion-menu`                                                                                              |
+| hero                    | `data-motion-signal`, `data-motion-copy`, `data-motion-product`                                                 |
+| range manifesto         | `data-motion-signal`, `data-motion-copy`                                                                        |
+| flavor explorer         | `data-motion-reveal`, `data-motion-select`, `data-motion-selected`                                              |
+| product lab             | `data-motion-product`                                                                                           |
+| product compare         | `data-motion-reveal`, `data-motion-select`, `data-motion-result`                                                |
+| material film           | `data-motion-product` still lineup, or `data-motion-media`, `data-motion-media-play`, `data-motion-media-pause` |
+| culture signal          | `data-motion-reveal`                                                                                            |
+| store locator           | `data-motion-reveal`, `data-motion-select`, `data-motion-result`                                                |
+| FAQ and safety          | native `details`/`summary`; no visibility dependency                                                            |
+| contact and partnership | `data-motion-reveal`, `data-motion-select`, `data-motion-result`                                                |
+| footer                  | `data-motion-signal`, `data-motion-copy`                                                                        |
 
 Feature code owns semantic state. It may dispatch the bubbling
 `gorilla:selection-change` event from the scene root after synchronously

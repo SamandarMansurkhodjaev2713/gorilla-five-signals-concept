@@ -1,0 +1,198 @@
+.manifesto {
+  position: relative;
+  isolation: isolate;
+  min-block-size: 50rem;
+  overflow: clip;
+  color: var(--color-text-primary);
+  background: var(--color-surface-page);
+}
+
+.manifesto::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0 48%,
+    color-mix(in srgb, var(--color-brand-lime) 5%, transparent) 48% 52%,
+    transparent 52% 100%
+  );
+  content: "";
+  pointer-events: none;
+}
+
+.manifesto-handoff {
+  position: absolute;
+  z-index: 4;
+  inset: 0 auto auto 50%;
+  inline-size: var(--size-rule-strong);
+  block-size: clamp(4rem, 9svh, 7rem);
+  background: var(--color-brand-lime);
+  transform: translateX(-50%);
+  transform-origin: top center;
+}
+
+.manifesto-frame {
+  position: relative;
+  display: grid;
+  min-block-size: 50rem;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: center;
+  gap: var(--space-5);
+  padding: clamp(7rem, 14svh, 10rem) var(--space-gutter) var(--space-8);
+}
+
+.manifesto-kicker,
+.manifesto-output {
+  position: relative;
+  z-index: 5;
+  color: var(--color-signal-brand);
+}
+
+.manifesto-carrier {
+  position: absolute;
+  z-index: 1;
+  inset-block: 3rem auto;
+  inset-inline-start: 50%;
+  display: grid;
+  inline-size: clamp(10rem, 22vw, 24rem);
+  place-items: center;
+  translate: -50% 0;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.manifesto-carrier img {
+  position: relative;
+  z-index: 2;
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  filter: drop-shadow(0 2rem 2.5rem rgb(0 0 0 / 68%));
+  transform: rotate(-4deg);
+}
+
+.manifesto-carrier__trace {
+  position: absolute;
+  z-index: 0;
+  inset: -8rem 50% 62%;
+  inline-size: var(--size-rule-strong);
+  background: linear-gradient(var(--color-brand-lime), transparent);
+  transform: translateX(-50%);
+}
+
+.manifesto-carrier__echo {
+  position: absolute;
+  z-index: 1;
+  inset: 18% -22% 6%;
+  border: var(--size-rule-hairline) solid
+    color-mix(in srgb, var(--color-brand-lime) 44%, transparent);
+  transform: skewY(-7deg) rotate(3deg);
+}
+
+.manifesto-thought {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  max-inline-size: 100%;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(3.75rem, 1.2rem + 11vw, 10.75rem);
+  font-weight: 700;
+  letter-spacing: -0.06em;
+  line-height: 0.76;
+  text-transform: uppercase;
+}
+
+.manifesto-line {
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  -webkit-text-stroke: max(1px, 0.012em) var(--color-surface-page);
+  paint-order: stroke fill;
+  white-space: nowrap;
+  will-change: clip-path;
+}
+
+.manifesto-line:nth-child(2) {
+  justify-self: end;
+}
+
+.manifesto-line--signal {
+  color: var(--color-brand-lime);
+  font-weight: 400;
+  letter-spacing: -0.045em;
+}
+
+.manifesto-intro {
+  position: relative;
+  z-index: 4;
+  max-inline-size: 38ch;
+  color: var(--color-text-secondary);
+}
+
+.manifesto-transmission {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  block-size: 3.25rem;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: center;
+  overflow: hidden;
+  border-block: var(--size-rule-hairline) solid var(--color-border-subtle);
+}
+
+.manifesto-transmission > span {
+  block-size: var(--size-rule-strong);
+  background: var(--flavor-signal);
+  transform-origin: left center;
+}
+
+.manifesto-transmission i {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 0;
+  inline-size: 0.75rem;
+  block-size: 0.75rem;
+  border: 0.18rem solid var(--color-surface-page);
+  border-radius: 50%;
+  background: var(--color-brand-lime);
+  box-shadow: 0 0 0 0.4rem
+    color-mix(in srgb, var(--color-brand-lime) 16%, transparent);
+  transform: translateY(-50%);
+}
+
+.manifesto-output {
+  display: flex;
+  justify-content: space-between;
+  color: var(--color-text-secondary);
+}
+
+@supports (animation-timeline: view(block)) {
+  .manifesto[data-motion-ready="full"] .manifesto-carrier {
+    animation: manifesto-carrier-pass 1ms linear both;
+    animation-timeline: view(block);
+    animation-range: entry 0% exit 100%;
+  }
+
+  .manifesto[data-motion-ready="full"] .manifesto-transmission i {
+    animation: manifesto-pulse 1ms linear both;
+    animation-timeline: view(block);
+    animation-range: entry 10% cover 78%;
+  }
+}
+
+@keyframes manifesto-carrier-pass {
+  from {
+    transform: translateY(-12%) rotate(-2deg) scale(0.92);
+  }
+
+  to {
+    transform: translateY(34%) rotate(4deg) scale(1.06);
+  }
+}
+
+@keyframes manifesto-pulse {
+  to {
+    inset-inline-start: calc(100% - 0.75rem);
+  }
+}

@@ -60,6 +60,87 @@ test.describe("motion capability and lifecycle", () => {
     );
   });
 
+  test("GIVEN explicit Full motion WHEN Reduced is selected during product choreography THEN CSS motion stops and GSAP presentation styles are reverted", async ({
+    page,
+  }) => {
+    await page.addInitScript(() =>
+      localStorage.setItem("gorilla:motion-preference:v1", "full"),
+    );
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await expectSemanticPage(
+      page,
+      "uz",
+      "/compare/?products=original,lychee-pear",
+    );
+    const root = page.locator("[data-compare-root]");
+    await expect(root).toHaveAttribute("data-compare-enhanced", "true");
+    await expect(page.locator("html")).toHaveAttribute(
+      "data-motion-tier",
+      "full",
+    );
+
+    await root.locator("[data-compare-slot]").first().selectOption("extra");
+    await page.locator(".site-header > [data-motion-toggle]").click();
+
+    await expect(page.locator("html")).toHaveAttribute(
+      "data-motion-tier",
+      "reduced",
+    );
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () =>
+            document
+              .getAnimations()
+              .filter((animation) => animation.playState === "running").length,
+        ),
+      )
+      .toBe(0);
+    const reducedState = await page.evaluate(() => {
+      const presentationProperties = [
+        "clip-path",
+        "opacity",
+        "rotate",
+        "scale",
+        "transform",
+        "translate",
+        "visibility",
+      ] as const;
+      const animatedElements = Array.from(
+        document.querySelectorAll<HTMLElement>(
+          [
+            "[data-compare-root] [data-motion-product]",
+            "[data-compare-root] .signal-channel__rings",
+            "[data-compare-root] .signal-channel__copy > *",
+            "[data-compare-root] .selected-products__versus",
+          ].join(", "),
+        ),
+      );
+      const inlineResidue = animatedElements.flatMap((element) =>
+        presentationProperties
+          .filter((property) => element.style.getPropertyValue(property) !== "")
+          .map((property) => ({ property, tagName: element.tagName })),
+      );
+      const transitionDurations = getComputedStyle(
+        document.querySelector<HTMLElement>(
+          "[data-compare-root] .signal-channel__visual img",
+        ) ?? document.documentElement,
+      ).transitionDuration;
+
+      return {
+        inlineResidue,
+        transitionDurations,
+      };
+    });
+
+    expect(reducedState.inlineResidue).toEqual([]);
+    expect(
+      reducedState.transitionDurations
+        .split(",")
+        .every((duration) => Number.parseFloat(duration) === 0),
+    ).toBe(true);
+  });
+
   test("GIVEN repeated navigation and resize WHEN scenes remount THEN scene identity stays unique and no runtime error is emitted", async ({
     page,
   }) => {
@@ -116,6 +197,14 @@ test.describe("motion capability and lifecycle", () => {
     await expectSemanticPage(page, "uz");
     const explorer = page.locator("[data-product-explorer]");
     const selectors = explorer.locator("[data-product-selector]");
+    const productOverview = page.locator('[data-motion-scene="product-lab"]');
+
+    await productOverview.scrollIntoViewIfNeeded();
+    await expect(productOverview).toHaveAttribute("data-motion-ready", "full");
+    await expect(productOverview).not.toHaveAttribute(
+      "data-motion-path",
+      /.+/u,
+    );
 
     for (const index of [1, 4, 2, 3, 0, 4]) {
       await selectors.nth(index).click();
