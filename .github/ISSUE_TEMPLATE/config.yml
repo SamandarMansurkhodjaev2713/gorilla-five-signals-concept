@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Private security report
+    url: https://github.com/SamandarMansurkhodjaev2713/gorilla-five-signals-concept/security/advisories/new
+    about: Report vulnerabilities privately; do not disclose them in a public issue.
+  - name: Official Gorilla Energy Uzbekistan website
+    url: https://www.gorillaenergy.uz/?locale=uz
+    about: This repository is independent and cannot answer official brand or product-support questions.

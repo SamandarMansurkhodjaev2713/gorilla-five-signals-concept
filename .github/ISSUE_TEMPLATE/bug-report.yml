@@ -1,0 +1,76 @@
+name: Bug or accessibility report
+description: Report a reproducible defect in the published concept.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping improve the concept. Do not include secrets, personal data, or undisclosed security vulnerabilities in this public form.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      options:
+        - Home experience
+        - Product archive or detail
+        - Compare
+        - Locator
+        - Navigation or localization
+        - Accessibility or reduced motion
+        - Performance
+        - Documentation
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: Affected URL
+      placeholder: https://samandarmansurkhodjaev2713.github.io/gorilla-five-signals-concept/uz/
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Include the viewport, browser, input method, and motion preference when relevant.
+      placeholder: |
+        1. Open …
+        2. Select …
+        3. Observe …
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Supporting evidence
+      description: Add screenshots, recordings, console output, or assistive-technology details when available.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Submission checks
+      options:
+        - label: I reproduced this issue on the current public build.
+          required: true
+        - label: This report contains no secrets, personal data, or private vulnerability details.
+          required: true
