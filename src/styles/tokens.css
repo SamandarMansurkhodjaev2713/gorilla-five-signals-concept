@@ -1,0 +1,196 @@
+:root {
+  color-scheme: dark;
+
+  /* Brand values are approved marker values. Semantic aliases are mandatory in features. */
+  --color-brand-lime: #91d401;
+  --color-marker-original: #92d400;
+  --color-marker-zero: #969696;
+  --color-marker-extra: #8d745a;
+  --color-marker-tropical: #f5b01d;
+  --color-marker-lychee: #ff3e6f;
+
+  --color-ink-950: #050605;
+  --color-ink-900: #0b0d0b;
+  --color-ink-850: #111411;
+  --color-ink-800: #191d19;
+  --color-paper-50: #f4f4ed;
+  --color-paper-100: #e9eae2;
+  --color-metal-300: #b6b9b2;
+  --color-metal-500: #7d827a;
+
+  --color-surface-page: var(--color-ink-950);
+  --color-surface-raised: var(--color-ink-900);
+  --color-surface-sunken: #010201;
+  --color-surface-paper: var(--color-paper-50);
+  --color-surface-metal: var(--color-metal-300);
+  --color-text-primary: var(--color-paper-50);
+  --color-text-secondary: #b6bcb1;
+  --color-text-on-paper: #111411;
+  --color-text-muted-on-paper: #4e554c;
+  --color-border-subtle: #353a34;
+  --color-border-strong: #777e75;
+  --color-signal-brand: var(--color-brand-lime);
+  --color-focus-on-dark: #57c7ff;
+  --color-focus-on-light: #005a7d;
+  --color-status-danger: #ff5b5b;
+  --color-status-success: var(--color-brand-lime);
+  --color-status-warning: var(--color-marker-tropical);
+  --color-scrim: rgb(0 0 0 / 72%);
+
+  --flavor-signal: var(--color-marker-original);
+  --flavor-on-signal: var(--color-ink-950);
+  --flavor-surface: #182406;
+  --flavor-border: #638f09;
+
+  --font-display: "Oswald", "Arial Narrow", "Arial", sans-serif;
+  --font-text: "Onest", "Segoe UI", "Arial", sans-serif;
+  --font-data: "Onest", "Segoe UI", "Arial", sans-serif;
+
+  --font-size-label: 0.75rem;
+  --font-size-caption: 0.875rem;
+  --font-size-body-sm: 0.9375rem;
+  --font-size-body: 1rem;
+  --font-size-body-lg: clamp(1.0625rem, 1rem + 0.25vw, 1.25rem);
+  --font-size-title-sm: clamp(1.75rem, 1.35rem + 2vw, 3rem);
+  --font-size-title: clamp(2.5rem, 1.2rem + 6.5vw, 7.5rem);
+  --font-size-display: clamp(3.25rem, 0.75rem + 11vw, 12rem);
+  --font-size-signal: clamp(4.25rem, 0.5rem + 16vw, 18rem);
+
+  --line-height-solid: 0.84;
+  --line-height-display: 0.9;
+  --line-height-title: 1;
+  --line-height-body: 1.55;
+  --line-height-legal: 1.65;
+  --tracking-display: -0.055em;
+  --tracking-title: -0.035em;
+  --tracking-label: 0.13em;
+
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --space-10: 8rem;
+  --space-section: clamp(5rem, 3rem + 8vw, 12rem);
+  --space-gutter: clamp(1rem, 0.65rem + 1.5vw, 2.5rem);
+
+  --container-max: 112rem;
+  --measure-body: 68ch;
+  --measure-compact: 48ch;
+  --grid-columns: 4;
+  --grid-gap: clamp(0.75rem, 0.55rem + 0.85vw, 1.5rem);
+
+  --size-control-min: 2.75rem;
+  --size-header: 4rem;
+  --size-rule-hairline: 1px;
+  --size-rule-strong: 2px;
+  --radius-none: 0;
+  --radius-control: 0.125rem;
+  --radius-pill: 999px;
+
+  --shadow-none: none;
+  --shadow-signal: 0 0 2rem rgb(145 212 1 / 18%);
+
+  --z-below: -1;
+  --z-base: 0;
+  --z-media: 10;
+  --z-content: 20;
+  --z-sticky: 40;
+  --z-header: 60;
+  --z-overlay: 80;
+  --z-dialog: 100;
+  --z-toast: 120;
+  --z-skip-link: 140;
+
+  --motion-duration-instant: 80ms;
+  --motion-duration-quick: 160ms;
+  --motion-duration-standard: 260ms;
+  --motion-duration-scene: 640ms;
+  --motion-duration-entrance-max: 880ms;
+  --motion-stagger-tight: 32ms;
+  --motion-stagger-standard: 48ms;
+  --motion-ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-ease-exit: cubic-bezier(0.7, 0, 0.84, 0);
+  --motion-ease-material: cubic-bezier(0.22, 0.72, 0, 1);
+  --motion-ease-snap: cubic-bezier(0.2, 0.9, 0.25, 1);
+  --motion-ease-settle: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --material-grain-opacity: 0.035;
+  --material-scan-opacity: 0.08;
+  --material-metal-highlight: linear-gradient(
+    104deg,
+    rgb(255 255 255 / 4%) 0%,
+    rgb(255 255 255 / 28%) 46%,
+    rgb(255 255 255 / 4%) 52%,
+    rgb(255 255 255 / 0%) 100%
+  );
+}
+
+[data-flavor="original"] {
+  --flavor-signal: var(--color-marker-original);
+  --flavor-on-signal: var(--color-ink-950);
+  --flavor-surface: #182406;
+  --flavor-border: #638f09;
+}
+
+[data-flavor="zero"] {
+  --flavor-signal: var(--color-marker-zero);
+  --flavor-on-signal: var(--color-ink-950);
+  --flavor-surface: #222522;
+  --flavor-border: #777c77;
+}
+
+[data-flavor="extra"] {
+  --flavor-signal: var(--color-marker-extra);
+  --flavor-on-signal: var(--color-ink-950);
+  --flavor-surface: #08262d;
+  --flavor-border: #8d745a;
+}
+
+[data-flavor="mango-coconut"] {
+  --flavor-signal: var(--color-marker-tropical);
+  --flavor-on-signal: var(--color-ink-950);
+  --flavor-surface: #061f3a;
+  --flavor-border: #b17b0b;
+}
+
+[data-flavor="lychee-pear"] {
+  --flavor-signal: var(--color-marker-lychee);
+  --flavor-on-signal: var(--color-ink-950);
+  --flavor-surface: #2c0c17;
+  --flavor-border: #bd2b4e;
+}
+
+@media (min-width: 37.5rem) {
+  :root {
+    --grid-columns: 8;
+    --size-header: 4.25rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --grid-columns: 12;
+    --size-header: 4.25rem;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --color-border-subtle: #aeb5aa;
+    --color-border-strong: var(--color-paper-50);
+    --material-grain-opacity: 0;
+    --material-scan-opacity: 0;
+  }
+}
+
+@media (forced-colors: active) {
+  :root {
+    --shadow-signal: none;
+  }
+}

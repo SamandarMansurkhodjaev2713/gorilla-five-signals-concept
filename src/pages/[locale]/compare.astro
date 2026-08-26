@@ -1,0 +1,39 @@
+---
+import CompareSignalDuel from "@/features/compare/CompareSignalDuel.astro";
+import type { SupportedLocale } from "@/config/site";
+import { getApprovedProducts } from "@/features/site/catalog";
+import { getSiteCopy } from "@/features/site/copy";
+import { createLocaleRoutes } from "@/features/site/static-paths";
+import SiteLayout from "@/layouts/SiteLayout.astro";
+
+export function getStaticPaths() {
+  return createLocaleRoutes();
+}
+
+interface Props {
+  locale: SupportedLocale;
+}
+
+const { locale } = Astro.props;
+const copy = getSiteCopy(locale);
+const products = await getApprovedProducts(locale);
+---
+
+<SiteLayout
+  lang={locale}
+  title={`${copy.navigation.compare} — Gorilla Energy Uzbekistan`}
+  description={copy.compareIntro}
+>
+  <CompareSignalDuel {copy} {locale} {products} />
+</SiteLayout>
+
+<script>
+  import { mountCompareControllers } from "@/features/compare/compare-controller";
+
+  const compareController = mountCompareControllers(document);
+  document.addEventListener(
+    "astro:before-swap",
+    (): void => compareController.destroy(),
+    { once: true },
+  );
+</script>

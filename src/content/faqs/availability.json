@@ -1,0 +1,15 @@
+{
+  "answer": {
+    "en": "A verified store list is not available yet. Open a third-party map search from the Find page and check availability with the store.",
+    "ru": "Подтверждённого списка магазинов пока нет. На странице «Где искать» можно открыть поиск на сторонней карте и уточнить наличие непосредственно в магазине.",
+    "uz": "Hozircha tasdiqlangan do‘konlar ro‘yxati mavjud emas. «Qayerdan izlash» sahifasidan uchinchi tomon xarita qidiruvini oching va mavjudlikni savdo nuqtasining o‘zidan aniqlashtiring."
+  },
+  "faqId": "availability",
+  "question": {
+    "en": "Where can I find Gorilla?",
+    "ru": "Где найти Gorilla?",
+    "uz": "Gorilla’ni qayerdan topish mumkin?"
+  },
+  "sourceIds": ["gorilla-cities-uz-2026"],
+  "status": "approved"
+}

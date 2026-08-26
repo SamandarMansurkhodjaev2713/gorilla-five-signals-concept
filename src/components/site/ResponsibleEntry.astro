@@ -1,0 +1,790 @@
+---
+import { SUPPORTED_LOCALES, type SupportedLocale } from "@/config/site";
+import type { SiteCopy } from "@/features/site/copy";
+import { localePath, replaceLocale } from "@/features/site/localization";
+
+import {
+  getMotionChromeCopy,
+  MOTION_PREFERENCES,
+} from "./SiteHeaderMotionCopy";
+
+interface Props {
+  copy: SiteCopy;
+  locale: SupportedLocale;
+  pathname: string;
+  warning: string;
+}
+
+const { copy, locale, pathname, warning } = Astro.props;
+const motionCopy = getMotionChromeCopy(locale);
+---
+
+<dialog
+  class="responsible-entry"
+  open
+  data-responsible-entry
+  data-motion-scene="responsible-entry"
+  aria-labelledby="responsible-entry-title"
+  aria-describedby="responsible-entry-warning"
+>
+  <div class="entry-grid" aria-hidden="true"></div>
+  <div class="entry-scan" aria-hidden="true" data-motion-signal></div>
+
+  <div class="entry-shell">
+    <header class="entry-header">
+      <p class="type-label">GORILLA / UZ</p>
+      <p class="entry-frequency" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+      </p>
+      <p class="type-label">ENTRY SIGNAL</p>
+    </header>
+
+    <div class="entry-age" aria-hidden="true">
+      <span>18</span><span>+</span>
+    </div>
+
+    <div class="entry-copy">
+      <p class="type-label entry-kicker">{copy.age}</p>
+      <h2 class="type-title-sm" id="responsible-entry-title">
+        {copy.responsibleTitle}
+      </h2>
+      <p class="entry-warning" id="responsible-entry-warning">{warning}</p>
+
+      <fieldset class="entry-motion">
+        <legend>{motionCopy.title}</legend>
+        <p>{motionCopy.entryDescription}</p>
+        <div>
+          {
+            MOTION_PREFERENCES.map((preference) => (
+              <button
+                type="button"
+                aria-pressed={preference === "system" ? "true" : "false"}
+                data-motion-preference={preference}
+              >
+                {motionCopy.preferenceLabels[preference]}
+              </button>
+            ))
+          }
+        </div>
+      </fieldset>
+
+      <nav class="entry-language" aria-label={copy.language}>
+        <span class="type-label">{copy.language}</span>
+        <ul>
+          {
+            SUPPORTED_LOCALES.map((item) => (
+              <li>
+                <a
+                  href={replaceLocale(pathname, item)}
+                  lang={item}
+                  hreflang={item}
+                  aria-current={item === locale ? "page" : undefined}
+                >
+                  {item.toUpperCase()}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div class="entry-actions">
+        <button
+          class="control control--primary"
+          type="button"
+          data-responsible-continue
+          autofocus
+        >
+          {copy.responsibleContinue}
+        </button>
+        <a
+          class="control"
+          href="https://www.google.com/"
+          rel="noopener noreferrer"
+          data-responsible-leave
+        >
+          {copy.responsibleLeave}
+        </a>
+      </div>
+
+      <a
+        class="entry-details"
+        href={localePath(locale, "/legal/product-information")}
+      >
+        {copy.responsibleDetails}
+      </a>
+    </div>
+  </div>
+</dialog>
+
+<div class="entry-release" data-entry-release aria-hidden="true">
+  <span></span><span></span><span></span><span></span><span></span>
+</div>
+
+<aside
+  class="responsible-marker"
+  data-responsible-marker
+  data-marker-visible="false"
+  aria-hidden="true"
+  aria-label={copy.age}
+>
+  <span class="type-label">{copy.age}</span>
+  <a href={localePath(locale, "/legal/product-information")}>
+    {copy.responsibleDetails}
+  </a>
+</aside>
+
+<noscript>
+  <style>
+    .responsible-entry {
+      display: none;
+    }
+  </style>
+  <aside class="responsible-fallback" aria-label={copy.age}>
+    <p class="type-label">{copy.age}</p>
+    <p>{warning}</p>
+    <a href={localePath(locale, "/legal/product-information")}>
+      {copy.responsibleDetails}
+    </a>
+  </aside>
+</noscript>
+
+<style>
+  .responsible-entry {
+    position: fixed;
+    z-index: var(--z-dialog);
+    inset: 0;
+    inline-size: 100%;
+    max-inline-size: none;
+    block-size: 100dvb;
+    max-block-size: none;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    color: var(--color-text-primary);
+    background: var(--color-ink-950);
+  }
+
+  :global(body:has(.responsible-entry[open])) {
+    overflow: hidden;
+  }
+
+  .responsible-entry::backdrop {
+    background: var(--color-ink-950);
+  }
+
+  .entry-grid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.16;
+    background-image:
+      linear-gradient(
+        to right,
+        var(--color-border-subtle) var(--size-rule-hairline),
+        transparent var(--size-rule-hairline)
+      ),
+      linear-gradient(
+        to bottom,
+        var(--color-border-subtle) var(--size-rule-hairline),
+        transparent var(--size-rule-hairline)
+      );
+    background-size: 8rem 8rem;
+    mask-image: linear-gradient(to bottom, black, transparent 84%);
+  }
+
+  .entry-scan {
+    position: absolute;
+    z-index: 2;
+    inset: 0 auto 0 -18%;
+    inline-size: 36%;
+    background: var(--color-signal-brand);
+    clip-path: polygon(32% 0, 100% 0, 68% 100%, 0 100%);
+    opacity: 0.08;
+    pointer-events: none;
+  }
+
+  .entry-shell {
+    position: relative;
+    z-index: 3;
+    display: grid;
+    min-block-size: 100dvb;
+    grid-template:
+      "header header" auto
+      "age copy" minmax(0, 1fr) / minmax(15rem, 0.86fr) minmax(28rem, 1.14fr);
+    padding: max(var(--space-5), env(safe-area-inset-top))
+      max(var(--space-gutter), env(safe-area-inset-right))
+      max(var(--space-5), env(safe-area-inset-bottom))
+      max(var(--space-gutter), env(safe-area-inset-left));
+  }
+
+  .entry-header {
+    display: grid;
+    grid-area: header;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: var(--space-5);
+    padding-block-end: var(--space-4);
+    border-block-end: var(--size-rule-hairline) solid var(--color-border-strong);
+  }
+
+  .entry-header > :last-child {
+    text-align: end;
+  }
+
+  .entry-frequency {
+    display: flex;
+    align-items: end;
+    gap: var(--space-2);
+  }
+
+  .entry-frequency span {
+    inline-size: 2.5rem;
+    block-size: var(--size-rule-strong);
+    background: var(--color-signal-brand);
+    transform-origin: left;
+  }
+
+  .entry-frequency span:nth-child(2) {
+    inline-size: 1.5rem;
+    background: var(--color-marker-zero);
+  }
+
+  .entry-frequency span:nth-child(3) {
+    inline-size: 3.75rem;
+    background: var(--color-marker-extra);
+  }
+
+  .entry-frequency span:nth-child(4) {
+    inline-size: 2rem;
+    background: var(--color-marker-tropical);
+  }
+
+  .entry-frequency span:nth-child(5) {
+    inline-size: 3rem;
+    background: var(--color-marker-lychee);
+  }
+
+  .entry-age {
+    display: flex;
+    grid-area: age;
+    align-self: center;
+    align-items: start;
+    font-family: var(--font-display);
+    font-size: clamp(11rem, 24vw, 26rem);
+    font-weight: 700;
+    letter-spacing: -0.09em;
+    line-height: 0.76;
+    white-space: nowrap;
+  }
+
+  .entry-age span:last-child {
+    margin-block-start: 0.05em;
+    color: var(--color-signal-brand);
+    font-size: 0.34em;
+    letter-spacing: -0.04em;
+  }
+
+  .entry-copy {
+    display: grid;
+    grid-area: copy;
+    align-content: center;
+    gap: var(--space-5);
+    inline-size: min(100%, 45rem);
+    justify-self: end;
+    min-block-size: 0;
+  }
+
+  .entry-kicker {
+    color: var(--color-signal-brand);
+  }
+
+  .entry-copy h2 {
+    max-inline-size: 11ch;
+    font-size: clamp(3.5rem, 6vw, 6.75rem);
+    letter-spacing: -0.055em;
+    line-height: 0.9;
+    text-transform: uppercase;
+  }
+
+  .entry-warning {
+    max-inline-size: var(--measure-body);
+    color: var(--color-text-secondary);
+  }
+
+  .entry-motion {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-3) 0;
+    margin: 0;
+    border: 0;
+    border-block: var(--size-rule-hairline) solid var(--color-border-subtle);
+  }
+
+  .entry-motion legend {
+    padding: 0;
+    color: var(--color-signal-brand);
+    font-family: var(--font-data);
+    font-size: var(--font-size-caption);
+    font-weight: 750;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .entry-motion > p {
+    max-inline-size: var(--measure-body);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-sm);
+    line-height: 1.4;
+  }
+
+  .entry-motion > div {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+
+  .entry-motion button {
+    display: grid;
+    min-inline-size: var(--size-control-min);
+    min-block-size: var(--size-control-min);
+    place-items: center;
+    padding-inline: var(--space-2);
+    border: var(--size-rule-hairline) solid var(--color-border-strong);
+    color: var(--color-text-primary);
+    background: transparent;
+    font: inherit;
+    font-size: var(--font-size-caption);
+    font-weight: 750;
+    line-height: 1.15;
+    text-align: center;
+  }
+
+  .entry-motion button[aria-pressed="true"] {
+    border-color: var(--color-signal-brand);
+    color: var(--color-ink-950);
+    background: var(--color-signal-brand);
+  }
+
+  .entry-motion button:focus-visible {
+    outline: var(--size-rule-strong) solid var(--color-focus-on-dark);
+    outline-offset: var(--space-1);
+  }
+
+  .entry-details {
+    display: inline-flex;
+    min-block-size: 2.75rem;
+    align-items: center;
+    justify-self: start;
+    color: var(--color-text-secondary);
+  }
+
+  .entry-language,
+  .entry-language ul,
+  .entry-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .entry-language {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding-block: var(--space-3);
+    border-block: var(--size-rule-hairline) solid var(--color-border-subtle);
+  }
+
+  .entry-language ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .entry-language a {
+    display: grid;
+    min-inline-size: 2.75rem;
+    min-block-size: 2.75rem;
+    place-items: center;
+    color: var(--color-text-secondary);
+    font-family: var(--font-data);
+  }
+
+  .entry-language a[aria-current="page"] {
+    color: var(--color-ink-950);
+    background: var(--color-signal-brand);
+  }
+
+  .entry-actions {
+    flex-wrap: wrap;
+  }
+
+  .entry-release {
+    position: fixed;
+    z-index: calc(var(--z-dialog) - 1);
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .entry-release span {
+    transform: translate3d(0, -102%, 0);
+  }
+
+  .entry-release span:nth-child(1) {
+    background: var(--color-signal-brand);
+  }
+
+  .entry-release span:nth-child(2) {
+    background: var(--color-marker-zero);
+  }
+
+  .entry-release span:nth-child(3) {
+    background: var(--color-marker-extra);
+  }
+
+  .entry-release span:nth-child(4) {
+    background: var(--color-marker-tropical);
+  }
+
+  .entry-release span:nth-child(5) {
+    background: var(--color-marker-lychee);
+  }
+
+  .entry-release[data-release-active="true"] {
+    visibility: visible;
+  }
+
+  .entry-release[data-release-active="true"] span {
+    animation: entry-release 420ms var(--motion-ease-enter) both;
+  }
+
+  .entry-release[data-release-active="true"] span:nth-child(2) {
+    animation-delay: 24ms;
+  }
+
+  .entry-release[data-release-active="true"] span:nth-child(3) {
+    animation-delay: 48ms;
+  }
+
+  .entry-release[data-release-active="true"] span:nth-child(4) {
+    animation-delay: 72ms;
+  }
+
+  .entry-release[data-release-active="true"] span:nth-child(5) {
+    animation-delay: 96ms;
+  }
+
+  .responsible-marker,
+  .responsible-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-gutter);
+    color: var(--color-text-on-paper);
+    background: var(--color-status-warning);
+  }
+
+  .responsible-marker[data-marker-visible="false"] {
+    display: none;
+  }
+
+  .responsible-marker a,
+  .responsible-fallback a {
+    display: inline-flex;
+    min-block-size: 2.75rem;
+    align-items: center;
+    color: inherit;
+    font-weight: 700;
+  }
+
+  @media (max-width: 64rem) {
+    .entry-shell {
+      grid-template:
+        "header header" auto
+        "age copy" minmax(0, 1fr) / minmax(12rem, 0.72fr) minmax(25rem, 1.28fr);
+    }
+
+    .entry-age {
+      align-self: center;
+      font-size: clamp(9rem, 24vw, 16rem);
+    }
+
+    .entry-copy {
+      justify-self: end;
+    }
+
+    .entry-copy h2 {
+      font-size: clamp(3.25rem, 6.5vw, 5rem);
+    }
+  }
+
+  @media (max-width: 56rem) and (min-height: 42.01rem) {
+    .entry-shell {
+      grid-template:
+        "header" auto
+        "age" minmax(8rem, 0.45fr)
+        "copy" auto / 1fr;
+    }
+
+    .entry-age {
+      align-self: center;
+      font-size: clamp(10rem, 42vw, 20rem);
+    }
+
+    .entry-copy {
+      justify-self: start;
+    }
+
+    .entry-copy h2 {
+      font-size: clamp(3.25rem, 9vw, 6rem);
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .responsible-entry {
+      overflow: hidden;
+    }
+
+    .entry-grid {
+      background-size: 4rem 4rem;
+    }
+
+    .entry-shell {
+      min-block-size: 100dvb;
+      grid-template:
+        "header" auto
+        "copy" 1fr / 1fr;
+      gap: var(--space-3);
+      padding: max(var(--space-3), env(safe-area-inset-top))
+        max(var(--space-4), env(safe-area-inset-right))
+        max(var(--space-3), env(safe-area-inset-bottom))
+        max(var(--space-4), env(safe-area-inset-left));
+    }
+
+    .entry-header {
+      grid-template-columns: 1fr auto;
+    }
+
+    .entry-header > :last-child {
+      display: none;
+    }
+
+    .entry-frequency {
+      gap: var(--space-1);
+    }
+
+    .entry-frequency span {
+      inline-size: 1.25rem;
+    }
+
+    .entry-frequency span:nth-child(2) {
+      inline-size: 0.75rem;
+    }
+
+    .entry-frequency span:nth-child(3) {
+      inline-size: 1.875rem;
+    }
+
+    .entry-frequency span:nth-child(4) {
+      inline-size: 1rem;
+    }
+
+    .entry-frequency span:nth-child(5) {
+      inline-size: 1.5rem;
+    }
+
+    .entry-age {
+      position: absolute;
+      z-index: -1;
+      inset-block-start: max(4.25rem, calc(env(safe-area-inset-top) + 3rem));
+      inset-inline-end: 0;
+      color: var(--color-text-primary);
+      font-size: clamp(9rem, 50vw, 13rem);
+      line-height: 0.72;
+      opacity: 0.11;
+      pointer-events: none;
+    }
+
+    .entry-age span:last-child {
+      color: inherit;
+    }
+
+    .entry-copy {
+      align-content: start;
+      gap: var(--space-3);
+      padding-block-start: var(--space-2);
+    }
+
+    .entry-copy h2 {
+      max-inline-size: 10ch;
+      font-size: clamp(2.45rem, 11.4vw, 3.55rem);
+      letter-spacing: -0.035em;
+      line-height: 0.96;
+    }
+
+    .entry-warning {
+      font-size: var(--font-size-body-sm);
+      line-height: 1.4;
+    }
+
+    .entry-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .entry-actions > * {
+      inline-size: 100%;
+    }
+
+    .responsible-fallback {
+      align-items: start;
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 25rem) {
+    .entry-motion > div {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-height: 47rem) and (orientation: landscape) {
+    .entry-shell {
+      grid-template:
+        "header header" auto
+        "age copy" 1fr / minmax(12rem, 0.62fr) minmax(30rem, 1.38fr);
+      padding-block: max(var(--space-2), env(safe-area-inset-top))
+        max(var(--space-2), env(safe-area-inset-bottom));
+    }
+
+    .entry-header {
+      padding-block-end: var(--space-2);
+    }
+
+    .entry-age {
+      align-self: center;
+      font-size: clamp(8rem, 26vw, 15rem);
+    }
+
+    .entry-copy {
+      display: grid;
+      grid-template:
+        "kicker warning" auto
+        "title motion" auto
+        "title language" auto
+        "title actions" auto
+        "title details" auto / minmax(11rem, 0.8fr) minmax(19rem, 1.2fr);
+      align-content: center;
+      gap: var(--space-2) var(--space-4);
+      padding-block-start: var(--space-2);
+    }
+
+    .entry-kicker {
+      grid-area: kicker;
+    }
+
+    .entry-copy h2 {
+      grid-area: title;
+      align-self: start;
+      font-size: clamp(2.65rem, 5.8vw, 4.5rem);
+    }
+
+    .entry-warning {
+      grid-area: warning;
+      font-size: var(--font-size-caption);
+      line-height: 1.35;
+    }
+
+    .entry-motion {
+      grid-area: motion;
+      padding-block: var(--space-2);
+    }
+
+    .entry-motion > p {
+      display: none;
+    }
+
+    .entry-language {
+      grid-area: language;
+      padding-block: 0;
+    }
+
+    .entry-actions {
+      display: grid;
+      grid-area: actions;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .entry-details {
+      grid-area: details;
+    }
+  }
+
+  @media (max-height: 42rem) and (orientation: portrait) {
+    .responsible-entry {
+      overflow: auto;
+    }
+
+    .entry-shell {
+      min-block-size: 48rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .responsible-entry[open] .entry-scan {
+      animation: entry-scan 420ms var(--motion-ease-enter) both;
+    }
+
+    .responsible-entry[open] .entry-frequency span {
+      animation: entry-frequency 260ms var(--motion-ease-enter) both;
+    }
+
+    .responsible-entry[open] .entry-frequency span:nth-child(2) {
+      animation-delay: 32ms;
+    }
+
+    .responsible-entry[open] .entry-frequency span:nth-child(3) {
+      animation-delay: 64ms;
+    }
+
+    .responsible-entry[open] .entry-frequency span:nth-child(4) {
+      animation-delay: 96ms;
+    }
+
+    .responsible-entry[open] .entry-frequency span:nth-child(5) {
+      animation-delay: 128ms;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .entry-release[data-release-active="true"] {
+      display: none;
+    }
+  }
+
+  @keyframes entry-scan {
+    from {
+      transform: translate3d(-110%, 0, 0);
+    }
+  }
+
+  @keyframes entry-frequency {
+    from {
+      scale: 0 1;
+    }
+  }
+
+  @keyframes entry-release {
+    0% {
+      transform: translate3d(0, -102%, 0);
+    }
+    42% {
+      transform: translate3d(0, 0, 0);
+    }
+    100% {
+      transform: translate3d(0, 102%, 0);
+    }
+  }
+</style>

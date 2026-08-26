@@ -1,0 +1,94 @@
+.layout-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+  gap: var(--grid-gap);
+  inline-size: min(100% - (2 * var(--space-gutter)), var(--container-max));
+  margin-inline: auto;
+}
+
+.section-space {
+  padding-block: var(--space-section);
+}
+
+.surface-paper {
+  color: var(--color-text-on-paper);
+  background: var(--color-surface-paper);
+}
+
+.measure-body {
+  max-inline-size: var(--measure-body);
+}
+
+.measure-compact {
+  max-inline-size: var(--measure-compact);
+}
+
+.safe-area-inline {
+  padding-inline: max(var(--space-gutter), env(safe-area-inset-left))
+    max(var(--space-gutter), env(safe-area-inset-right));
+}
+
+.safe-area-block {
+  padding-block-start: max(var(--space-4), env(safe-area-inset-top));
+  padding-block-end: max(var(--space-4), env(safe-area-inset-bottom));
+}
+
+.visually-hidden {
+  position: absolute !important;
+  inline-size: 1px !important;
+  block-size: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.skip-link {
+  position: fixed;
+  inset-block-start: var(--space-3);
+  inset-inline-start: var(--space-3);
+  z-index: var(--z-skip-link);
+  min-block-size: var(--size-control-min);
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-ink-950);
+  background: var(--color-focus-on-dark);
+  transform: translateY(calc(-100% - var(--space-6)));
+}
+
+.skip-link:focus-visible {
+  outline: var(--size-rule-strong) solid var(--color-paper-50);
+  outline-offset: var(--space-1);
+  transform: translateY(0);
+}
+
+.material-grain {
+  isolation: isolate;
+}
+
+.material-grain::after {
+  position: absolute;
+  z-index: var(--z-content);
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background-image:
+    repeating-radial-gradient(
+      circle at 17% 31%,
+      #fff 0 0.03rem,
+      transparent 0.04rem 0.18rem
+    ),
+    repeating-radial-gradient(
+      circle at 73% 67%,
+      #000 0 0.025rem,
+      transparent 0.035rem 0.16rem
+    );
+  opacity: var(--material-grain-opacity);
+}
+
+@media (forced-colors: active) {
+  .material-grain::after {
+    display: none;
+  }
+}

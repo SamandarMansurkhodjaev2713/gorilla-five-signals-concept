@@ -1,0 +1,48 @@
+---
+import SiteLayout from "@/layouts/SiteLayout.astro";
+import { localePath } from "@/features/site/localization";
+---
+
+<SiteLayout
+  lang="uz"
+  title="404 — Gorilla Energy Uzbekistan"
+  description="Sahifa topilmadi."
+  noIndex
+>
+  <section class="not-found">
+    <p class="type-label">Error / 404</p>
+    <h1 class="type-display">Signal yo‘qoldi.</h1>
+    <p class="type-body-lg">
+      Siz izlagan sahifa mavjud emas yoki ko‘chirilgan.
+    </p>
+    <a class="control control--primary" href={localePath("uz")}>
+      Bosh sahifaga qaytish
+    </a>
+  </section>
+</SiteLayout>
+
+<style>
+  .not-found {
+    display: grid;
+    min-block-size: calc(100svh - var(--size-header));
+    align-content: center;
+    gap: var(--space-4);
+    padding: var(--space-section) var(--space-gutter);
+    background:
+      linear-gradient(
+        115deg,
+        transparent 48%,
+        rgb(145 212 1 / 14%) 48% 52%,
+        transparent 52%
+      ),
+      var(--color-surface-page);
+  }
+
+  .not-found h1 {
+    max-inline-size: 10ch;
+  }
+
+  .not-found .control {
+    justify-self: start;
+  }
+</style>

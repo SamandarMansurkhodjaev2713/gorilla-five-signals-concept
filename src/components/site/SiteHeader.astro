@@ -1,0 +1,215 @@
+---
+import { getCollection } from "astro:content";
+
+import { SUPPORTED_LOCALES, type SupportedLocale } from "@/config/site";
+import { withBasePath } from "@/features/site/base-path";
+import { getSiteCopy } from "@/features/site/copy";
+import {
+  localePath,
+  localize,
+  replaceLocale,
+} from "@/features/site/localization";
+
+import {
+  getMotionChromeCopy,
+  MOTION_PREFERENCES,
+} from "./SiteHeaderMotionCopy";
+
+import "./site-header.css";
+
+interface Props {
+  locale: SupportedLocale;
+  pathname: string;
+}
+
+const { locale, pathname } = Astro.props;
+const copy = getSiteCopy(locale);
+const motionCopy = getMotionChromeCopy(locale);
+const logo = (
+  await getCollection(
+    "media",
+    ({ data }) => data.mediaId === "media-brand-gorilla-logo",
+  )
+)[0];
+
+if (logo === undefined || logo.data.alt === null) {
+  throw new Error("The approved Gorilla logo media record is missing.");
+}
+
+const navigation = [
+  { href: "/products", label: copy.navigation.products },
+  { href: "/compare", label: copy.navigation.compare },
+  { href: "/find", label: copy.navigation.find },
+  { href: "/culture", label: copy.navigation.culture },
+  { href: "/faq", label: copy.navigation.faq },
+  { href: "/contact", label: copy.navigation.contact },
+] as const;
+const currentPathname = pathname.split(/[?#]/u, 1)[0] ?? pathname;
+const isCurrent = (href: string) =>
+  currentPathname === localePath(locale, href) ||
+  currentPathname.startsWith(localePath(locale, href));
+---
+
+<header class="site-header" data-motion-scene="navigation">
+  <a class="brand" href={localePath(locale)} aria-label="Gorilla Energy">
+    <img
+      src={withBasePath(logo.data.path)}
+      srcset={`${withBasePath("/media/generated/brand/gorilla-logo-96.webp")} 96w, ${withBasePath("/media/generated/brand/gorilla-logo-192.webp")} 192w, ${withBasePath("/media/generated/brand/gorilla-logo.webp")} 520w`}
+      sizes="4.5rem"
+      width="520"
+      height="419"
+      alt={localize(logo.data.alt, locale)}
+    />
+  </a>
+  <p class="site-header__signal" aria-hidden="true">
+    <span>FIVE</span> / FREQUENCIES
+  </p>
+  <nav class="desktop-navigation" aria-label={copy.menu}>
+    {
+      navigation.map((item) => (
+        <a
+          href={localePath(locale, item.href)}
+          aria-current={isCurrent(item.href) ? "page" : undefined}
+        >
+          {item.label}
+        </a>
+      ))
+    }
+  </nav>
+  <div class="locale-list" aria-label={copy.language}>
+    {
+      SUPPORTED_LOCALES.map((supportedLocale) => (
+        <a
+          href={replaceLocale(pathname, supportedLocale)}
+          hreflang={supportedLocale}
+          lang={supportedLocale}
+          aria-current={locale === supportedLocale ? "page" : undefined}
+        >
+          {supportedLocale}
+        </a>
+      ))
+    }
+  </div>
+  <button
+    class="motion-toggle"
+    type="button"
+    aria-pressed="false"
+    data-motion-toggle
+    data-motion-pause-label={motionCopy.toggle}
+    data-motion-resume-label={motionCopy.resume}
+    data-motion-status-label={motionCopy.status}
+    data-motion-tier-full={motionCopy.preferenceLabels.full}
+    data-motion-tier-lite={motionCopy.preferenceLabels.lite}
+    data-motion-tier-reduced={motionCopy.preferenceLabels.reduced}
+  >
+    {motionCopy.toggle}
+  </button>
+  <details class="mobile-navigation" data-motion-menu>
+    <summary>{copy.menu}</summary>
+    <div class="mobile-navigation__panel" data-motion-menu-panel tabindex="-1">
+      <header class="mobile-navigation__header">
+        <p><span>GORILLA</span> / 05 SIGNALS</p>
+        <button class="menu-close" type="button" data-motion-menu-close>
+          <span aria-hidden="true">×</span>
+          {copy.closeMenu}
+        </button>
+      </header>
+
+      <nav aria-label={copy.menu}>
+        {
+          navigation.map((item, index) => (
+            <a
+              href={localePath(locale, item.href)}
+              aria-current={isCurrent(item.href) ? "page" : undefined}
+            >
+              <span aria-hidden="true">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+
+      <fieldset class="menu-motion-console">
+        <legend>{motionCopy.title}</legend>
+        <p>{motionCopy.menuDescription}</p>
+        <div>
+          {
+            MOTION_PREFERENCES.map((preference) => (
+              <button
+                type="button"
+                aria-pressed={preference === "system" ? "true" : "false"}
+                data-motion-preference={preference}
+              >
+                {motionCopy.preferenceLabels[preference]}
+              </button>
+            ))
+          }
+        </div>
+      </fieldset>
+
+      <div class="menu-locales" aria-label={copy.language}>
+        <span>{copy.language}</span>
+        {
+          SUPPORTED_LOCALES.map((supportedLocale) => (
+            <a
+              href={replaceLocale(pathname, supportedLocale)}
+              hreflang={supportedLocale}
+              lang={supportedLocale}
+              aria-current={locale === supportedLocale ? "page" : undefined}
+            >
+              {supportedLocale.toUpperCase()}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </details>
+  <noscript>
+    <style is:global>
+      .site-header {
+        grid-template-columns: auto minmax(0, 1fr);
+      }
+
+      .site-header .desktop-navigation {
+        display: flex;
+        min-inline-size: 0;
+        grid-column: 2;
+        justify-content: flex-end;
+        gap: var(--space-4);
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .site-header .desktop-navigation::-webkit-scrollbar {
+        display: none;
+      }
+
+      .site-header :is(.site-header__signal, .motion-toggle) {
+        display: none;
+      }
+
+      @media (max-width: 47.99rem) {
+        .site-header {
+          grid-template-columns: auto minmax(0, 1fr);
+        }
+
+        .site-header .desktop-navigation {
+          display: none;
+        }
+
+        .site-header .mobile-navigation {
+          display: block;
+          grid-column: 2;
+        }
+      }
+
+      @media (min-width: 48rem) {
+        .site-header .mobile-navigation {
+          display: none;
+        }
+      }
+    </style>
+  </noscript>
+</header>

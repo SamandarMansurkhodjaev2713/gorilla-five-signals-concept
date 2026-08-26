@@ -1,0 +1,206 @@
+---
+import { getCollection } from "astro:content";
+
+import type { SupportedLocale } from "@/config/site";
+import {
+  getLocatorCopy,
+  LOCATOR_INSTAGRAM_URL,
+  LOCATOR_YANDEX_URL,
+} from "@/features/locator/locator-copy";
+import {
+  createLocatorPresentation,
+  DEFAULT_LOCATOR_LABEL,
+} from "@/features/locator/locator-presentation";
+import { resolveLocatorSlug } from "@/features/locator/locator-state";
+import "@/features/locator/locator-layout.css";
+import "@/features/locator/locator-visual.css";
+import { getApprovedProducts } from "@/features/site/catalog";
+import { getSiteCopy } from "@/features/site/copy";
+import { localePath, localize } from "@/features/site/localization";
+import { createLocaleRoutes } from "@/features/site/static-paths";
+import SiteLayout from "@/layouts/SiteLayout.astro";
+
+export function getStaticPaths() {
+  return createLocaleRoutes();
+}
+
+interface Props {
+  locale: SupportedLocale;
+}
+
+const { locale } = Astro.props;
+const copy = getSiteCopy(locale);
+const text = getLocatorCopy(locale);
+const [stores, products] = await Promise.all([
+  getCollection("stores"),
+  getApprovedProducts(locale),
+]);
+const [handoff, ...unexpectedHandoffs] = stores;
+
+if (handoff === undefined || unexpectedHandoffs.length > 0) {
+  throw new Error("Exactly one locator search-handoff record is required.");
+}
+
+const selectedSlug = resolveLocatorSlug(
+  products.map(({ slug }) => slug),
+  Astro.url.href,
+);
+const selectedLabel =
+  products.find(({ slug }) => slug === selectedSlug)?.name ??
+  DEFAULT_LOCATOR_LABEL;
+const initialLocator = createLocatorPresentation(selectedLabel, selectedSlug);
+---
+
+<SiteLayout
+  lang={locale}
+  title={`${copy.navigation.find} — Gorilla Energy Uzbekistan`}
+  description={text.notice}
+>
+  <section
+    class="locator"
+    data-motion-scene="find-handoff"
+    data-locator-handoff
+    data-flavor={initialLocator.flavor}
+    data-locator-selection={initialLocator.selection}
+  >
+    <div class="locator-panel" data-motion-reveal>
+      <p class="type-label">{text.eyebrow}</p>
+      <h1>{copy.navigation.find}</h1>
+      <h2 class="type-title-sm">{text.title}</h2>
+      <div class="locator-fields">
+        <div class="city-context">
+          <span>{text.city}</span>
+          <strong>Tashkent</strong>
+          <span class="type-data">41.2995° N / 69.2401° E</span>
+        </div>
+        <label>
+          <span>{text.product}</span>
+          <select data-locator-product>
+            <option value="" selected={selectedSlug === ""}>
+              {DEFAULT_LOCATOR_LABEL}
+            </option>
+            {
+              products.map((product) => (
+                <option
+                  value={product.slug}
+                  selected={product.slug === selectedSlug}
+                >
+                  {product.name}
+                </option>
+              ))
+            }
+          </select>
+        </label>
+      </div>
+      <div class="signal-spectrum" aria-hidden="true">
+        {
+          products.map((product) => (
+            <span
+              data-flavor={product.slug}
+              data-locator-signal={product.slug}
+              data-active={
+                selectedSlug === "" || product.slug === selectedSlug
+                  ? ""
+                  : undefined
+              }
+            />
+          ))
+        }
+      </div>
+      <p class="locator-notice">{text.notice}</p>
+      <p class="source-date">
+        {text.source}: <time datetime={handoff.data.verifiedAt}>
+          {handoff.data.verifiedAt}
+        </time>
+      </p>
+      <p class="current-query" data-locator-status aria-live="polite">
+        {initialLocator.status}
+      </p>
+      <div class="locator-actions">
+        <a
+          class="control control--primary"
+          href={initialLocator.googleUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-locator-google
+        >
+          {text.google} ↗
+        </a>
+        <a
+          class="control"
+          href={selectedSlug === ""
+            ? LOCATOR_YANDEX_URL
+            : initialLocator.yandexUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-locator-yandex
+        >
+          {text.yandex} ↗
+        </a>
+        <a
+          class="text-link"
+          href={LOCATOR_INSTAGRAM_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {text.instagram} ↗
+        </a>
+      </div>
+    </div>
+    <div class="search-context map" data-motion-find-field data-motion-result>
+      <span
+        class="context-cross map-marker"
+        data-motion-find-marker
+        aria-hidden="true"></span>
+      <span class="coordinate-axis coordinate-axis--x" aria-hidden="true">
+      </span>
+      <span class="coordinate-axis coordinate-axis--y" aria-hidden="true">
+      </span>
+      <strong class="city-word" aria-hidden="true">TASHKENT</strong>
+      <div class="locator-can-stage" aria-hidden="true">
+        {
+          products.map((product) => (
+            <img
+              data-locator-product-visual={product.slug}
+              data-motion-find-visual
+              hidden={selectedSlug !== "" && product.slug !== selectedSlug}
+              src={product.imagePath}
+              srcset={product.imageSrcSet}
+              sizes="(min-width: 64rem) 14rem, 7rem"
+              width={product.width}
+              height={product.height}
+              alt=""
+              loading="lazy"
+              decoding="async"
+            />
+          ))
+        }
+      </div>
+      <div class="coordinate-copy">
+        <p class="type-data">41.2995° N</p>
+        <p class="type-data">69.2401° E</p>
+        <p>{text.context}</p>
+      </div>
+    </div>
+  </section>
+  <aside class="locator-note surface-paper">
+    <div>
+      <p class="type-label">{copy.productInfo}</p>
+      <p class="type-body-lg">{localize(handoff.data.address, locale)}</p>
+    </div>
+    <div class="locator-fallbacks">
+      <a
+        class="control control--on-paper"
+        href={localePath(locale, "/legal/product-information")}
+      >
+        {copy.productInfo}
+      </a>
+      <a
+        class="control control--on-paper"
+        href={localePath(locale, "/contact")}
+      >
+        {text.contact}
+      </a>
+    </div>
+  </aside>
+</SiteLayout>

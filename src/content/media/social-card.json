@@ -1,0 +1,16 @@
+{
+  "alt": {
+    "en": "Five colored signal cuts crossing a dark precision-metal instrument",
+    "ru": "Пять цветных сигнальных прорезей на тёмном прецизионном металлическом инструменте",
+    "uz": "Qoramtir aniq metall asbob bo‘ylab o‘tgan beshta rangli signal kesimi"
+  },
+  "checksumSha256": "64aad09947176381be3a226f318afc6f95431a0fce10f604bdfe1b483804e476",
+  "decorative": false,
+  "kind": "image",
+  "license": "Project-owned AI-generated campaign artwork",
+  "mediaId": "media-social-card-five-signals",
+  "owner": "Project owner",
+  "path": "/og.png",
+  "permissionEvidence": "Built-in OpenAI image generation; single final request recorded in project delivery history on 2026-07-27",
+  "territories": ["UZ"]
+}

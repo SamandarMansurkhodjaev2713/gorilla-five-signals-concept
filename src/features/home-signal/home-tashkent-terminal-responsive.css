@@ -1,0 +1,73 @@
+@media (hover: hover) and (pointer: fine) {
+  .tashkent-terminal__locator:hover .tashkent-terminal__grid {
+    transform: rotate(-2deg) scale(1.24);
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .tashkent-terminal__copy h2 {
+    max-inline-size: 10.5ch;
+    font-size: clamp(3rem, 12vw, 4.6rem);
+    letter-spacing: -0.045em;
+    line-height: 0.88;
+    overflow-wrap: normal;
+  }
+
+  .tashkent-terminal__copy .type-body-lg {
+    font-size: var(--font-size-body);
+  }
+
+  .tashkent-terminal__field {
+    min-block-size: 22rem;
+  }
+
+  .tashkent-terminal__locator {
+    min-block-size: 24rem;
+    padding-inline: var(--space-gutter);
+  }
+
+  .tashkent-terminal__locator > strong {
+    max-inline-size: 11ch;
+    font-size: clamp(2.75rem, 11vw, 4.15rem);
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    overflow-wrap: normal;
+  }
+}
+
+@media (min-width: 64rem) {
+  .tashkent-terminal {
+    min-block-size: min(62rem, 100svh);
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: 1fr;
+    align-items: stretch;
+    background: var(--color-paper-50);
+  }
+
+  .tashkent-terminal__copy {
+    z-index: 4;
+    grid-column: 1 / 5;
+    grid-row: 1;
+    padding-block: var(--space-section);
+  }
+
+  .tashkent-terminal__field {
+    grid-column: 5 / 13;
+    grid-row: 1;
+    min-block-size: 100%;
+  }
+
+  .tashkent-terminal__locator {
+    grid-column: 8 / 13;
+    grid-row: 1;
+    min-block-size: min(31rem, 58svh);
+    align-self: end;
+    margin: 0 var(--space-gutter) var(--space-gutter) 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tashkent-terminal__grid {
+    transition: none;
+  }
+}

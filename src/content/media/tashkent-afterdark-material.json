@@ -1,0 +1,18 @@
+{
+  "alt": null,
+  "checksumSha256": "2d4291e55aec9c88fc274307317205060ebcc6739f4e2041d8d63ddf02e5c3cb",
+  "decorative": true,
+  "derivatives": [
+    {
+      "checksumSha256": "800401340b538d44a4ffe2c65010d1d7d6d9431a599ae82948733d9c48e2106a",
+      "path": "/media/generated/material/tashkent-afterdark-material-v1.avif"
+    }
+  ],
+  "kind": "image",
+  "license": "Project-owned AI-generated material artwork",
+  "mediaId": "media-tashkent-afterdark-material-v1",
+  "owner": "Project owner",
+  "path": "/media/generated/material/tashkent-afterdark-material-v1.webp",
+  "permissionEvidence": "Built-in OpenAI image generation; single final request recorded on 2026-08-11; no trademark, packaging, person, claim, or copied reference asset",
+  "territories": ["UZ"]
+}

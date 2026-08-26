@@ -1,0 +1,261 @@
+---
+import type { SupportedLocale } from "@/config/site";
+import type { ProductView } from "@/features/site/catalog";
+import { getSiteCopy } from "@/features/site/copy";
+import { localePath } from "@/features/site/localization";
+
+interface Props {
+  index: number;
+  locale: SupportedLocale;
+  product: ProductView;
+}
+
+const { index, locale, product } = Astro.props;
+const copy = getSiteCopy(locale);
+---
+
+<article
+  id={`product-card-${product.slug}`}
+  class="product-card material-grain"
+  data-flavor={product.slug}
+  data-product-card={product.slug}
+  data-product-name={product.name}
+  data-motion-reveal
+  data-motion-selected={index === 0 ? "" : undefined}
+>
+  <div class="flavor-plane" aria-hidden="true"></div>
+  <span class="product-ghost" aria-hidden="true">{product.name}</span>
+  <div class="card-index">
+    <span>{String(index + 1).padStart(2, "0")}</span>
+    <span aria-hidden="true">/ 05</span>
+  </div>
+  <div class="product-image" data-motion-product>
+    <img
+      src={product.imagePath}
+      srcset={product.imageSrcSet}
+      sizes="(min-width: 80rem) 18rem, (min-width: 48rem) 22rem, 9rem"
+      width={product.width}
+      height={product.height}
+      alt={product.alt}
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+  <div class="product-copy">
+    <p class="type-label">{product.flavorNotes.join(" · ")}</p>
+    <h2 class="type-title-sm">{product.name}</h2>
+    <p>{product.description}</p>
+    <div class="product-actions">
+      <a class="control" href={localePath(locale, `/products/${product.slug}`)}>
+        {copy.openDetails}
+      </a>
+      <a
+        class="text-link"
+        href={`${localePath(locale, "/compare")}?products=${product.slug}`}
+      >
+        {copy.navigation.compare}
+      </a>
+    </div>
+  </div>
+</article>
+
+<style>
+  .product-card {
+    position: relative;
+    display: grid;
+    min-block-size: 42rem;
+    grid-template-rows: auto minmax(18rem, 1fr) auto;
+    contain: paint;
+    overflow: clip;
+    border: var(--size-rule-hairline) solid var(--flavor-border);
+    color: var(--color-text-primary);
+    background:
+      radial-gradient(
+        circle at 50% 38%,
+        color-mix(in srgb, var(--flavor-signal) 24%, transparent),
+        transparent 48%
+      ),
+      var(--flavor-surface);
+  }
+
+  .flavor-plane {
+    position: absolute;
+    z-index: 0;
+    inset: 14% -8% 19% 34%;
+    border: var(--size-rule-hairline) solid
+      color-mix(in srgb, var(--flavor-signal) 76%, white);
+    background:
+      linear-gradient(
+        120deg,
+        color-mix(in srgb, var(--flavor-signal) 44%, transparent),
+        transparent 62%
+      ),
+      var(--flavor-surface);
+    transform: rotate(-6deg);
+  }
+
+  .product-ghost {
+    position: absolute;
+    z-index: 0;
+    inset-inline-start: 34%;
+    inset-block-start: 12%;
+    max-inline-size: 100%;
+    overflow: hidden;
+    color: color-mix(in srgb, var(--flavor-signal) 17%, transparent);
+    font-family: var(--font-display);
+    font-size: clamp(7rem, 20vw, 17rem);
+    font-weight: 700;
+    letter-spacing: -0.055em;
+    line-height: 0.78;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .card-index {
+    z-index: var(--z-content);
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-4);
+    color: var(--color-text-secondary);
+    font-family: var(--font-data);
+    font-size: var(--font-size-label);
+  }
+
+  .product-image {
+    position: relative;
+    z-index: var(--z-media);
+    display: grid;
+    min-block-size: 22rem;
+    place-items: center;
+    padding: var(--space-4);
+  }
+
+  .product-image::after {
+    position: absolute;
+    z-index: 0;
+    inset-inline: 28%;
+    inset-block-end: 10%;
+    block-size: 8%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgb(0 0 0 / 52%), transparent 72%);
+    content: "";
+    transform: translateY(50%);
+  }
+
+  .product-image img {
+    position: relative;
+    z-index: 1;
+    inline-size: auto;
+    block-size: min(44svh, 30rem);
+  }
+
+  .product-copy {
+    z-index: var(--z-content);
+    display: grid;
+    align-content: end;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    background: linear-gradient(transparent, rgb(0 0 0 / 82%) 20%);
+  }
+
+  .product-copy h2 {
+    color: var(--color-text-primary);
+    font-size: clamp(3.25rem, 8vw, 7rem);
+    line-height: 0.85;
+    text-transform: uppercase;
+  }
+
+  .product-copy p:not(.type-label) {
+    max-inline-size: var(--measure-compact);
+    color: var(--color-text-secondary);
+  }
+
+  .product-copy .type-label {
+    color: var(--flavor-signal);
+  }
+
+  .product-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+    margin-block-start: var(--space-2);
+  }
+
+  .product-copy .control {
+    --control-border: color-mix(in srgb, var(--flavor-signal) 72%, white);
+    --control-foreground: var(--color-text-primary);
+
+    justify-self: start;
+  }
+
+  .product-copy .text-link {
+    color: var(--color-text-primary);
+    text-decoration-color: var(--flavor-signal);
+  }
+
+  @media (min-width: 80rem) {
+    .product-card {
+      min-block-size: 46rem;
+    }
+
+    :global([data-product-explorer][data-enhanced="true"]) .product-card {
+      min-block-size: min(52rem, 82svh);
+      grid-template-columns: minmax(20rem, 5fr) minmax(24rem, 7fr);
+      grid-template-rows: auto 1fr;
+      border-width: var(--size-rule-strong);
+    }
+
+    :global([data-product-explorer][data-enhanced="true"])
+      .product-card
+      .product-image {
+      grid-row: 1 / -1;
+      grid-column: 2;
+    }
+
+    :global([data-product-explorer][data-enhanced="true"])
+      .product-card
+      .product-image
+      img {
+      block-size: min(66svh, 43rem);
+    }
+
+    :global([data-product-explorer][data-enhanced="true"])
+      .product-card
+      .card-index,
+    :global([data-product-explorer][data-enhanced="true"])
+      .product-card
+      .product-copy {
+      grid-column: 1;
+    }
+
+    :global([data-product-explorer][data-enhanced="true"])
+      .product-card
+      .product-copy {
+      align-self: end;
+      background: linear-gradient(90deg, rgb(0 0 0 / 92%), transparent);
+    }
+
+    :global([data-product-explorer][data-enhanced="true"])
+      .product-card
+      .flavor-plane {
+      inset: 8% 2% 10% 42%;
+      transform: rotate(-5deg);
+    }
+
+    :global([data-product-explorer][data-enhanced="true"])
+      .product-card
+      .product-ghost {
+      inset-inline-start: 42%;
+      inset-block-start: 6%;
+      font-size: clamp(10rem, 17vw, 19rem);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .product-card {
+      border: var(--size-rule-strong) solid CanvasText;
+      background: Canvas;
+    }
+  }
+</style>

@@ -1,0 +1,36 @@
+# Reference material is local-only and must never enter this repository's history.
+_reference/
+_reference-analysis/
+_research/
+media-source/
+
+# Dependencies and build output
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+performance-report/
+.cache/
+.vite/
+.astro/
+
+# Local visual inspection artifacts
+.codex-*
+.tmp/
+.openai/hosting.json
+docs/release/RELEASE_RECORD_*.md
+
+# Generated audit evidence
+docs/audit/evidence/*.json
+
+# Environment and local tooling
+.env
+.env.*
+!.env.example
+*.local
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

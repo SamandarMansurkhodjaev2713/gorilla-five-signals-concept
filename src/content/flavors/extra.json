@@ -1,0 +1,11 @@
+{
+  "accentToken": "--color-marker-extra",
+  "flavorId": "extra",
+  "name": {
+    "en": "EXTRA",
+    "ru": "EXTRA",
+    "uz": "EXTRA"
+  },
+  "productSlug": "extra",
+  "status": "draft"
+}

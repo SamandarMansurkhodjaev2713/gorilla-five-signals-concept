@@ -1,0 +1,11 @@
+{
+  "accentToken": "--color-marker-zero",
+  "flavorId": "zero",
+  "name": {
+    "en": "ZERO",
+    "ru": "ZERO",
+    "uz": "Shakarsiz"
+  },
+  "productSlug": "zero",
+  "status": "draft"
+}

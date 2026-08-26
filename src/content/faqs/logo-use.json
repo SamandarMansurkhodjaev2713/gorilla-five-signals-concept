@@ -1,0 +1,15 @@
+{
+  "answer": {
+    "en": "The logo is a registered trademark. It may be used only with appropriate written permission and within approved usage rules.",
+    "ru": "Логотип является зарегистрированным товарным знаком. Его можно использовать только при наличии соответствующего письменного разрешения и в рамках утверждённых правил.",
+    "uz": "Logotip ro‘yxatdan o‘tgan tovar belgisi hisoblanadi. Undan faqat tegishli yozma ruxsat va tasdiqlangan foydalanish qoidalari doirasida foydalanish mumkin."
+  },
+  "faqId": "logo-use",
+  "question": {
+    "en": "May I use the Gorilla logo?",
+    "ru": "Можно ли использовать логотип Gorilla?",
+    "uz": "Gorilla logotipidan foydalanish mumkinmi?"
+  },
+  "sourceIds": ["gorilla-faq-uz-2026"],
+  "status": "approved"
+}

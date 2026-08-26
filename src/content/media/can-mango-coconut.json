@@ -1,0 +1,27 @@
+{
+  "alt": {
+    "en": "Front view of a Gorilla Mango–Coconut can with orange and blue graphics",
+    "ru": "Вид спереди на банку Gorilla Манго — Кокос с оранжевой и синей графикой",
+    "uz": "To‘q sariq va ko‘k grafikali Gorilla Mango–Kokos bankasining old ko‘rinishi"
+  },
+  "checksumSha256": "3159fa4aad58e3fc02458e289450f6cec5f242d226365b24a6f1c84fbcd399ed",
+  "decorative": false,
+  "derivatives": [
+    {
+      "checksumSha256": "d84723c1984066862b0b313c067ad9fc601f504014fbf61bff79ef37cf99893f",
+      "path": "/media/generated/products/can-mango-coconut-320.webp"
+    },
+    {
+      "checksumSha256": "c7ea36709b59bddc1bd782226b4bbd2cf47b586545496c0349ee61641a84f164",
+      "path": "/media/generated/products/can-mango-coconut-480.webp"
+    }
+  ],
+  "kind": "image",
+  "license": "Brand-use permission confirmed by the project owner on 2026-07-26",
+  "mediaId": "media-can-mango-coconut",
+  "owner": "Gorilla Energy asset rights holder",
+  "path": "/media/generated/products/can-mango-coconut.webp",
+  "permissionEvidence": "PERM-USER-2026-07-26; docs/content/ASSET_PROVENANCE.md#release-registered-generated-derivatives",
+  "sourceUrl": "https://www.gorillaenergy.uz/img/products_big_can_mango.40f22711.png",
+  "territories": ["UZ"]
+}

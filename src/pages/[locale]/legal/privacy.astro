@@ -1,0 +1,134 @@
+---
+import PageLead from "@/components/site/PageLead.astro";
+import type { SupportedLocale } from "@/config/site";
+import { getSiteCopy } from "@/features/site/copy";
+import { createLocaleRoutes } from "@/features/site/static-paths";
+import SiteLayout from "@/layouts/SiteLayout.astro";
+
+export function getStaticPaths() {
+  return createLocaleRoutes();
+}
+
+interface Props {
+  locale: SupportedLocale;
+}
+
+const { locale } = Astro.props;
+const copy = getSiteCopy(locale);
+const privacy = {
+  en: {
+    intro:
+      "How this independent concept handles browser preferences and external destinations.",
+    sections: [
+      [
+        "This site",
+        "This static concept does not include accounts, checkout, analytics, or an active contact submission service.",
+      ],
+      [
+        "Browser preferences",
+        "Language, motion, or entry preferences may be stored in your browser when those enhancements are enabled. They are not intended to identify you.",
+      ],
+      [
+        "External services",
+        "External map and official-site links are governed by the destination service’s privacy terms.",
+      ],
+      [
+        "Questions",
+        "Use the official Gorilla Uzbekistan destination shown on the Contact page for privacy or legal enquiries.",
+      ],
+    ],
+    title: "Privacy",
+  },
+  ru: {
+    intro:
+      "Как эта независимая концепция работает с настройками браузера и внешними сервисами.",
+    sections: [
+      [
+        "Этот сайт",
+        "В этой статической концепции нет аккаунтов, оплаты, аналитики или активной формы отправки обращений.",
+      ],
+      [
+        "Настройки браузера",
+        "Настройки языка, анимации или входа могут сохраняться в браузере, когда включены соответствующие функции. Они не предназначены для вашей идентификации.",
+      ],
+      [
+        "Внешние сервисы",
+        "При переходе на внешнюю карту или официальный сайт действуют правила конфиденциальности соответствующего сервиса.",
+      ],
+      [
+        "Вопросы",
+        "Для вопросов о конфиденциальности или праве используйте официальный канал Gorilla Uzbekistan, указанный на странице контактов.",
+      ],
+    ],
+    title: "Конфиденциальность",
+  },
+  uz: {
+    intro:
+      "Ushbu mustaqil konsept brauzer sozlamalari va tashqi xizmatlar bilan qanday ishlashi haqida.",
+    sections: [
+      [
+        "Ushbu sayt",
+        "Bu statik konseptda akkaunt, to‘lov, analitika yoki faol murojaat yuborish xizmati mavjud emas.",
+      ],
+      [
+        "Brauzer sozlamalari",
+        "Til, harakat yoki kirish tanlovlari tegishli funksiyalar yoqilganda brauzeringizda saqlanishi mumkin. Ular sizni aniqlash uchun mo‘ljallanmagan.",
+      ],
+      [
+        "Tashqi xizmatlar",
+        "Tashqi xarita yoki rasmiy sayt havolasini ochsangiz, o‘sha xizmatning maxfiylik qoidalari amal qiladi.",
+      ],
+      [
+        "Savollar",
+        "Maxfiylik yoki huquqiy savollar uchun Bog‘lanish sahifasida ko‘rsatilgan Gorilla Uzbekistan rasmiy yo‘nalishidan foydalaning.",
+      ],
+    ],
+    title: "Maxfiylik",
+  },
+} as const;
+const page = privacy[locale];
+---
+
+<SiteLayout
+  lang={locale}
+  title={`${page.title} — Gorilla Energy Uzbekistan`}
+  description={page.intro}
+>
+  <PageLead
+    eyebrow={copy.legal}
+    title={page.title}
+    intro={page.intro}
+    variant="task"
+  />
+  <article class="legal-document surface-paper">
+    {
+      page.sections.map(([heading, body], index) => (
+        <section>
+          <p class="type-label">{String(index + 1).padStart(2, "0")}</p>
+          <h2 class="type-title-sm">{heading}</h2>
+          <p>{body}</p>
+        </section>
+      ))
+    }
+  </article>
+</SiteLayout>
+
+<style>
+  .legal-document {
+    display: grid;
+    gap: var(--space-8);
+    padding: var(--space-section) var(--space-gutter);
+  }
+
+  .legal-document section {
+    display: grid;
+    max-inline-size: var(--measure-body);
+    gap: var(--space-3);
+  }
+
+  @media (min-width: 48rem) {
+    .legal-document {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

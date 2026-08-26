@@ -1,0 +1,27 @@
+{
+  "alt": {
+    "en": "Gorilla Energy logo",
+    "ru": "Логотип Gorilla Energy",
+    "uz": "Gorilla Energy logotipi"
+  },
+  "checksumSha256": "56dcf796b57c661d952ae797ae4b58e3244d56ba328f66fee47e2b83db705c92",
+  "decorative": false,
+  "derivatives": [
+    {
+      "checksumSha256": "792fa4447f5204a74582517567fe307f690714b52e6bf4336ee995f28858f480",
+      "path": "/media/generated/brand/gorilla-logo-96.webp"
+    },
+    {
+      "checksumSha256": "0867b19a73422d51d2212ec34fcb0dad01db78d9e4fcfd6743d08c947427a0bc",
+      "path": "/media/generated/brand/gorilla-logo-192.webp"
+    }
+  ],
+  "kind": "image",
+  "license": "Brand-use permission confirmed by the project owner on 2026-07-26",
+  "mediaId": "media-brand-gorilla-logo",
+  "owner": "Gorilla Energy asset rights holder",
+  "path": "/media/generated/brand/gorilla-logo.webp",
+  "permissionEvidence": "PERM-USER-2026-07-26; docs/content/ASSET_PROVENANCE.md#release-registered-generated-derivatives",
+  "sourceUrl": "https://www.gorillaenergy.uz/img/fixed_menu_logo.54f2b2dd.png",
+  "territories": ["UZ"]
+}

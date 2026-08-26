@@ -1,0 +1,67 @@
+{
+  "canMediaId": "media-can-mango-coconut",
+  "claims": [],
+  "ctas": [
+    {
+      "href": "/find?product=mango-coconut",
+      "label": {
+        "en": "Find Mango–Coconut",
+        "ru": "Где искать Манго — Кокос",
+        "uz": "Mango–Kokosni qayerdan izlash"
+      },
+      "type": "find"
+    }
+  ],
+  "description": {
+    "en": "Mango warmth. A smooth coconut trace. Two directions in one bright rhythm.",
+    "ru": "Тепло манго. Мягкий след кокоса. Два направления в одном ярком ритме.",
+    "uz": "Mango iliqligi. Kokosning silliq izi. Ikki yo‘nalish bitta yorqin ritmda."
+  },
+  "flavorNotes": [
+    {
+      "en": "Mango",
+      "ru": "Манго",
+      "uz": "Mango"
+    },
+    {
+      "en": "Coconut",
+      "ru": "Кокос",
+      "uz": "Kokos"
+    }
+  ],
+  "name": {
+    "en": "Mango–Coconut",
+    "ru": "Манго — Кокос",
+    "uz": "Mango–Kokos"
+  },
+  "posterMediaId": "media-can-mango-coconut",
+  "seo": {
+    "description": {
+      "en": "Explore Gorilla Mango–Coconut for Uzbekistan and review source-linked product information.",
+      "ru": "Изучите Gorilla Манго — Кокос для Узбекистана и подтверждённую информацию о продукте.",
+      "uz": "O‘zbekiston uchun Gorilla Mango–Kokos variantini va manbaga bog‘langan mahsulot ma’lumotlarini ko‘ring."
+    },
+    "title": {
+      "en": "Mango–Coconut — Gorilla Energy Uzbekistan",
+      "ru": "Манго — Кокос — Gorilla Energy Узбекистан",
+      "uz": "Mango–Kokos — Gorilla Energy O‘zbekiston"
+    }
+  },
+  "sku": null,
+  "slug": "mango-coconut",
+  "sourceId": "gorilla-products-uz-2026",
+  "status": "approved",
+  "themeId": "mango-coconut",
+  "warnings": [
+    {
+      "sourceId": "owner-legal-warning-2026",
+      "status": "legal-approved",
+      "text": {
+        "en": "Excessive consumption of energy drinks is harmful. Check the packaging for information about people for whom consumption is not recommended.",
+        "ru": "Чрезмерное употребление энергетических напитков вредно. Проверьте на упаковке информацию о лицах, которым употребление не рекомендуется.",
+        "uz": "Energetik ichimliklarni haddan ziyod iste’mol qilish zararli. Iste’mol qilish tavsiya etilmaydigan shaxslar haqidagi ma’lumotni mahsulot qadoqlaridan tekshiring."
+      },
+      "warningId": "responsible-use"
+    }
+  ]
+}

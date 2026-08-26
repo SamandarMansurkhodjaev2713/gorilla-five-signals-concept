@@ -1,0 +1,27 @@
+{
+  "alt": {
+    "en": "Front view of a black Gorilla ZERO can with lime graphics",
+    "ru": "Вид спереди на чёрную банку Gorilla ZERO с лаймовой графикой",
+    "uz": "Laym rangli grafikali qora Gorilla Shakarsiz bankasining old ko‘rinishi"
+  },
+  "checksumSha256": "3ddad8924355c1759fc72a56de35bd986481c38dc35333d0d003b982afe9ee7c",
+  "decorative": false,
+  "derivatives": [
+    {
+      "checksumSha256": "737baa96bb036bef0c13230b4f38bb00cef8c652af6ecb22053edd0c3158a24f",
+      "path": "/media/generated/products/can-zero-320.webp"
+    },
+    {
+      "checksumSha256": "e9ed3118c66e8f99ffbd9cc7139ce9ff03097560b5701d32d5cddba19deb6bf5",
+      "path": "/media/generated/products/can-zero-480.webp"
+    }
+  ],
+  "kind": "image",
+  "license": "Brand-use permission confirmed by the project owner on 2026-07-26",
+  "mediaId": "media-can-zero",
+  "owner": "Gorilla Energy asset rights holder",
+  "path": "/media/generated/products/can-zero.webp",
+  "permissionEvidence": "PERM-USER-2026-07-26; docs/content/ASSET_PROVENANCE.md#release-registered-generated-derivatives",
+  "sourceUrl": "https://www.gorillaenergy.uz/img/products_big_can_sugar.39048f88.png",
+  "territories": ["UZ"]
+}

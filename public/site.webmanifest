@@ -1,0 +1,17 @@
+{
+  "name": "Gorilla Uzbekistan — independent concept",
+  "short_name": "Gorilla UZ",
+  "description": "Independent product-experience concept for Gorilla Energy Uzbekistan.",
+  "start_url": "./uz/",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#050605",
+  "theme_color": "#050605",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

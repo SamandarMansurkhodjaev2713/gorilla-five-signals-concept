@@ -1,0 +1,15 @@
+{
+  "answer": {
+    "en": "Choose a topic on the Contact page. Read the privacy notice before sending personal information.",
+    "ru": "Выберите тему на странице «Контакты». Перед отправкой персональных данных прочитайте уведомление о конфиденциальности.",
+    "uz": "«Bog‘lanish» sahifasida murojaat mavzusini tanlang. Shaxsiy ma’lumot yuborishdan oldin maxfiylik izohini o‘qing."
+  },
+  "faqId": "other-question",
+  "question": {
+    "en": "My question is not here. What should I do?",
+    "ru": "Моего вопроса здесь нет. Что делать?",
+    "uz": "Savolim bu yerda yo‘q. Nima qilaman?"
+  },
+  "sourceIds": ["gorilla-faq-uz-2026"],
+  "status": "approved"
+}

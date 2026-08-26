@@ -1,0 +1,68 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:where(html) {
+  scroll-padding-block-start: calc(var(--size-header) + var(--space-4));
+  text-size-adjust: 100%;
+}
+
+:where(body) {
+  min-block-size: 100dvb;
+  margin: 0;
+  overflow-x: clip;
+}
+
+:where(img, picture, video, canvas, svg) {
+  display: block;
+  max-inline-size: 100%;
+}
+
+:where(img, video) {
+  block-size: auto;
+}
+
+:where(button, input, select, textarea) {
+  color: inherit;
+  font: inherit;
+}
+
+:where(button, select) {
+  text-transform: none;
+}
+
+:where(button, [type="button"], [type="submit"], [type="reset"]) {
+  appearance: none;
+}
+
+:where(a) {
+  color: inherit;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.18em;
+}
+
+:where(table) {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+:where([hidden]) {
+  display: none !important;
+}
+
+:where(dialog) {
+  max-inline-size: none;
+  max-block-size: none;
+}
+
+:where(:focus:not(:focus-visible)) {
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(html) {
+    scroll-behavior: auto;
+  }
+}

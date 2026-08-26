@@ -1,0 +1,27 @@
+{
+  "alt": {
+    "en": "Front view of a black Gorilla Original can with green graphics",
+    "ru": "Вид спереди на чёрную банку Gorilla Оригинал с зелёной графикой",
+    "uz": "Yashil grafikali qora Gorilla Asl bankasining old ko‘rinishi"
+  },
+  "checksumSha256": "97e393494dfa9bf77535efa4012db5ac9dbe119e8b83fe7c28b37bd82ee85dae",
+  "decorative": false,
+  "derivatives": [
+    {
+      "checksumSha256": "491d759943283a32f2abb7984ac628f7e90128b6cf7e9b0da1258f88487313a8",
+      "path": "/media/generated/products/can-original-320.webp"
+    },
+    {
+      "checksumSha256": "71c7e9c6b533137d74e5bb63301a49ce14ee4713cbdb1e5a38ea71e129b8807d",
+      "path": "/media/generated/products/can-original-480.webp"
+    }
+  ],
+  "kind": "image",
+  "license": "Brand-use permission confirmed by the project owner on 2026-07-26",
+  "mediaId": "media-can-original",
+  "owner": "Gorilla Energy asset rights holder",
+  "path": "/media/generated/products/can-original.webp",
+  "permissionEvidence": "PERM-USER-2026-07-26; docs/content/ASSET_PROVENANCE.md#release-registered-generated-derivatives",
+  "sourceUrl": "https://www.gorillaenergy.uz/img/products_big_can_original.f05e880b.png",
+  "territories": ["UZ"]
+}

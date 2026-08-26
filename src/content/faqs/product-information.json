@@ -1,0 +1,15 @@
+{
+  "answer": {
+    "en": "The purchased can label contains the most complete and current information. Values appear on this site only after verification against Uzbekistan packaging or an approved product record.",
+    "ru": "Самая полная и актуальная информация находится на этикетке приобретённой банки. Значения на сайте публикуются только после сверки с упаковкой для Узбекистана или подтверждённым документом о продукте.",
+    "uz": "Eng to‘liq va joriy ma’lumot xarid qilingan bankaning yorlig‘ida bo‘ladi. Saytdagi raqamlar faqat O‘zbekiston qadoqlari yoki tasdiqlangan mahsulot hujjati bilan solishtirilgandan keyin e’lon qilinadi."
+  },
+  "faqId": "product-information",
+  "question": {
+    "en": "Where should I check ingredients and nutrition?",
+    "ru": "Где проверять состав и пищевую ценность?",
+    "uz": "Tarkib va ozuqaviy qiymatni qayerdan tekshirish kerak?"
+  },
+  "sourceIds": ["gorilla-products-uz-2026"],
+  "status": "approved"
+}

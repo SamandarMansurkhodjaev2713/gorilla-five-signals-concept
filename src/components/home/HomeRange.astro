@@ -1,0 +1,238 @@
+---
+import type { SupportedLocale } from "@/config/site";
+import type { ProductView } from "@/features/site/catalog";
+import type { SiteCopy } from "@/features/site/copy";
+import { localePath } from "@/features/site/localization";
+
+import "@/features/flavor-reactor/flavor-reactor.css";
+import "@/features/flavor-reactor/flavor-reactor-responsive.css";
+import "@/features/flavor-reactor/flavor-reactor-worlds.css";
+
+interface Props {
+  copy: SiteCopy;
+  locale: SupportedLocale;
+  products: readonly ProductView[];
+}
+
+const { copy, locale, products } = Astro.props;
+const productCount = String(products.length).padStart(2, "0");
+const signalTitleParts = copy.chooseSignal.split(/\s+/u);
+const signalTitleLead = signalTitleParts.slice(0, -1).join(" ");
+const signalTitleTail = signalTitleParts.at(-1) ?? copy.chooseSignal;
+const nativeHint = {
+  en: "Swipe to move between all five signals.",
+  ru: "Листайте, чтобы переключаться между пятью сигналами.",
+  uz: "Beshta signal orasida o‘tish uchun suring.",
+}[locale];
+---
+
+<section
+  class="flavor-reactor"
+  data-motion-scene="flavor-explorer"
+  data-product-explorer
+>
+  <div class="reactor-shell" data-reactor-shell>
+    <header class="reactor-intro">
+      <p class="type-label">02 / Five frequencies</p>
+      <h2 aria-label={copy.chooseSignal}>
+        {signalTitleLead !== "" && <span>{signalTitleLead}</span>}
+        <span>{signalTitleTail}</span>
+      </h2>
+      <p class="reactor-intro__code" aria-hidden="true">
+        FREQ / 01—{productCount}
+      </p>
+    </header>
+
+    <div class="reactor-console" aria-label={copy.chooseSignal}>
+      <div class="selector-list" role="group" aria-label={copy.chooseSignal}>
+        {
+          products.map((product, index) => (
+            <button
+              class="signal-selector"
+              type="button"
+              data-flavor={product.slug}
+              data-product-selector={product.slug}
+              data-motion-select
+              aria-controls={`product-card-${product.slug}`}
+              aria-pressed={index === 0 ? "true" : "false"}
+            >
+              <span class="signal-selector__index" aria-hidden="true">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <span class="signal-selector__name">{product.name}</span>
+              <span class="signal-selector__meter" aria-hidden="true" />
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="step-controls">
+        <button
+          class="reactor-step"
+          type="button"
+          data-product-previous
+          aria-label={`${copy.previous}: ${copy.chooseSignal}`}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M19 12H5m6-6-6 6 6 6"></path>
+          </svg>
+          <span>{copy.previous}</span>
+        </button>
+        <span class="reactor-progress" aria-hidden="true">
+          <span data-reactor-current>01</span>
+          <span>/</span>
+          <span>{productCount}</span>
+        </span>
+        <button
+          class="reactor-step reactor-step--next"
+          type="button"
+          data-product-next
+          aria-label={`${copy.next}: ${copy.chooseSignal}`}
+        >
+          <span>{copy.next}</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12h14m-6-6 6 6-6 6"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div
+      class="reactor-stage"
+      data-reactor-gesture
+      tabindex="0"
+      aria-label={copy.chooseSignal}
+    >
+      <div class="reactor-atmosphere" aria-hidden="true">
+        <span class="reactor-atmosphere__grid"></span>
+        <span class="reactor-atmosphere__beam"></span>
+        <span class="reactor-atmosphere__pulse"></span>
+      </div>
+
+      <div class="reactor-worlds">
+        {
+          products.map((product, index) => (
+            <article
+              id={`product-card-${product.slug}`}
+              class="reactor-world"
+              data-flavor={product.slug}
+              data-product-card={product.slug}
+              data-product-name={product.name}
+              data-reactor-world
+              data-motion-selected={index === 0 ? "" : undefined}
+            >
+              <div
+                class="reactor-material"
+                data-reactor-material
+                aria-hidden="true"
+              >
+                <span
+                  class="reactor-orbit reactor-orbit--outer"
+                  data-reactor-orbit
+                />
+                <span
+                  class="reactor-orbit reactor-orbit--inner"
+                  data-reactor-orbit
+                />
+                <span
+                  class="reactor-shard reactor-shard--one"
+                  data-reactor-shard
+                />
+                <span
+                  class="reactor-shard reactor-shard--two"
+                  data-reactor-shard
+                />
+                <span
+                  class="reactor-shard reactor-shard--three"
+                  data-reactor-shard
+                />
+                <span class="reactor-scan" data-reactor-scan />
+              </div>
+
+              <div class="reactor-identity">
+                <p class="reactor-identity__index">
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <span aria-hidden="true">/ {productCount}</span>
+                </p>
+                <p class="type-label">{product.flavorNotes.join(" · ")}</p>
+              </div>
+
+              <div class="reactor-can-trajectory">
+                <div class="reactor-can" data-motion-product>
+                  <span class="reactor-can__halo" aria-hidden="true" />
+                  <img
+                    src={product.imagePath}
+                    srcset={product.imageSrcSet}
+                    sizes="(min-width: 80rem) 28rem, (min-width: 64rem) 22rem, 15rem"
+                    width={product.width}
+                    height={product.height}
+                    alt={product.alt}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <span class="reactor-can__shadow" aria-hidden="true" />
+                </div>
+              </div>
+
+              <div class="reactor-copy" data-motion-copy>
+                <p class="reactor-copy__signal" aria-hidden="true">
+                  SIGNAL—{String(index + 1).padStart(2, "0")}
+                </p>
+                <h3 data-reactor-word>{product.name}</h3>
+                <p class="reactor-copy__description">{product.description}</p>
+                <div class="reactor-actions">
+                  <a
+                    class="control control--primary"
+                    href={localePath(locale, `/products/${product.slug}`)}
+                  >
+                    {copy.openDetails}
+                  </a>
+                  <a
+                    class="text-link"
+                    href={`${localePath(locale, "/compare")}?products=${product.slug}`}
+                  >
+                    {copy.navigation.compare}
+                  </a>
+                </div>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+
+    <aside class="comparison-tray" data-comparison-tray hidden>
+      <p>
+        <span class="type-label">{copy.selected}</span>
+        <strong data-comparison-name aria-live="polite"></strong>
+      </p>
+      <a
+        class="control control--primary"
+        href={localePath(locale, "/compare")}
+        data-comparison-link
+      >
+        {copy.addToCompare}
+      </a>
+    </aside>
+  </div>
+  <noscript>
+    <p class="reactor-native-hint type-label">{nativeHint}</p>
+    <style is:global>
+      .flavor-reactor .reactor-console {
+        display: none;
+      }
+
+      .flavor-reactor .reactor-worlds {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: inline mandatory;
+      }
+
+      .flavor-reactor .reactor-world {
+        min-inline-size: 100%;
+        flex: 0 0 100%;
+        scroll-snap-align: start;
+      }
+    </style>
+  </noscript>
+</section>

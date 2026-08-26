@@ -1,0 +1,154 @@
+---
+import type { SupportedLocale } from "@/config/site";
+import type { FaqGroupView } from "@/features/faq/faq-groups";
+import type { SiteCopy } from "@/features/site/copy";
+import { localePath, localize } from "@/features/site/localization";
+
+import "./faq-field-manual.css";
+
+interface Props {
+  copy: SiteCopy;
+  groups: readonly FaqGroupView[];
+  locale: SupportedLocale;
+  warningText: string;
+}
+
+interface ManualCopy {
+  readonly channels: string;
+  readonly fieldManual: string;
+  readonly index: string;
+  readonly protocol: string;
+  readonly response: string;
+  readonly status: string;
+}
+
+const EXPECTED_GROUP_COUNT = 4;
+const manualCopy: Readonly<Record<SupportedLocale, ManualCopy>> = {
+  en: {
+    channels: "04 channels / 10 answers",
+    fieldManual: "Field manual",
+    index: "Choose a channel. Open only the answer you need.",
+    protocol: "Question protocol",
+    response: "Response",
+    status: "Approved information / live index",
+  },
+  ru: {
+    channels: "04 канала / 10 ответов",
+    fieldManual: "Полевой справочник",
+    index: "Выберите канал. Откройте только нужный ответ.",
+    protocol: "Протокол вопросов",
+    response: "Ответ",
+    status: "Подтверждённая информация / актуальный индекс",
+  },
+  uz: {
+    channels: "04 kanal / 10 javob",
+    fieldManual: "Dala qo‘llanmasi",
+    index: "Kanalni tanlang. Faqat kerakli javobni oching.",
+    protocol: "Savollar protokoli",
+    response: "Javob",
+    status: "Tasdiqlangan ma’lumot / joriy indeks",
+  },
+};
+
+const { copy, groups, locale, warningText } = Astro.props;
+const text = manualCopy[locale];
+
+if (groups.length !== EXPECTED_GROUP_COUNT) {
+  throw new Error("FAQ field manual requires exactly four question groups.");
+}
+---
+
+<article class="faq-manual" data-motion-scene="faq-safety">
+  <header class="manual-hero material-grain">
+    <div class="manual-hero-meta" data-motion-reveal>
+      <p class="type-label">{text.protocol} / UZ</p>
+      <p class="type-data">{text.channels}</p>
+    </div>
+
+    <h1 data-motion-reveal>
+      <span>FAQ</span>
+      <span>{text.fieldManual}</span>
+    </h1>
+
+    <div class="manual-hero-copy" data-motion-copy>
+      <p class="type-label">{text.status}</p>
+      <p class="type-body-lg">{copy.productInfo}</p>
+      <p>{text.index}</p>
+    </div>
+
+    <div class="manual-bands" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+    </div>
+  </header>
+
+  <div class="manual-body surface-paper">
+    <aside class="manual-command" data-motion-reveal>
+      <div class="command-warning" aria-label={copy.warning}>
+        <p class="type-label">18+ / {copy.warning}</p>
+        <p class="type-legal">{warningText}</p>
+      </div>
+
+      <nav class="manual-index" aria-label={copy.navigation.faq}>
+        <p class="type-label">00 / INDEX</p>
+        {
+          groups.map((group, index) => (
+            <a href={`#faq-${group.id}`}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <strong>{group.label}</strong>
+              <i aria-hidden="true">↘</i>
+            </a>
+          ))
+        }
+      </nav>
+    </aside>
+
+    <div class="manual-questions">
+      {
+        groups.map((group, groupIndex) => (
+          <section class="manual-group" id={`faq-${group.id}`}>
+            <header class="group-header">
+              <span aria-hidden="true">
+                {String(groupIndex + 1).padStart(2, "0")}
+              </span>
+              <div>
+                <p class="type-label">
+                  {String(groupIndex + 1).padStart(2, "0")} / 04
+                </p>
+                <h2>{group.label}</h2>
+                <p class="type-data">
+                  {String(group.entries.length).padStart(2, "0")} / Q
+                </p>
+              </div>
+            </header>
+
+            <div class="group-questions">
+              {group.entries.map((faq, questionIndex) => (
+                <details open={groupIndex === 0 && questionIndex === 0}>
+                  <summary>
+                    <span class="question-index">
+                      {String(questionIndex + 1).padStart(2, "0")}
+                    </span>
+                    <span class="question-text">
+                      {localize(faq.data.question, locale)}
+                    </span>
+                    <span class="manual-toggle" aria-hidden="true" />
+                  </summary>
+                  <div class="manual-answer">
+                    <p class="type-label">{text.response}</p>
+                    <p>{localize(faq.data.answer, locale)}</p>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </section>
+        ))
+      }
+
+      <a class="manual-contact" href={localePath(locale, "/contact")}>
+        <span class="type-label">04 / {copy.navigation.contact}</span>
+        <strong>{copy.contactIntro}</strong>
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </div>
+</article>

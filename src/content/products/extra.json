@@ -1,0 +1,62 @@
+{
+  "canMediaId": "media-can-extra",
+  "claims": [],
+  "ctas": [
+    {
+      "href": "/find?product=extra",
+      "label": {
+        "en": "Find EXTRA",
+        "ru": "Где искать EXTRA",
+        "uz": "EXTRA’ni qayerdan izlash"
+      },
+      "type": "find"
+    }
+  ],
+  "description": {
+    "en": "Compressed type. Gold strike. EXTRA moves to a sharper visual rhythm.",
+    "ru": "Плотная типографика. Золотой удар. EXTRA движется в более резком визуальном ритме.",
+    "uz": "Zich tipografika. Oltin zarba. EXTRA keskinroq vizual ritmda harakatlanadi."
+  },
+  "flavorNotes": [
+    {
+      "en": "EXTRA",
+      "ru": "EXTRA",
+      "uz": "EXTRA"
+    }
+  ],
+  "name": {
+    "en": "EXTRA",
+    "ru": "EXTRA",
+    "uz": "EXTRA"
+  },
+  "posterMediaId": "media-can-extra",
+  "seo": {
+    "description": {
+      "en": "Explore Gorilla EXTRA for Uzbekistan and review source-linked product information.",
+      "ru": "Изучите Gorilla EXTRA для Узбекистана и подтверждённую информацию о продукте.",
+      "uz": "O‘zbekiston uchun Gorilla EXTRA variantini va manbaga bog‘langan mahsulot ma’lumotlarini ko‘ring."
+    },
+    "title": {
+      "en": "EXTRA — Gorilla Energy Uzbekistan",
+      "ru": "EXTRA — Gorilla Energy Узбекистан",
+      "uz": "EXTRA — Gorilla Energy O‘zbekiston"
+    }
+  },
+  "sku": null,
+  "slug": "extra",
+  "sourceId": "gorilla-products-uz-2026",
+  "status": "approved",
+  "themeId": "extra",
+  "warnings": [
+    {
+      "sourceId": "owner-legal-warning-2026",
+      "status": "legal-approved",
+      "text": {
+        "en": "Excessive consumption of energy drinks is harmful. Check the packaging for information about people for whom consumption is not recommended.",
+        "ru": "Чрезмерное употребление энергетических напитков вредно. Проверьте на упаковке информацию о лицах, которым употребление не рекомендуется.",
+        "uz": "Energetik ichimliklarni haddan ziyod iste’mol qilish zararli. Iste’mol qilish tavsiya etilmaydigan shaxslar haqidagi ma’lumotni mahsulot qadoqlaridan tekshiring."
+      },
+      "warningId": "responsible-use"
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+---
+import { getCollection } from "astro:content";
+
+import ProductDetailWorld from "@/components/product/ProductDetailWorld.astro";
+import "@/components/product/product-detail-art.css";
+import "@/components/product/product-detail.css";
+import "@/components/product/product-detail-theme-core.css";
+import "@/components/product/product-detail-theme-mobile.css";
+import "@/components/product/product-detail-theme-refraction.css";
+import "@/components/product/product-detail-theme-surge.css";
+import { SUPPORTED_LOCALES, type SupportedLocale } from "@/config/site";
+import { getApprovedProducts, type ProductView } from "@/features/site/catalog";
+import { getSiteCopy } from "@/features/site/copy";
+import { localize } from "@/features/site/localization";
+import SiteLayout from "@/layouts/SiteLayout.astro";
+
+export async function getStaticPaths() {
+  const groups = await Promise.all(
+    SUPPORTED_LOCALES.map(async (locale) => {
+      const products = await getApprovedProducts(locale);
+      return products.map((product) => ({
+        params: { locale, slug: product.slug },
+        props: { locale, product, products },
+      }));
+    }),
+  );
+  return groups.flat();
+}
+
+interface Props {
+  locale: SupportedLocale;
+  product: ProductView;
+  products: readonly ProductView[];
+}
+
+const { locale, product, products } = Astro.props;
+const copy = getSiteCopy(locale);
+const currentIndex = products.findIndex(({ slug }) => slug === product.slug);
+const productNumber = String(currentIndex + 1).padStart(2, "0");
+const productCount = String(products.length).padStart(2, "0");
+const previousProduct =
+  products[(currentIndex - 1 + products.length) % products.length];
+const nextProduct = products[(currentIndex + 1) % products.length];
+const legalRecords = await getCollection("legal");
+const responsibleUse = legalRecords.find(
+  ({ data }) => data.documentId === "responsible-use",
+);
+
+if (
+  previousProduct === undefined ||
+  nextProduct === undefined ||
+  responsibleUse === undefined
+) {
+  throw new Error(
+    `Product page requirements are incomplete for ${product.slug}.`,
+  );
+}
+
+const responsibleUseCopy = localize(responsibleUse.data.body, locale);
+---
+
+<SiteLayout
+  lang={locale}
+  title={product.seoTitle}
+  description={product.seoDescription}
+>
+  <ProductDetailWorld
+    {copy}
+    {locale}
+    {nextProduct}
+    {previousProduct}
+    {product}
+    {productCount}
+    {productNumber}
+    responsibleUse={responsibleUseCopy}
+  />
+</SiteLayout>

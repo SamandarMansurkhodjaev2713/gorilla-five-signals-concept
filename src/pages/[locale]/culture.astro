@@ -1,0 +1,143 @@
+---
+import { getCollection } from "astro:content";
+
+import type { SupportedLocale } from "@/config/site";
+import { getApprovedProducts } from "@/features/site/catalog";
+import { getSiteCopy } from "@/features/site/copy";
+import { localePath, localize } from "@/features/site/localization";
+import { createLocaleRoutes } from "@/features/site/static-paths";
+import "@/features/culture/culture-atlas.css";
+import SiteLayout from "@/layouts/SiteLayout.astro";
+
+export function getStaticPaths() {
+  return createLocaleRoutes();
+}
+
+interface Props {
+  locale: SupportedLocale;
+}
+
+const { locale } = Astro.props;
+const copy = getSiteCopy(locale);
+const [stories, products] = await Promise.all([
+  getCollection("culture", ({ data }) => data.status === "approved"),
+  getApprovedProducts(locale),
+]);
+const [story, ...unexpectedStories] = stories;
+const text = {
+  en: {
+    atlas: "Signal atlas",
+    chapter: "Specimen",
+    close: "Five signals. One city frequency.",
+    coordinates: "Tashkent coordinates",
+    study: "Independent design study",
+  },
+  ru: {
+    atlas: "Атлас сигналов",
+    chapter: "Образец",
+    close: "Пять сигналов. Одна частота города.",
+    coordinates: "Координаты Ташкента",
+    study: "Независимое дизайн-исследование",
+  },
+  uz: {
+    atlas: "Signallar atlasi",
+    chapter: "Namuna",
+    close: "Besh signal. Bitta shahar chastotasi.",
+    coordinates: "Toshkent koordinatalari",
+    study: "Mustaqil dizayn tadqiqoti",
+  },
+}[locale];
+
+if (story === undefined || unexpectedStories.length > 0) {
+  throw new Error(
+    "Culture page requires exactly one approved editorial record.",
+  );
+}
+---
+
+<SiteLayout
+  lang={locale}
+  title={`${copy.navigation.culture} — Gorilla Energy Uzbekistan`}
+  description={copy.cultureIntro}
+>
+  <article class="culture-atlas" data-motion-scene="culture-atlas">
+    <header class="atlas-hero">
+      <div class="atlas-meta" data-motion-reveal>
+        <p class="type-label">{text.atlas} / 41.2995° N</p>
+        <p class="type-data">{story.data.publishedAt} / UZ</p>
+      </div>
+      <h1 data-motion-reveal>
+        <span>TASHKENT</span>
+        <span>{copy.navigation.culture}</span>
+      </h1>
+      <div class="atlas-intro" data-motion-reveal>
+        <p class="type-label">{text.study}</p>
+        <h2>{localize(story.data.title, locale)}</h2>
+        <p class="type-body-lg">{localize(story.data.body, locale)}</p>
+      </div>
+      <div class="atlas-coordinate" aria-label={text.coordinates}>
+        <strong>41.2995° N</strong>
+        <strong>69.2401° E</strong>
+      </div>
+      <div class="atlas-spectrum" aria-hidden="true">
+        {products.map((product) => <span data-flavor={product.slug} />)}
+      </div>
+    </header>
+
+    <div class="atlas-body">
+      <aside class="atlas-index">
+        <p class="type-label">01—05 / {text.chapter}</p>
+        <p class="type-body-lg">{copy.cultureIntro}</p>
+        <div class="atlas-index-coordinate">
+          <span class="type-data">TASHKENT</span>
+          <span class="type-data">UZ / 2026</span>
+        </div>
+      </aside>
+      <div class="atlas-specimens">
+        {
+          products.map((product, index) => (
+            <section
+              class="atlas-specimen"
+              data-flavor={product.slug}
+              data-motion-culture-chapter
+            >
+              <div class="specimen-visual">
+                <span aria-hidden="true">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <img
+                  src={product.imagePath}
+                  srcset={product.imageSrcSet}
+                  sizes="(min-width: 64rem) 24rem, 52vw"
+                  width={product.width}
+                  height={product.height}
+                  alt={product.alt}
+                  loading={index < 2 ? "eager" : "lazy"}
+                  decoding="async"
+                />
+              </div>
+              <div class="specimen-copy">
+                <p class="type-label">
+                  {text.chapter} / 0{index + 1}
+                </p>
+                <h3>{product.name}</h3>
+                <p>{product.flavorNotes.join(" · ")}</p>
+                <a
+                  class="text-link"
+                  href={localePath(locale, `/products/${product.slug}`)}
+                >
+                  {copy.openDetails} →
+                </a>
+              </div>
+            </section>
+          ))
+        }
+      </div>
+    </div>
+
+    <footer class="atlas-close" data-motion-reveal>
+      <p>{text.close}</p>
+      <span aria-hidden="true">TASHKENT / GORILLA / SIGNAL / 05</span>
+    </footer>
+  </article>
+</SiteLayout>

@@ -1,0 +1,131 @@
+---
+import type { SupportedLocale } from "@/config/site";
+import "@/features/contact/contact-switchboard.css";
+import { getSiteCopy } from "@/features/site/copy";
+import { localePath } from "@/features/site/localization";
+import { createLocaleRoutes } from "@/features/site/static-paths";
+import SiteLayout from "@/layouts/SiteLayout.astro";
+
+export function getStaticPaths() {
+  return createLocaleRoutes();
+}
+
+interface Props {
+  locale: SupportedLocale;
+}
+
+const { locale } = Astro.props;
+const copy = getSiteCopy(locale);
+const officialWebsite = `https://www.gorillaenergy.uz/?locale=${locale}`;
+const content = {
+  en: {
+    channel: "One verified channel",
+    eyebrow: "Five intents / One official route",
+    note: "This independent concept does not collect messages. Continue to Gorilla Uzbekistan’s verified website for current contact options.",
+    official: "Open official website",
+    route: "Official channel",
+    topics: [
+      "Product information",
+      "Retail and distribution",
+      "Media",
+      "Partnership and event",
+      "Privacy or legal",
+    ],
+  },
+  ru: {
+    channel: "Один проверенный канал",
+    eyebrow: "Пять запросов / Один официальный маршрут",
+    note: "Этот независимый концепт не собирает сообщения. Актуальные способы связи доступны на проверенном сайте Gorilla Uzbekistan.",
+    official: "Открыть официальный сайт",
+    route: "Официальный канал",
+    topics: [
+      "Информация о продукте",
+      "Розница и дистрибуция",
+      "Медиа",
+      "Партнёрство и события",
+      "Конфиденциальность или право",
+    ],
+  },
+  uz: {
+    channel: "Bitta tasdiqlangan kanal",
+    eyebrow: "Besh murojaat / Bitta rasmiy yo‘l",
+    note: "Bu mustaqil konsept xabarlarni yig‘maydi. Amaldagi aloqa usullari uchun Gorilla Uzbekistan tasdiqlangan saytiga o‘ting.",
+    official: "Rasmiy saytni ochish",
+    route: "Rasmiy kanal",
+    topics: [
+      "Mahsulot haqida",
+      "Chakana savdo va distribyutsiya",
+      "Media",
+      "Hamkorlik va tadbir",
+      "Maxfiylik yoki huquqiy masala",
+    ],
+  },
+}[locale];
+---
+
+<SiteLayout
+  lang={locale}
+  title={`${copy.navigation.contact} — Gorilla Energy Uzbekistan`}
+  description={copy.contactIntro}
+>
+  <article class="contact-switchboard" data-motion-scene="contact-switchboard">
+    <header class="switchboard-hero" data-page-lead>
+      <div class="switchboard-meta" data-motion-reveal>
+        <p class="type-label" data-contact-eyebrow>{content.eyebrow}</p>
+        <p class="type-data">TASHKENT / UZ</p>
+      </div>
+      <h1 data-motion-reveal>{copy.navigation.contact}</h1>
+      <p class="type-body-lg" data-motion-reveal>{copy.contactIntro}</p>
+      <span class="switchboard-stamp" aria-hidden="true">→ 01—05</span>
+    </header>
+
+    <section class="routing-board" aria-labelledby="routing-heading">
+      <div class="routing-copy" data-motion-reveal>
+        <p class="type-label">01—05 / {content.route}</p>
+        <h2 id="routing-heading">{content.channel}</h2>
+        <p>{content.note}</p>
+      </div>
+
+      <ol class="routing-list">
+        {
+          content.topics.map((topic, index) => (
+            <li>
+              <span class="type-data">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <strong>{topic}</strong>
+              <span
+                class="routing-rail"
+                data-motion-contact-rail
+                aria-hidden="true"
+              />
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="routing-endpoint" data-motion-reveal>
+        <span class="endpoint-pulse" aria-hidden="true"></span>
+        <p class="type-label">{content.route} / VERIFIED OUTBOUND</p>
+        <a
+          class="control control--primary"
+          data-contact-official
+          href={officialWebsite}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {content.official} ↗
+        </a>
+        <a class="text-link" href={localePath(locale, "/legal/privacy")}>
+          {copy.legal}
+        </a>
+      </div>
+    </section>
+
+    <footer class="switchboard-close" aria-hidden="true">
+      <span>GORILLA</span>
+      <span>TASHKENT</span>
+      <span>SIGNAL / 05</span>
+    </footer>
+  </article>
+</SiteLayout>

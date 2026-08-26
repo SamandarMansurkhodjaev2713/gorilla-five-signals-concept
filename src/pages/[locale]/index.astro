@@ -1,0 +1,71 @@
+---
+import { getCollection } from "astro:content";
+
+import HomeCultureLocator from "@/components/home/HomeCultureLocator.astro";
+import HomeFaqContact from "@/components/home/HomeFaqContact.astro";
+import HomeHero from "@/components/home/HomeHero.astro";
+import HomeManifesto from "@/components/home/HomeManifesto.astro";
+import HomeRange from "@/components/home/HomeRange.astro";
+import HomeTruthCompare from "@/components/home/HomeTruthCompare.astro";
+import ProductMaterialScene from "@/components/home/ProductMaterialScene.astro";
+import type { SupportedLocale } from "@/config/site";
+import { getApprovedProducts } from "@/features/site/catalog";
+import { getSiteCopy } from "@/features/site/copy";
+import { localize } from "@/features/site/localization";
+import { createLocaleRoutes } from "@/features/site/static-paths";
+import SiteLayout from "@/layouts/SiteLayout.astro";
+
+export function getStaticPaths() {
+  return createLocaleRoutes();
+}
+
+interface Props {
+  locale: SupportedLocale;
+}
+
+const { locale } = Astro.props;
+const copy = getSiteCopy(locale);
+const [products, legalRecords, cultureRecords, faqs] = await Promise.all([
+  getApprovedProducts(locale),
+  getCollection("legal"),
+  getCollection("culture", ({ data }) => data.status === "approved"),
+  getCollection("faqs", ({ data }) => data.status === "approved"),
+]);
+const warning = legalRecords.find(
+  ({ data }) => data.documentId === "responsible-use",
+);
+const culture = cultureRecords.find(
+  ({ data }) => data.slug === "tashkent-signal-study",
+);
+
+if (warning === undefined || culture === undefined) {
+  throw new Error(
+    "Homepage requires approved legal, culture, and locator content.",
+  );
+}
+const warningText = localize(warning.data.body, locale);
+---
+
+<SiteLayout
+  lang={locale}
+  title={`${copy.fiveStates} — Gorilla Energy Uzbekistan`}
+  description={copy.homeIntro}
+>
+  <HomeHero copy={copy} locale={locale} products={products} />
+  <HomeManifesto copy={copy} locale={locale} products={products} />
+  <HomeRange copy={copy} locale={locale} products={products} />
+  <HomeTruthCompare
+    copy={copy}
+    locale={locale}
+    products={products}
+    warning={warningText}
+  />
+  <ProductMaterialScene
+    title={copy.fiveStates}
+    intro={copy.materialIntro}
+    label={copy.materialStudy}
+    locale={locale}
+  />
+  <HomeCultureLocator copy={copy} locale={locale} culture={culture} />
+  <HomeFaqContact copy={copy} locale={locale} faqs={faqs} />
+</SiteLayout>

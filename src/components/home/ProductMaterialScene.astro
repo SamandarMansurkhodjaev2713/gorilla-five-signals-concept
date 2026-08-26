@@ -1,0 +1,166 @@
+---
+import { getCollection } from "astro:content";
+
+import type { SupportedLocale } from "@/config/site";
+import { withBasePath } from "@/features/site/base-path";
+import { localize } from "@/features/site/localization";
+import "@/features/home-signal/home-material-film.css";
+import "@/features/home-signal/home-material-film-responsive.css";
+
+interface Props {
+  intro: string;
+  label: string;
+  locale: SupportedLocale;
+  title: string;
+}
+
+const { intro, label, locale, title } = Astro.props;
+const film = (
+  await getCollection(
+    "media",
+    ({ data }) => data.mediaId === "media-material-film",
+  )
+)[0];
+const mediaCopy = {
+  en: {
+    error:
+      "The motion film could not be played. The final poster remains available.",
+    fallback: "Your browser does not support the product film.",
+    pause: "Pause film",
+    play: "Play film",
+  },
+  ru: {
+    error:
+      "Не удалось воспроизвести ролик. Финальный постер остаётся доступен.",
+    fallback: "Ваш браузер не поддерживает продуктовый ролик.",
+    pause: "Приостановить ролик",
+    play: "Воспроизвести ролик",
+  },
+  uz: {
+    error:
+      "Motion filmni ijro etib bo‘lmadi. Yakuniy poster ko‘rinishda qoladi.",
+    fallback: "Brauzeringiz mahsulot filmini qo‘llab-quvvatlamaydi.",
+    pause: "Filmni to‘xtatish",
+    play: "Filmni ijro etish",
+  },
+}[locale];
+
+if (film === undefined || film.data.alt === null) {
+  throw new Error("The approved material-film media record is missing.");
+}
+---
+
+<section
+  class="home-material-film material-grain"
+  data-motion-scene="material-film"
+  data-media-error-label={mediaCopy.error}
+>
+  <header class="home-material-film__copy">
+    <div class="home-material-film__copy-inner">
+      <p class="type-label">05 / {label}</p>
+      <h2>{title}</h2>
+      <p class="type-body-lg">{intro}</p>
+    </div>
+  </header>
+
+  <figure class="home-material-film__figure" data-motion-media-frame>
+    <div class="home-material-film__stage">
+      <picture class="home-material-film__poster" data-motion-media-poster>
+        <source
+          media="(max-width: 47.999rem)"
+          srcset={withBasePath(
+            "/media/generated/material/material-film-afterdark-mobile-poster.avif",
+          )}
+          type="image/avif"
+        />
+        <source
+          media="(max-width: 47.999rem)"
+          srcset={withBasePath(
+            "/media/generated/material/material-film-afterdark-mobile-poster.webp",
+          )}
+          type="image/webp"
+        />
+        <source
+          srcset={withBasePath(
+            "/media/generated/material/material-film-afterdark-desktop-poster.avif",
+          )}
+          type="image/avif"
+        />
+        <source
+          srcset={withBasePath(
+            "/media/generated/material/material-film-afterdark-desktop-poster.webp",
+          )}
+          type="image/webp"
+        />
+        <img
+          src={withBasePath(
+            "/media/generated/material/material-film-afterdark-desktop-poster.webp",
+          )}
+          width="1280"
+          height="720"
+          alt={localize(film.data.alt, locale)}
+          loading="lazy"
+          decoding="async"
+        />
+      </picture>
+
+      <video
+        hidden
+        data-motion-media
+        aria-label={localize(film.data.alt, locale)}
+        muted
+        playsinline
+        preload="none"
+      >
+        <source
+          data-motion-source={withBasePath(
+            "/media/generated/film/material-film-mobile.webm",
+          )}
+          media="(max-width: 47.999rem)"
+          type="video/webm"
+        />
+        <source
+          data-motion-source={withBasePath(
+            "/media/generated/film/material-film-mobile.mp4",
+          )}
+          media="(max-width: 47.999rem)"
+          type="video/mp4"
+        />
+        <source
+          data-motion-source={withBasePath(
+            "/media/generated/film/material-film-desktop.webm",
+          )}
+          type="video/webm"
+        />
+        <source
+          data-motion-source={withBasePath(film.data.path)}
+          type="video/mp4"
+        />
+        {mediaCopy.fallback}
+      </video>
+
+      <div class="home-material-film__calibration" aria-hidden="true">
+        <span>AL / 01</span><span>ICE / 02</span><span>H₂O / 03</span><span
+          >LIGHT / 04</span
+        ><span>UZ / 05</span>
+      </div>
+      <div class="home-material-film__crosshair" aria-hidden="true">
+        <span>41.2995° N</span>
+        <strong>MATERIAL / SIGNAL</strong>
+        <span>69.2401° E</span>
+      </div>
+      <span class="home-material-film__scan" aria-hidden="true"></span>
+      <span class="home-material-film__aperture" aria-hidden="true"></span>
+    </div>
+
+    <div class="home-material-film__controls" data-motion-media-controls hidden>
+      <button class="control" type="button" data-motion-media-play>
+        {mediaCopy.play}
+      </button>
+      <button class="control" type="button" data-motion-media-pause>
+        {mediaCopy.pause}
+      </button>
+      <p class="type-legal" role="status" data-motion-media-status></p>
+    </div>
+  </figure>
+</section>

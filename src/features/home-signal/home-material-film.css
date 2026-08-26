@@ -1,0 +1,213 @@
+.home-material-film {
+  position: relative;
+  display: grid;
+  overflow: clip;
+  color: var(--color-text-primary);
+  background: var(--color-ink-950);
+  isolation: isolate;
+}
+
+.home-material-film::before {
+  position: absolute;
+  z-index: 7;
+  inset: 0 0 auto;
+  block-size: 0.38rem;
+  background: linear-gradient(
+    90deg,
+    var(--color-marker-original) 0 20%,
+    var(--color-marker-zero) 20% 40%,
+    var(--color-marker-extra) 40% 60%,
+    var(--color-marker-tropical) 60% 80%,
+    var(--color-marker-lychee) 80%
+  );
+  content: "";
+}
+
+.home-material-film__copy {
+  position: relative;
+  z-index: 6;
+  padding: var(--space-8) var(--space-gutter) var(--space-6);
+  background: var(--color-ink-950);
+}
+
+.home-material-film__copy-inner {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.home-material-film__copy h2 {
+  max-inline-size: 10ch;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(3.4rem, 9vw, 6.5rem);
+  font-weight: 700;
+  letter-spacing: -0.055em;
+  line-height: 0.84;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.home-material-film__copy p {
+  max-inline-size: 38ch;
+}
+
+.home-material-film__figure {
+  position: relative;
+  display: grid;
+  min-inline-size: 0;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.home-material-film__stage {
+  position: relative;
+  min-inline-size: 0;
+  overflow: hidden;
+  aspect-ratio: 9 / 16;
+  background: var(--color-ink-950);
+  isolation: isolate;
+}
+
+.home-material-film__poster,
+.home-material-film__stage video,
+.home-material-film__stage img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  aspect-ratio: 9 / 16;
+  object-fit: cover;
+}
+
+.home-material-film__poster,
+.home-material-film__stage video {
+  position: absolute;
+  inset: 0;
+}
+
+.home-material-film__poster {
+  z-index: 1;
+  opacity: 1;
+  transition: opacity var(--motion-duration-standard) var(--motion-ease-enter);
+}
+
+.home-material-film__stage video {
+  z-index: 2;
+  opacity: 0;
+  transition: opacity var(--motion-duration-standard) var(--motion-ease-enter);
+}
+
+.home-material-film__stage video[hidden] {
+  display: none;
+}
+
+.home-material-film[data-media-state="playing"] .home-material-film__poster {
+  opacity: 0;
+}
+
+.home-material-film[data-media-state="playing"]
+  .home-material-film__stage
+  video {
+  opacity: 1;
+}
+
+.home-material-film__calibration {
+  position: absolute;
+  z-index: 4;
+  inset: var(--space-3);
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: start;
+  border: var(--size-rule-hairline) solid rgb(244 244 237 / 28%);
+  color: rgb(244 244 237 / 80%);
+  font-family: var(--font-data);
+  font-size: clamp(0.58rem, 1.8vw, var(--font-size-label));
+  pointer-events: none;
+}
+
+.home-material-film__calibration span {
+  min-inline-size: 0;
+  padding: var(--space-2);
+  overflow: hidden;
+  border-inline-end: var(--size-rule-hairline) solid rgb(244 244 237 / 20%);
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+.home-material-film__calibration span:last-child {
+  border-inline-end: 0;
+}
+
+.home-material-film__crosshair {
+  position: absolute;
+  z-index: 5;
+  inset: auto var(--space-4) var(--space-5);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-2);
+  color: var(--color-paper-50);
+  font-family: var(--font-data);
+  font-size: var(--font-size-label);
+  pointer-events: none;
+  text-shadow: 0 0.12rem 0.5rem rgb(0 0 0 / 90%);
+}
+
+.home-material-film__crosshair strong {
+  justify-self: start;
+  padding: 0.24em 0.4em;
+  color: var(--color-ink-950);
+  background: var(--color-brand-lime);
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 6vw, 4.5rem);
+  line-height: 0.8;
+}
+
+.home-material-film__crosshair span:last-child {
+  text-align: end;
+}
+
+.home-material-film__scan {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 0 44%,
+    rgb(145 212 1 / 18%) 49%,
+    rgb(244 244 237 / 30%) 50%,
+    transparent 55% 100%
+  );
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.home-material-film__aperture {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  border: clamp(0.75rem, 2vw, 2rem) solid rgb(5 6 5 / 76%);
+  pointer-events: none;
+  transform-origin: center;
+}
+
+.home-material-film__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding-inline: var(--space-gutter);
+}
+
+.home-material-film__controls[hidden] {
+  display: none;
+}
+
+.home-material-film:not([data-media-state="playing"]) [data-motion-media-pause],
+.home-material-film[data-media-state="playing"] [data-motion-media-play] {
+  display: none;
+}
+
+.home-material-film__controls p {
+  flex-basis: 100%;
+  min-block-size: 1.5em;
+  color: var(--color-text-secondary);
+}

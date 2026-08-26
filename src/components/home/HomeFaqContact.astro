@@ -1,0 +1,67 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+import type { SupportedLocale } from "@/config/site";
+import type { SiteCopy } from "@/features/site/copy";
+import { localePath, localize } from "@/features/site/localization";
+import "@/features/home-signal/home-service-dock.css";
+
+interface Props {
+  copy: SiteCopy;
+  faqs: readonly CollectionEntry<"faqs">[];
+  locale: SupportedLocale;
+}
+
+const { copy, faqs, locale } = Astro.props;
+---
+
+<section class="home-service-dock" data-motion-scene="faq-safety">
+  <div class="home-service-dock__index">
+    <header data-motion-reveal>
+      <p class="type-label">08 / FAQ</p>
+      <h2>{copy.navigation.faq}</h2>
+    </header>
+
+    <div class="home-service-dock__questions">
+      {
+        faqs.slice(0, 3).map((faq, index) => (
+          <details data-motion-reveal>
+            <summary>
+              <span aria-hidden="true">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <b>{localize(faq.data.question, locale)}</b>
+            </summary>
+            <p>{localize(faq.data.answer, locale)}</p>
+          </details>
+        ))
+      }
+      <a class="control" href={localePath(locale, "/faq")}>
+        {copy.navigation.faq}
+      </a>
+    </div>
+  </div>
+
+  <a
+    class="home-service-dock__contact"
+    href={localePath(locale, "/contact")}
+    data-motion-scene="contact-partnership"
+  >
+    <span
+      class="home-service-dock__contact-plane"
+      aria-hidden="true"
+      data-motion-home-contact-signal></span>
+    <span
+      class="home-service-dock__contact-word"
+      aria-hidden="true"
+      data-motion-home-contact-word
+    >
+      {copy.navigation.contact}
+    </span>
+    <span class="type-label">09 / GORILLA</span>
+    <strong data-motion-reveal>{copy.navigation.contact}</strong>
+    <small data-motion-reveal>{copy.contactIntro}</small>
+    <b aria-hidden="true">↗</b>
+    <i aria-hidden="true">GORILLA / TASHKENT / UZ</i>
+  </a>
+</section>

@@ -1,0 +1,399 @@
+.product-detail {
+  --detail-can-max-inline: 40rem;
+  --detail-control-min: 3rem;
+  --detail-hero-min: calc(100svh - var(--size-header));
+  --detail-panel-max: 96rem;
+  --detail-shadow: 0 2.25rem 2rem rgb(0 0 0 / 62%);
+  --detail-volume-edge: color-mix(
+    in srgb,
+    var(--flavor-signal) 42%,
+    transparent
+  );
+
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  background: var(--flavor-surface);
+}
+
+.product-detail .product-hero {
+  position: relative;
+  display: grid;
+  min-block-size: var(--detail-hero-min);
+  overflow: clip;
+  background: var(--flavor-surface);
+}
+
+.product-detail .product-world-field {
+  position: absolute;
+  z-index: var(--z-base);
+  inset: 0;
+  overflow: clip;
+  pointer-events: none;
+}
+
+.product-detail .product-world-volume {
+  position: absolute;
+  z-index: var(--z-base);
+  inset: 0;
+  overflow: clip;
+  pointer-events: none;
+  perspective: 72rem;
+  transform-style: preserve-3d;
+}
+
+.product-detail :is(.product-world-plane, .product-world-horizon) {
+  position: absolute;
+  display: block;
+  border: var(--size-rule-hairline) solid var(--detail-volume-edge);
+}
+
+.product-detail .product-world-plane {
+  inset: 8%;
+  transform-origin: center;
+}
+
+.product-detail .product-world-plane--mid {
+  inset: 19%;
+}
+
+.product-detail .product-world-horizon {
+  inset: auto 4% 12%;
+  block-size: 34%;
+  border-width: var(--size-rule-hairline) 0 0;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--flavor-signal) 10%, transparent),
+    transparent 62%
+  );
+  transform: perspective(32rem) rotateX(67deg);
+  transform-origin: center top;
+}
+
+.product-detail .product-world-impact,
+.product-detail .product-world-particle {
+  position: absolute;
+  display: block;
+  background: var(--flavor-signal);
+}
+
+.product-detail .product-world-impact {
+  inline-size: clamp(8rem, 20vw, 20rem);
+  aspect-ratio: 1;
+  border-radius: var(--radius-pill);
+  opacity: 0.16;
+  filter: blur(2.5rem);
+}
+
+.product-detail .product-world-particle {
+  inline-size: clamp(0.2rem, 0.42vw, 0.42rem);
+  block-size: clamp(1.5rem, 5vw, 5.5rem);
+  opacity: 0.55;
+}
+
+.product-detail .product-world-vector {
+  position: absolute;
+  display: block;
+  border: var(--size-rule-hairline) solid var(--flavor-signal);
+  opacity: 0.7;
+}
+
+.product-detail .product-heading {
+  position: relative;
+  z-index: var(--z-content);
+  display: grid;
+  align-content: end;
+  gap: var(--space-4);
+  min-inline-size: 0;
+  padding: var(--space-7) var(--space-gutter);
+}
+
+.product-detail .product-heading__index {
+  color: var(--flavor-signal);
+}
+
+.product-detail .product-heading__world {
+  color: color-mix(in srgb, var(--color-text-primary) 76%, transparent);
+}
+
+.product-detail .product-heading h1 {
+  max-inline-size: 10ch;
+  overflow-wrap: anywhere;
+}
+
+.product-detail .product-heading__title-line {
+  position: relative;
+  display: block;
+}
+
+.product-detail .product-heading__description {
+  color: color-mix(in srgb, var(--color-text-primary) 90%, transparent);
+}
+
+.product-detail .actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.product-detail .actions .control--primary {
+  --control-background: var(--flavor-signal);
+  --control-border: var(--flavor-signal);
+  --control-foreground: var(--flavor-on-signal);
+
+  gap: var(--space-5);
+  justify-content: space-between;
+}
+
+.product-detail .product-action-mark {
+  position: relative;
+  display: block;
+  inline-size: 1rem;
+  block-size: 1rem;
+  border-block-start: var(--size-rule-strong) solid currentcolor;
+  border-inline-end: var(--size-rule-strong) solid currentcolor;
+}
+
+.product-detail .product-action-mark::after {
+  position: absolute;
+  inset-block-start: 46%;
+  inset-inline-end: -12%;
+  inline-size: 1.2rem;
+  block-size: var(--size-rule-strong);
+  background: currentcolor;
+  content: "";
+  transform: rotate(-45deg);
+  transform-origin: right center;
+}
+
+.product-detail .product-compare-link {
+  padding-inline: var(--space-2);
+}
+
+.product-detail .control {
+  min-block-size: var(--detail-control-min);
+}
+
+.product-detail .can-stage {
+  position: relative;
+  z-index: var(--z-media);
+  display: grid;
+  min-block-size: min(30rem, 48svh);
+  margin: 0;
+  place-items: center;
+  perspective: 70rem;
+}
+
+.product-detail .can-stage__media {
+  position: relative;
+  z-index: var(--z-media);
+  display: grid;
+  inline-size: 100%;
+  block-size: 100%;
+  min-block-size: 0;
+  place-items: center;
+  transform-style: preserve-3d;
+}
+
+.product-detail .can-stage img {
+  position: relative;
+  z-index: 1;
+  inline-size: auto;
+  max-inline-size: min(100%, var(--detail-can-max-inline));
+  block-size: min(44svh, 28rem);
+  filter: drop-shadow(var(--detail-shadow));
+  object-fit: contain;
+}
+
+.product-detail
+  :is(.can-stage__aura, .can-stage__reflection, .can-stage__contact) {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+
+.product-detail .can-stage__aura {
+  z-index: 0;
+  inline-size: min(42rem, 82%);
+  aspect-ratio: 1;
+  border: var(--size-rule-hairline) solid var(--detail-volume-edge);
+  border-radius: var(--radius-pill);
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--flavor-signal) 24%, transparent),
+    transparent 68%
+  );
+}
+
+.product-detail .can-stage__reflection {
+  z-index: calc(var(--z-media) + 1);
+  inline-size: clamp(1.2rem, 3vw, 2.8rem);
+  block-size: 58%;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 28%),
+    transparent
+  );
+  opacity: 0.3;
+  filter: blur(0.35rem);
+  mix-blend-mode: screen;
+  transform: translateX(-2.2rem) rotate(4deg);
+}
+
+.product-detail .can-stage__contact {
+  z-index: 0;
+  inset-block-end: 7%;
+  inline-size: min(26rem, 72%);
+  block-size: clamp(1.2rem, 4vw, 3rem);
+  border: var(--size-rule-hairline) solid var(--detail-volume-edge);
+  border-radius: var(--radius-pill);
+  background: rgb(0 0 0 / 64%);
+  filter: blur(0.3rem);
+  transform: perspective(18rem) rotateX(62deg);
+}
+
+.product-detail .product-world-readout {
+  position: absolute;
+  z-index: var(--z-content);
+  inset-inline: var(--space-gutter);
+  inset-block-end: var(--space-4);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  color: color-mix(in srgb, var(--color-text-primary) 65%, transparent);
+  font-family: var(--font-data);
+  font-size: var(--font-size-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.product-detail .product-information {
+  position: relative;
+  display: grid;
+  gap: var(--space-8);
+  overflow: clip;
+  padding: var(--space-section) var(--space-gutter);
+}
+
+.product-detail :is(.facts, .truth) {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  align-content: start;
+  gap: var(--space-5);
+  min-inline-size: 0;
+}
+
+.product-detail .facts h2 {
+  max-inline-size: 16ch;
+}
+
+.product-detail dl {
+  margin: 0;
+}
+
+.product-detail dl div {
+  display: grid;
+  grid-template-columns: minmax(7rem, 1fr) minmax(0, 2fr);
+  padding-block: var(--space-4);
+  border-block-start: var(--size-rule-hairline) solid var(--color-border-strong);
+}
+
+.product-detail dt {
+  font-weight: 700;
+}
+
+.product-detail dd {
+  min-inline-size: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.product-detail .adjacent-products {
+  position: relative;
+  display: grid;
+  overflow: clip;
+  border-block-start: var(--size-rule-hairline) solid var(--color-border-subtle);
+}
+
+.product-detail .adjacent-product {
+  position: relative;
+  display: grid;
+  min-block-size: 25rem;
+  grid-template-columns: minmax(0, 1fr) minmax(7rem, 0.65fr);
+  align-items: center;
+  overflow: clip;
+  padding: var(--space-6) var(--space-gutter);
+  border-block-end: var(--size-rule-hairline) solid var(--flavor-border);
+  background: var(--flavor-surface);
+}
+
+.product-detail .adjacent-product > div {
+  position: relative;
+  z-index: var(--z-content);
+  display: grid;
+  gap: var(--space-4);
+  min-inline-size: 0;
+}
+
+.product-detail .adjacent-product h2 {
+  overflow-wrap: anywhere;
+}
+
+.product-detail .adjacent-product .control {
+  justify-self: start;
+}
+
+.product-detail .adjacent-product img {
+  justify-self: center;
+  inline-size: auto;
+  max-inline-size: 100%;
+  block-size: auto;
+  max-block-size: min(42svh, 22rem);
+  object-fit: contain;
+}
+
+@media (min-width: 64rem) {
+  .product-detail .product-hero {
+    block-size: max(var(--detail-hero-min), 48rem);
+    min-block-size: 0;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: repeat(12, minmax(0, 1fr));
+  }
+
+  .product-detail .product-heading,
+  .product-detail .can-stage {
+    min-block-size: 0;
+  }
+
+  .product-detail .can-stage img {
+    block-size: min(74svh, 48rem);
+  }
+
+  .product-detail .product-information {
+    min-block-size: 54rem;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: start;
+    max-inline-size: var(--detail-panel-max);
+    margin-inline: auto;
+  }
+
+  .product-detail .adjacent-products {
+    min-block-size: 42rem;
+    grid-template-columns: minmax(16rem, 0.72fr) minmax(0, 1.6fr);
+  }
+
+  .product-detail .adjacent-product {
+    min-block-size: 42rem;
+  }
+}
+
+@media (forced-colors: active) {
+  .product-detail .product-world-field,
+  .product-detail .product-world-readout {
+    display: none;
+  }
+}

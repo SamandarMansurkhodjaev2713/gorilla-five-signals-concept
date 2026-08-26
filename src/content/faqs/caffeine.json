@@ -1,0 +1,15 @@
+{
+  "answer": {
+    "en": "The exact value depends on the product and current packaging. A verified value appears on the product page; the purchased can label takes priority.",
+    "ru": "Точное значение зависит от продукта и актуальной упаковки. Подтверждённое значение указано на странице продукта; приоритет имеет этикетка приобретённой банки.",
+    "uz": "Aniq qiymat mahsulot va joriy qadoqqa bog‘liq. Tasdiqlangan qiymat mahsulot sahifasida ko‘rsatiladi; xarid qilingan bankadagi yorliq ustuvor hisoblanadi."
+  },
+  "faqId": "caffeine",
+  "question": {
+    "en": "How much caffeine does it contain?",
+    "ru": "Сколько кофеина в продукте?",
+    "uz": "Kofein miqdori qancha?"
+  },
+  "sourceIds": ["gorilla-products-uz-2026"],
+  "status": "approved"
+}

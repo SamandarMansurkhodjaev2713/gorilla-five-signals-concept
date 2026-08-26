@@ -1,0 +1,221 @@
+@media (hover: hover) and (pointer: fine) {
+  .archive-wall a:hover i {
+    transform: scaleX(1);
+  }
+
+  .archive-wall a:hover .archive-wall__can img {
+    filter: saturate(1)
+      drop-shadow(0 var(--space-5) var(--space-5) var(--color-scrim));
+    opacity: 1;
+  }
+}
+
+@media (min-width: 64rem) {
+  .archive-index {
+    display: grid;
+    align-items: start;
+    grid-template-columns: minmax(25rem, 5fr) minmax(0, 7fr);
+  }
+
+  .archive-scan {
+    align-self: stretch;
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .archive-chapters {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .archive-chapter {
+    grid-template-columns: minmax(15rem, 5fr) minmax(0, 7fr);
+  }
+
+  .archive-chapter__mobile-product {
+    display: grid;
+    min-block-size: max(46rem, calc(100svh - var(--size-header)));
+    border-inline-end: var(--size-rule-strong) solid var(--flavor-border);
+  }
+
+  .archive-chapter__mobile-product img {
+    block-size: min(62svh, 34rem);
+  }
+
+  .archive-chapter__copy {
+    min-inline-size: 0;
+  }
+}
+
+@media (max-width: 63.99rem) {
+  .archive-scan {
+    border-block-end: var(--size-rule-strong) solid var(--color-border-subtle);
+    border-inline-end: 0;
+  }
+
+  .archive-scan__sticky {
+    position: relative;
+    inset-block-start: auto;
+    block-size: auto;
+    min-block-size: 0;
+    grid-template-rows: auto minmax(24rem, 52svh) auto;
+  }
+
+  .archive-wall__can img {
+    max-block-size: 76%;
+  }
+
+  .archive-wall strong {
+    font-size: clamp(0.85rem, 2vw, 1.25rem);
+  }
+
+  .archive-chapter {
+    grid-template-columns: minmax(17rem, 5fr) minmax(0, 7fr);
+  }
+
+  .archive-chapter__mobile-product {
+    display: grid;
+    border-block-end: 0;
+    border-inline-end: var(--size-rule-strong) solid var(--flavor-border);
+  }
+
+  .archive-chapter__copy h2 {
+    font-size: clamp(4rem, 10vw, 7rem);
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .archive-hero {
+    min-block-size: max(42rem, var(--archive-hero-min));
+    padding-block-start: var(--space-5);
+  }
+
+  .archive-hero__meta {
+    align-items: flex-start;
+  }
+
+  .archive-hero__meta .type-data {
+    max-inline-size: 12ch;
+    text-align: end;
+  }
+
+  .archive-hero__mark {
+    font-size: clamp(3.75rem, 19vw, 6.75rem);
+  }
+
+  .archive-hero h1 {
+    gap: var(--space-2);
+    font-size: clamp(4.25rem, 21vw, 7rem);
+  }
+
+  .archive-hero h1 span:last-child {
+    max-inline-size: 8.2ch;
+  }
+
+  .archive-hero__brief {
+    padding: var(--space-4);
+  }
+
+  .archive-scan__sticky {
+    grid-template-rows: auto minmax(17rem, 44svh) auto;
+  }
+
+  .archive-scan__header {
+    display: grid;
+  }
+
+  .archive-scan__status {
+    max-inline-size: none;
+    text-align: start;
+  }
+
+  .archive-wall a {
+    gap: var(--space-1);
+    padding: var(--space-2) var(--space-1);
+  }
+
+  .archive-wall__number {
+    font-size: 0.6875rem;
+  }
+
+  .archive-wall__can img {
+    inline-size: min(100%, 4.8rem);
+    max-block-size: 78%;
+  }
+
+  .archive-wall strong {
+    font-size: clamp(0.66rem, 2.7vw, 0.82rem);
+  }
+
+  .archive-scan__readout {
+    align-items: flex-end;
+    font-size: 0.6875rem;
+  }
+
+  .archive-scan__readout span {
+    max-inline-size: 18ch;
+  }
+
+  .archive-chapter {
+    min-block-size: auto;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .archive-chapter__mobile-product {
+    min-block-size: min(33rem, 64svh);
+    border-block-end: var(--size-rule-strong) solid var(--flavor-border);
+    border-inline-end: 0;
+  }
+
+  .archive-chapter__mobile-product img {
+    block-size: min(51svh, 27rem);
+  }
+
+  .archive-chapter__copy {
+    gap: var(--space-4);
+    padding: var(--space-7) var(--space-gutter) var(--space-8);
+  }
+
+  .archive-chapter__copy h2 {
+    font-size: clamp(4rem, 17vw, 6.4rem);
+  }
+
+  .archive-chapter__actions .control {
+    inline-size: 100%;
+  }
+
+  .archive-decision {
+    min-block-size: 29rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .archive-scan__sticky,
+  .archive-wall::after,
+  .archive-wall a,
+  .archive-wall i,
+  .archive-wall__can img {
+    transition-duration: 0ms;
+  }
+
+  .archive-chapter__copy {
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .archive-hero,
+  .archive-scan__sticky,
+  .archive-chapter,
+  .archive-decision {
+    border: var(--size-rule-strong) solid CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .archive-wall a[aria-current] {
+    border: var(--size-rule-strong) solid Highlight;
+    color: HighlightText;
+    background: Highlight;
+  }
+}

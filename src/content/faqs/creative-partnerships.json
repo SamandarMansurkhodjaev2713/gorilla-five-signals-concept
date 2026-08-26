@@ -1,0 +1,15 @@
+{
+  "answer": {
+    "en": "The official FAQ lists music, street culture, and esports. Check the current route on the Contact page before submitting.",
+    "ru": "Официальный FAQ называет музыку, уличную культуру и киберспорт. Перед отправкой проверьте актуальный маршрут на странице «Контакты».",
+    "uz": "Rasmiy FAQ musiqa, ko‘cha madaniyati va kibersport yo‘nalishlarini sanaydi. Taklif yuborishdan oldin «Bog‘lanish» sahifasidagi joriy yo‘nalishni tekshiring."
+  },
+  "faqId": "creative-partnerships",
+  "question": {
+    "en": "Which creative fields are considered?",
+    "ru": "Какие творческие направления рассматриваются?",
+    "uz": "Qaysi ijodiy yo‘nalishlarda takliflar ko‘rib chiqiladi?"
+  },
+  "sourceIds": ["gorilla-faq-uz-2026"],
+  "status": "approved"
+}

@@ -1,0 +1,19 @@
+---
+import { localePath } from "@/features/site/localization";
+
+const defaultLocalePath = localePath("uz");
+---
+
+<!doctype html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="refresh" content={`0; url=${defaultLocalePath}`} />
+    <meta name="robots" content="noindex, follow" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gorilla Five Signals</title>
+  </head>
+  <body>
+    <p><a href={defaultLocalePath}>Gorilla Five Signals saytiga o‘tish</a></p>
+  </body>
+</html>

@@ -1,0 +1,183 @@
+---
+import { getCollection } from "astro:content";
+
+import { SUPPORTED_LOCALES, type SupportedLocale } from "@/config/site";
+import { getApprovedProducts } from "@/features/site/catalog";
+import { getSiteCopy } from "@/features/site/copy";
+import {
+  localePath,
+  localize,
+  replaceLocale,
+} from "@/features/site/localization";
+
+import {
+  getMotionChromeCopy,
+  MOTION_PREFERENCES,
+} from "./SiteHeaderMotionCopy";
+import "./SiteFooter.css";
+
+interface Props {
+  locale: SupportedLocale;
+  pathname: string;
+}
+
+const { locale, pathname } = Astro.props;
+const copy = getSiteCopy(locale);
+const motionCopy = getMotionChromeCopy(locale);
+const footerLabels = {
+  en: {
+    directory: "Directory",
+    frequencies: "Five frequencies",
+    notes: "Legal and concept notes",
+    utility: "Settings and legal",
+  },
+  ru: {
+    directory: "Навигация",
+    frequencies: "Пять частот",
+    notes: "Правовая информация",
+    utility: "Настройки и документы",
+  },
+  uz: {
+    directory: "Navigatsiya",
+    frequencies: "Besh chastota",
+    notes: "Huquqiy ma’lumot",
+    utility: "Sozlamalar va hujjatlar",
+  },
+}[locale];
+const legal = (
+  await getCollection(
+    "legal",
+    ({ data }) => data.documentId === "responsible-use",
+  )
+)[0];
+const products = await getApprovedProducts(locale);
+const instagramUrl = "https://www.instagram.com/gorillaenergy.uz";
+const navigation = [
+  { href: "/products", label: copy.navigation.products },
+  { href: "/compare", label: copy.navigation.compare },
+  { href: "/find", label: copy.navigation.find },
+  { href: "/culture", label: copy.navigation.culture },
+  { href: "/faq", label: copy.navigation.faq },
+  { href: "/contact", label: copy.navigation.contact },
+] as const;
+
+if (legal === undefined) {
+  throw new Error("Responsible-use legal record is missing.");
+}
+---
+
+<footer class="site-footer" data-motion-scene="footer">
+  <div class="signal-rails" aria-hidden="true" data-motion-signal>
+    <span data-flavor="original" data-motion-signal></span>
+    <span data-flavor="zero" data-motion-signal></span>
+    <span data-flavor="extra" data-motion-signal></span>
+    <span data-flavor="mango-coconut" data-motion-signal></span>
+    <span data-flavor="lychee-pear" data-motion-signal></span>
+  </div>
+
+  <div class="footer-lead">
+    <p class="type-title">{copy.footerLine}</p>
+    <p aria-hidden="true">TASHKENT / UZ<br />41.2995° N</p>
+  </div>
+
+  <div class="footer-grid">
+    <section class="footer-directory" aria-labelledby="footer-directory-title">
+      <h2 id="footer-directory-title">01 / {footerLabels.directory}</h2>
+      <nav aria-label={footerLabels.directory}>
+        {
+          navigation.map((item) => (
+            <a href={localePath(locale, item.href)}>{item.label}</a>
+          ))
+        }
+      </nav>
+      <details class="footer-products">
+        <summary>{footerLabels.frequencies}</summary>
+        <nav aria-label={footerLabels.frequencies}>
+          {
+            products.map((product) => (
+              <a href={localePath(locale, `/products/${product.slug}`)}>
+                {product.name}
+              </a>
+            ))
+          }
+        </nav>
+      </details>
+    </section>
+
+    <section class="footer-utility" aria-labelledby="footer-utility-title">
+      <h2 id="footer-utility-title">02 / {footerLabels.utility}</h2>
+      <div class="legal-links">
+        <a href={localePath(locale, "/legal/product-information")}>
+          {copy.productInfo}
+        </a>
+        <a href={localePath(locale, "/legal/privacy")}>{copy.legal}</a>
+        <a href={instagramUrl} target="_blank" rel="noopener noreferrer">
+          Instagram ↗
+        </a>
+      </div>
+
+      <details class="motion-console">
+        <summary>
+          <span>{motionCopy.title}</span>
+          <strong
+            data-motion-current
+            data-motion-label-system={motionCopy.preferenceLabels.system}
+            data-motion-label-full={motionCopy.preferenceLabels.full}
+            data-motion-label-lite={motionCopy.preferenceLabels.lite}
+            data-motion-label-reduced={motionCopy.preferenceLabels.reduced}
+          >
+            {motionCopy.preferenceLabels.system}
+          </strong>
+        </summary>
+        <div class="motion-console__panel">
+          <p>{motionCopy.menuDescription}</p>
+          <div>
+            {
+              MOTION_PREFERENCES.map((preference) => (
+                <button
+                  type="button"
+                  aria-pressed={preference === "system" ? "true" : "false"}
+                  data-motion-preference={preference}
+                >
+                  {motionCopy.preferenceLabels[preference]}
+                </button>
+              ))
+            }
+          </div>
+        </div>
+      </details>
+
+      <div class="footer-locales" aria-label={copy.language}>
+        {
+          SUPPORTED_LOCALES.map((supportedLocale) => (
+            <a
+              href={replaceLocale(pathname, supportedLocale)}
+              lang={supportedLocale}
+              hreflang={supportedLocale}
+              aria-current={supportedLocale === locale ? "page" : undefined}
+            >
+              {supportedLocale.toUpperCase()}
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <div class="footer-notes footer-notes--wide">
+      <p class="type-legal">{localize(legal.data.body, locale)}</p>
+      <p>{copy.conceptNote}</p>
+    </div>
+    <details class="footer-notes-disclosure">
+      <summary>{footerLabels.notes}</summary>
+      <div class="footer-notes">
+        <p class="type-legal">{localize(legal.data.body, locale)}</p>
+        <p>{copy.conceptNote}</p>
+      </div>
+    </details>
+  </div>
+
+  <p class="footer-signoff">
+    <span>GORILLA / FIVE FREQUENCIES</span>
+    <span>PORTFOLIO CONCEPT / 2026</span>
+  </p>
+</footer>

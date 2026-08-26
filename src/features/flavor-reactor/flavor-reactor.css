@@ -1,0 +1,328 @@
+.flavor-reactor {
+  --reactor-signal: var(--color-marker-original);
+  --reactor-surface: color-mix(
+    in srgb,
+    var(--reactor-signal) 11%,
+    var(--color-ink-950)
+  );
+  --reactor-border: color-mix(
+    in srgb,
+    var(--reactor-signal) 46%,
+    var(--color-border-subtle)
+  );
+  --reactor-control-size: 3rem;
+  --reactor-drag-x: 0px;
+  --reactor-stage-min: 43rem;
+
+  position: relative;
+  min-block-size: 100svh;
+  color: var(--color-text-primary);
+  background: var(--reactor-surface);
+  isolation: isolate;
+  overflow: clip;
+  transition: background var(--motion-duration-scene)
+    var(--motion-ease-material);
+}
+
+.flavor-reactor::before {
+  position: absolute;
+  z-index: var(--z-content);
+  inset: 0 auto auto 50%;
+  inline-size: var(--size-rule-strong);
+  block-size: var(--space-8);
+  background: var(--reactor-signal);
+  content: "";
+  transform: translateX(-50%);
+  transition: background var(--motion-duration-standard)
+    var(--motion-ease-enter);
+}
+
+.flavor-reactor[data-selected-product="zero"] {
+  --reactor-signal: var(--color-marker-zero);
+}
+
+.flavor-reactor[data-selected-product="extra"] {
+  --reactor-signal: var(--color-marker-extra);
+}
+
+.flavor-reactor[data-selected-product="mango-coconut"] {
+  --reactor-signal: var(--color-marker-tropical);
+}
+
+.flavor-reactor[data-selected-product="lychee-pear"] {
+  --reactor-signal: var(--color-marker-lychee);
+}
+
+.reactor-shell {
+  position: relative;
+  display: grid;
+  min-block-size: 100svh;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  padding: var(--space-5) var(--space-gutter);
+}
+
+.reactor-intro {
+  position: relative;
+  z-index: var(--z-content);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--space-2) var(--space-4);
+  border-block-start: var(--size-rule-hairline) solid var(--reactor-border);
+  padding-block-start: var(--space-3);
+}
+
+.reactor-intro .type-label {
+  color: color-mix(in srgb, var(--reactor-signal) 76%, white);
+}
+
+.reactor-intro h2 {
+  grid-column: 1 / -1;
+  max-inline-size: 12ch;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 1.4rem + 10vw, 7.5rem);
+  font-weight: 700;
+  letter-spacing: var(--tracking-display);
+  line-height: 0.82;
+  overflow-wrap: normal;
+  text-transform: uppercase;
+}
+
+.reactor-intro__code {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-family: var(--font-data);
+  font-size: var(--font-size-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.reactor-console {
+  position: relative;
+  z-index: var(--z-content);
+  display: grid;
+  gap: var(--space-3);
+  padding-block: var(--space-4);
+}
+
+.selector-list {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border: var(--size-rule-hairline) solid var(--reactor-border);
+}
+
+.signal-selector {
+  position: relative;
+  display: grid;
+  min-inline-size: 0;
+  min-block-size: var(--reactor-control-size);
+  align-content: center;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  border: 0;
+  border-inline-end: var(--size-rule-hairline) solid var(--reactor-border);
+  color: var(--color-text-secondary);
+  background: color-mix(in srgb, var(--color-ink-950) 72%, transparent);
+  font-family: var(--font-data);
+  text-align: start;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    color var(--motion-duration-quick) var(--motion-ease-enter),
+    background var(--motion-duration-standard) var(--motion-ease-enter);
+}
+
+.signal-selector:last-child {
+  border-inline-end: 0;
+}
+
+.signal-selector__index {
+  color: color-mix(in srgb, var(--flavor-signal) 78%, white);
+  font-size: var(--font-size-caption);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.signal-selector__name {
+  overflow: hidden;
+  font-size: var(--font-size-label);
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.signal-selector__meter {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: var(--size-rule-strong);
+  background: var(--flavor-signal);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--motion-duration-standard) var(--motion-ease-enter);
+}
+
+.signal-selector:is(:hover, :focus-visible),
+.signal-selector[aria-pressed="true"] {
+  color: var(--color-text-primary);
+  background: color-mix(
+    in srgb,
+    var(--flavor-signal) 18%,
+    var(--color-ink-950)
+  );
+}
+
+.signal-selector[aria-pressed="true"] .signal-selector__meter {
+  transform: scaleX(1);
+}
+
+.step-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.reactor-step {
+  display: inline-flex;
+  min-block-size: var(--reactor-control-size);
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: var(--size-rule-hairline) solid var(--reactor-border);
+  color: var(--color-text-primary);
+  background: transparent;
+  font-family: var(--font-data);
+  font-size: var(--font-size-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.reactor-step--next {
+  justify-content: flex-end;
+}
+
+.reactor-step svg {
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  fill: none;
+  stroke: currentcolor;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  stroke-width: 1.5;
+}
+
+.reactor-step:is(:hover, :focus-visible) {
+  border-color: var(--reactor-signal);
+  color: var(--reactor-signal);
+}
+
+.reactor-progress {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  font-family: var(--font-data);
+  font-size: var(--font-size-label);
+  font-variant-numeric: tabular-nums;
+}
+
+.reactor-progress [data-reactor-current] {
+  color: var(--reactor-signal);
+  font-size: var(--font-size-body-lg);
+  font-weight: 700;
+}
+
+.reactor-stage {
+  position: relative;
+  z-index: var(--z-base);
+  min-block-size: var(--reactor-stage-min);
+  outline: none;
+  transform: translate3d(var(--reactor-drag-x), 0, 0);
+  touch-action: pan-y;
+}
+
+.reactor-stage:focus-visible {
+  outline: var(--size-rule-strong) solid var(--color-focus-on-dark);
+  outline-offset: var(--space-1);
+}
+
+.reactor-worlds,
+.reactor-world {
+  min-block-size: 100%;
+}
+
+.reactor-worlds {
+  position: relative;
+  display: grid;
+}
+
+.reactor-world {
+  position: relative;
+  display: grid;
+  grid-template-rows: minmax(20rem, 1fr) auto;
+  overflow: clip;
+}
+
+.flavor-reactor[data-enhanced="true"] .reactor-world {
+  grid-area: 1 / 1;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.flavor-reactor[data-enhanced="true"] .reactor-world[data-motion-selected] {
+  z-index: var(--z-content);
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.flavor-reactor[data-enhanced="true"] .reactor-world[data-reactor-leaving] {
+  z-index: calc(var(--z-content) - 1);
+  visibility: visible;
+  opacity: 1;
+  pointer-events: none;
+}
+
+.reactor-native-hint {
+  margin: 0;
+  padding: var(--space-3) var(--space-gutter) var(--space-6);
+  color: var(--reactor-signal);
+}
+
+.comparison-tray {
+  position: absolute;
+  z-index: var(--z-sticky);
+  inset-inline: var(--space-gutter);
+  inset-block-end: var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: var(--size-rule-hairline) solid var(--reactor-border);
+  background: color-mix(in srgb, var(--color-ink-950) 94%, transparent);
+  box-shadow: 0 1rem 3rem rgb(0 0 0 / 45%);
+}
+
+.comparison-tray[hidden] {
+  display: none;
+}
+
+.comparison-tray p {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+}
+
+.comparison-tray strong {
+  color: var(--reactor-signal);
+  font-family: var(--font-display);
+  font-size: var(--font-size-title-sm);
+  line-height: var(--line-height-solid);
+  text-transform: uppercase;
+}

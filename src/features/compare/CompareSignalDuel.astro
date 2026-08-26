@@ -1,0 +1,364 @@
+---
+import type { SupportedLocale } from "@/config/site";
+import type { ProductView } from "@/features/site/catalog";
+import type { SiteCopy } from "@/features/site/copy";
+import { localePath } from "@/features/site/localization";
+
+import "./compare-signal-duel.css";
+
+interface Props {
+  copy: SiteCopy;
+  locale: SupportedLocale;
+  products: readonly ProductView[];
+}
+
+const { copy, locale, products } = Astro.props;
+const compareUi = {
+  en: {
+    actions: "Comparison controls",
+    allProducts: "All five products",
+    channel: "Signal channel",
+    clear: "Clear selection",
+    cleared: "The comparison selection was cleared.",
+    composition: "Composition",
+    copy: "Copy comparison link",
+    copied: "The comparison link was copied.",
+    copyFailed: "The comparison link could not be copied.",
+    empty: "Choose at least one product to open a signal channel.",
+    eyebrow: "01—05 / Signal comparison",
+    findSelected: "Find selected product",
+    none: "Not selected",
+    overview: "Editorial overview",
+    pending: "Awaiting verified packaging data",
+    selectorLegend: "Choose products to compare",
+    signal: "Flavor signal",
+    slots: ["Channel one", "Channel two", "Channel three"],
+    source: "Source record",
+    sugar: "Sugar status",
+    titleTop: "Five signals.",
+    titleBottom: "No guesswork.",
+    versus: "Versus",
+    updated: "The comparison selection was updated.",
+  },
+  ru: {
+    actions: "Управление сравнением",
+    allProducts: "Все пять продуктов",
+    channel: "Канал сигнала",
+    clear: "Очистить выбор",
+    cleared: "Выбор для сравнения очищен.",
+    composition: "Состав",
+    copy: "Скопировать ссылку",
+    copied: "Ссылка на сравнение скопирована.",
+    copyFailed: "Не удалось скопировать ссылку на сравнение.",
+    empty: "Выберите хотя бы один продукт, чтобы открыть канал сигнала.",
+    eyebrow: "01—05 / Сравнение сигналов",
+    findSelected: "Найти выбранный продукт",
+    none: "Не выбран",
+    overview: "Редакционное описание",
+    pending: "Ожидаются проверенные данные с упаковки",
+    selectorLegend: "Выберите продукты для сравнения",
+    signal: "Вкусовой сигнал",
+    slots: ["Первый канал", "Второй канал", "Третий канал"],
+    source: "Запись источника",
+    sugar: "Статус сахара",
+    titleTop: "Пять сигналов.",
+    titleBottom: "Никаких догадок.",
+    versus: "Против",
+    updated: "Выбор для сравнения обновлён.",
+  },
+  uz: {
+    actions: "Taqqoslash boshqaruvi",
+    allProducts: "Barcha beshta mahsulot",
+    channel: "Signal kanali",
+    clear: "Tanlovni tozalash",
+    cleared: "Taqqoslash tanlovi tozalandi.",
+    composition: "Tarkibi",
+    copy: "Taqqoslash havolasini nusxalash",
+    copied: "Taqqoslash havolasi nusxalandi.",
+    copyFailed: "Taqqoslash havolasini nusxalab bo‘lmadi.",
+    empty: "Signal kanalini ochish uchun kamida bitta mahsulotni tanlang.",
+    eyebrow: "01—05 / Signallar taqqoslanishi",
+    findSelected: "Tanlangan mahsulotni izlash",
+    none: "Tanlanmagan",
+    overview: "Editorial tavsif",
+    pending: "Qadoqdan tasdiqlangan ma’lumot kutilmoqda",
+    selectorLegend: "Taqqoslash uchun mahsulotlarni tanlang",
+    signal: "Ta’m signali",
+    slots: ["Birinchi kanal", "Ikkinchi kanal", "Uchinchi kanal"],
+    source: "Manba yozuvi",
+    sugar: "Shakar holati",
+    titleTop: "Beshta signal.",
+    titleBottom: "Taxminsiz.",
+    versus: "Qarshi",
+    updated: "Taqqoslash tanlovi yangilandi.",
+  },
+} as const;
+const ui = compareUi[locale];
+---
+
+<header class="duel-lead" data-page-lead>
+  <div class="duel-lead__meta">
+    <p class="type-label">{ui.eyebrow}</p>
+    <p class="duel-lead__counter type-data" aria-hidden="true">05:01</p>
+  </div>
+  <h1>
+    <span>{ui.titleTop}</span>
+    <span>{ui.titleBottom}</span>
+  </h1>
+  <div class="duel-lead__footer">
+    <p class="type-body-lg">{copy.compareIntro}</p>
+    <div class="duel-lead__trace" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+</header>
+
+<section
+  class="signal-duel"
+  data-motion-scene="product-compare"
+  data-compare-root
+  data-updated-label={ui.updated}
+  data-cleared-label={ui.cleared}
+  data-copied-label={ui.copied}
+  data-copy-failed-label={ui.copyFailed}
+>
+  <div class="compare-enhanced" data-compare-enhanced hidden>
+    <fieldset class="selector-panel">
+      <div class="selector-panel__heading">
+        <legend class="type-title-sm">{ui.selectorLegend}</legend>
+        <p>{copy.compareIntro}</p>
+      </div>
+      <div class="slot-grid">
+        {
+          ui.slots.map((label, index) => (
+            <label data-compare-slot-wrapper>
+              <span class="slot-grid__label">
+                <span class="type-data">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                {label}
+              </span>
+              <select
+                class="field"
+                data-compare-slot
+                data-motion-select
+                aria-controls="compare-selected-products"
+              >
+                <option value="">{ui.none}</option>
+                {products.map((product) => (
+                  <option value={product.slug}>{product.name}</option>
+                ))}
+              </select>
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+
+    <div
+      class="selected-products"
+      id="compare-selected-products"
+      role="region"
+      aria-label={copy.navigation.compare}
+    >
+      <p class="selected-products__versus" aria-hidden="true">
+        {ui.versus}
+      </p>
+      {
+        products.map((product, index) => (
+          <article
+            class="signal-channel"
+            data-compare-product
+            data-product-slug={product.slug}
+            data-flavor={product.slug}
+            hidden
+          >
+            <div class="signal-channel__topline">
+              <span class="type-data">
+                CH/{String(index + 1).padStart(2, "0")}
+              </span>
+              <span class="type-label">{ui.channel}</span>
+            </div>
+
+            <div class="signal-channel__visual" data-motion-product>
+              <div class="signal-channel__rings" aria-hidden="true">
+                <>
+                  <span />
+                  <span />
+                  <span />
+                </>
+              </div>
+              <p class="signal-channel__ghost" aria-hidden="true">
+                {product.name}
+              </p>
+              <img
+                src={product.imagePath}
+                srcset={product.imageSrcSet}
+                sizes="(min-width: 80rem) 17rem, (min-width: 48rem) 14rem, 11rem"
+                width={product.width}
+                height={product.height}
+                alt={product.alt}
+                loading="lazy"
+                decoding="async"
+              />
+              <div class="signal-channel__meter" aria-hidden="true">
+                <>
+                  <span>00</span>
+                  <i />
+                  <i />
+                  <i />
+                  <i />
+                  <span>05</span>
+                </>
+              </div>
+            </div>
+
+            <div class="signal-channel__copy">
+              <p class="type-label">{ui.signal}</p>
+              <h2>{product.name}</h2>
+              <p class="signal-channel__notes">
+                {product.flavorNotes.join(" · ")}
+              </p>
+              <p class="signal-channel__description">{product.description}</p>
+              <dl class="signal-channel__facts">
+                <div>
+                  <dt>{ui.sugar}</dt>
+                  <dd>{copy.verifiedPending}</dd>
+                </div>
+                <div>
+                  <dt>{ui.composition}</dt>
+                  <dd>{copy.verifiedPending}</dd>
+                </div>
+                <div>
+                  <dt>{ui.source}</dt>
+                  <dd class="type-data">{product.sourceId}</dd>
+                </div>
+              </dl>
+              <a
+                class="text-link"
+                href={localePath(locale, `/products/${product.slug}`)}
+              >
+                {copy.openDetails}
+              </a>
+            </div>
+          </article>
+        ))
+      }
+      <p class="empty-state" data-compare-empty>{ui.empty}</p>
+    </div>
+
+    <div class="compare-actions" role="group" aria-label={ui.actions}>
+      <button class="control" type="button" data-compare-clear
+        >{ui.clear}</button
+      >
+      <button class="control" type="button" data-compare-copy>{ui.copy}</button>
+      <a
+        class="control control--primary"
+        href={localePath(locale, "/find")}
+        data-compare-find
+        data-find-base={localePath(locale, "/find")}
+        data-find-default-label={copy.navigation.find}
+        data-find-selected-label={ui.findSelected}
+      >
+        {copy.navigation.find}
+      </a>
+    </div>
+    <p class="compare-status type-legal" role="status" data-compare-status></p>
+  </div>
+
+  <div
+    class="comparison-table"
+    role="region"
+    aria-labelledby="comparison-caption"
+    tabindex="0"
+    data-compare-fallback
+  >
+    <table data-compare-matrix>
+      <caption id="comparison-caption">
+        <strong>{ui.allProducts}</strong>
+        <span>{copy.compareIntro}</span>
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">{copy.productInfo}</th>
+          {
+            products.map((product) => (
+              <th
+                scope="col"
+                data-flavor={product.slug}
+                data-product-slug={product.slug}
+              >
+                <span aria-hidden="true" />
+                {product.name}
+              </th>
+            ))
+          }
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">{ui.signal}</th>
+          {
+            products.map((product) => (
+              <td data-product-slug={product.slug}>
+                {product.flavorNotes.join(" · ")}
+              </td>
+            ))
+          }
+        </tr>
+        <tr>
+          <th scope="row">{ui.overview}</th>
+          {
+            products.map((product) => (
+              <td data-product-slug={product.slug}>{product.description}</td>
+            ))
+          }
+        </tr>
+        <tr>
+          <th scope="row">{ui.sugar}</th>
+          {
+            products.map((product) => (
+              <td data-product-slug={product.slug}>{copy.verifiedPending}</td>
+            ))
+          }
+        </tr>
+        <tr>
+          <th scope="row">{ui.composition}</th>
+          {
+            products.map((product) => (
+              <td data-product-slug={product.slug}>{copy.verifiedPending}</td>
+            ))
+          }
+        </tr>
+        <tr>
+          <th scope="row">{ui.source}</th>
+          {
+            products.map((product) => (
+              <td class="type-data" data-product-slug={product.slug}>
+                {product.sourceId}
+              </td>
+            ))
+          }
+        </tr>
+        <tr>
+          <th scope="row">{copy.openDetails}</th>
+          {
+            products.map((product) => (
+              <td data-product-slug={product.slug}>
+                <a href={localePath(locale, `/products/${product.slug}`)}>
+                  {product.name}
+                </a>
+              </td>
+            ))
+          }
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <aside class="verification-note">
+    <span class="verification-note__mark" aria-hidden="true"></span>
+    <p class="type-label">{ui.pending}</p>
+    <p>{copy.compareIntro}</p>
+  </aside>
+</section>

@@ -1,0 +1,218 @@
+.home-service-dock {
+  position: relative;
+  display: grid;
+  color: var(--color-text-primary);
+  background: var(--color-ink-950);
+}
+
+.home-service-dock::before {
+  position: absolute;
+  z-index: 6;
+  inset: 0 auto auto 50%;
+  inline-size: var(--size-rule-strong);
+  block-size: var(--space-7);
+  background: var(--color-brand-lime);
+  content: "";
+}
+
+.home-service-dock__index {
+  display: grid;
+  align-content: center;
+  gap: var(--space-6);
+  padding: var(--space-8) var(--space-gutter);
+}
+
+.home-service-dock__index header {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+}
+
+.home-service-dock__index h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(3.3rem, 7vw, 5.8rem);
+  font-weight: 700;
+  letter-spacing: -0.055em;
+  line-height: 0.84;
+  text-transform: uppercase;
+}
+
+.home-service-dock__questions {
+  display: grid;
+  align-content: start;
+}
+
+.home-service-dock__questions details {
+  border-block-start: var(--size-rule-hairline) solid rgb(244 244 237 / 28%);
+}
+
+.home-service-dock__questions summary {
+  display: grid;
+  min-block-size: 4.75rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding-block: var(--space-3);
+  cursor: pointer;
+  list-style: none;
+}
+
+.home-service-dock__questions summary::-webkit-details-marker {
+  display: none;
+}
+
+.home-service-dock__questions summary::after {
+  font-family: var(--font-data);
+  font-size: 1.5rem;
+  content: "+";
+  transition: transform var(--motion-duration-quick) var(--motion-ease-enter);
+}
+
+.home-service-dock__questions details[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.home-service-dock__questions summary span {
+  padding: 0.16em 0.35em;
+  color: var(--color-ink-950);
+  background: var(--color-brand-lime);
+  font-family: var(--font-data);
+  font-size: var(--font-size-label);
+}
+
+.home-service-dock__questions summary b {
+  font-family: var(--font-text);
+  font-size: clamp(1rem, 2.2vw, 1.35rem);
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+.home-service-dock__questions details p {
+  max-inline-size: var(--measure-body);
+  padding: 0 0 var(--space-4) calc(var(--space-7) + var(--space-2));
+  color: var(--color-text-secondary);
+}
+
+.home-service-dock__questions .control {
+  justify-self: start;
+  margin-block-start: var(--space-5);
+}
+
+.home-service-dock__contact {
+  position: relative;
+  display: grid;
+  min-block-size: min(42rem, 80svh);
+  overflow: clip;
+  align-content: center;
+  gap: var(--space-4);
+  padding: var(--space-7) var(--space-gutter);
+  color: var(--color-ink-950);
+  background: var(--color-brand-lime);
+  isolation: isolate;
+  text-decoration: none;
+}
+
+.home-service-dock__contact-plane {
+  position: absolute;
+  z-index: -1;
+  inset: 8%;
+  border: var(--size-rule-strong) solid var(--color-ink-950);
+  clip-path: polygon(2% 13%, 92% 2%, 98% 78%, 16% 98%);
+  transition: clip-path var(--motion-duration-standard)
+    var(--motion-ease-material);
+}
+
+.home-service-dock__contact-word {
+  position: absolute;
+  z-index: -1;
+  inset: 6% auto auto -0.04em;
+  color: transparent;
+  font-family: var(--font-display);
+  font-size: clamp(8rem, 20vw, 20rem);
+  font-weight: 700;
+  letter-spacing: -0.07em;
+  line-height: 0.78;
+  text-transform: uppercase;
+  -webkit-text-stroke: 1px rgb(5 6 5 / 24%);
+  white-space: nowrap;
+}
+
+.home-service-dock__contact > strong {
+  max-inline-size: 10ch;
+  font-family: var(--font-display);
+  font-size: clamp(3.8rem, 8vw, 8rem);
+  letter-spacing: -0.055em;
+  line-height: 0.82;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.home-service-dock__contact > small {
+  max-inline-size: 38ch;
+  font-size: var(--font-size-body-lg);
+}
+
+.home-service-dock__contact > b {
+  position: absolute;
+  inset: auto var(--space-5) var(--space-5) auto;
+  font-family: var(--font-data);
+  font-size: 3rem;
+}
+
+.home-service-dock__contact > i {
+  position: absolute;
+  inset: auto auto var(--space-5) var(--space-5);
+  font-family: var(--font-data);
+  font-size: var(--font-size-label);
+  font-style: normal;
+  letter-spacing: 0.12em;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .home-service-dock__contact:hover .home-service-dock__contact-plane {
+    clip-path: polygon(8% 3%, 98% 14%, 89% 96%, 2% 80%);
+  }
+}
+
+@media (min-width: 64rem) {
+  .home-service-dock {
+    grid-template-columns: minmax(24rem, 4fr) minmax(0, 8fr);
+  }
+
+  .home-service-dock__index {
+    min-block-size: min(56rem, 100svh);
+    padding-block: var(--space-section);
+  }
+
+  .home-service-dock__contact {
+    min-block-size: min(56rem, 100svh);
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .home-service-dock__contact {
+    min-block-size: min(32rem, 68svh);
+  }
+
+  .home-service-dock__contact > strong {
+    max-inline-size: none;
+    font-size: clamp(3rem, 12.5vw, 4.7rem);
+    letter-spacing: -0.055em;
+    line-height: 0.88;
+    overflow-wrap: normal;
+    white-space: nowrap;
+  }
+
+  .home-service-dock__contact > small {
+    max-inline-size: 32ch;
+    font-size: var(--font-size-body);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-service-dock__questions summary::after,
+  .home-service-dock__contact-plane {
+    transition: none;
+  }
+}

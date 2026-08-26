@@ -1,0 +1,414 @@
+---
+import type { SupportedLocale } from "@/config/site";
+import type { ProductView } from "@/features/site/catalog";
+import type { SiteCopy } from "@/features/site/copy";
+
+interface Props {
+  copy: SiteCopy;
+  locale: SupportedLocale;
+  products: readonly ProductView[];
+}
+
+const { copy, locale, products } = Astro.props;
+const lines = {
+  en: ["Every can", "keeps its own", "rhythm"],
+  ru: ["Каждая банка", "держит свой", "ритм"],
+  uz: ["Har bir banka", "o‘z ritmini", "olib keladi"],
+}[locale];
+const railHint = {
+  en: "Swipe the signals",
+  ru: "Листайте сигналы",
+  uz: "Signallarni suring",
+}[locale];
+---
+
+<section class="manifesto material-grain" data-motion-scene="range-manifesto">
+  <span class="manifesto-handoff" aria-hidden="true"></span>
+  <div class="manifesto-frame">
+    <p class="type-label">01 / {copy.rangeLabel}</p>
+    <h2>
+      {
+        lines.map((line, index) => (
+          <span
+            class:list={[
+              "manifesto-line",
+              { "manifesto-line--signal": index === 1 },
+            ]}
+            data-manifesto-line
+          >
+            {line}
+          </span>
+        ))
+      }
+    </h2>
+    <p class="type-body-lg measure-compact manifesto-intro">
+      {copy.rangeIntro}
+    </p>
+    <div class="manifesto-transmission" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span>
+      <i></i>
+    </div>
+    <div class="manifesto-rail">
+      <ol
+        aria-label={copy.allProducts}
+        aria-describedby="manifesto-rail-hint"
+        tabindex="0"
+      >
+        {
+          products.map((product, index) => (
+            <li data-flavor={product.slug} data-motion-signal>
+              <span class="type-data">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <strong>{product.name}</strong>
+              <span>{product.flavorNotes.join(" · ")}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+    <p id="manifesto-rail-hint" class="manifesto-rail-hint type-label">
+      <span>{railHint}</span>
+      <b aria-hidden="true">→</b>
+    </p>
+  </div>
+</section>
+
+<style>
+  .manifesto {
+    position: relative;
+    min-block-size: 54rem;
+    overflow: clip;
+    color: var(--color-text-primary);
+    background:
+      radial-gradient(circle at 82% 20%, rgb(145 212 1 / 13%), transparent 28%),
+      var(--color-surface-page);
+  }
+
+  .manifesto-handoff {
+    position: absolute;
+    z-index: 4;
+    inset: 0 auto auto 50%;
+    inline-size: var(--size-rule-strong);
+    block-size: var(--space-8);
+    background: var(--color-brand-lime);
+    transform: translateX(-50%);
+  }
+
+  .manifesto-frame {
+    display: grid;
+    min-block-size: 54rem;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: center;
+    gap: var(--space-5);
+    padding: var(--space-section) var(--space-gutter);
+  }
+
+  .manifesto-frame > .type-label {
+    color: var(--color-signal-brand);
+  }
+
+  h2 {
+    display: grid;
+    max-inline-size: 100%;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(3.8rem, 1.5rem + 10vw, 10.5rem);
+    font-weight: 700;
+    letter-spacing: -0.055em;
+    line-height: 0.78;
+    text-transform: uppercase;
+  }
+
+  .manifesto-line {
+    max-inline-size: 100%;
+    white-space: nowrap;
+    will-change: transform;
+  }
+
+  @supports (animation-timeline: view(block)) {
+    .manifesto[data-motion-ready="full"] .manifesto-line {
+      animation-duration: 1ms;
+      animation-fill-mode: both;
+      animation-timing-function: linear;
+      animation-timeline: view(block);
+      animation-range: cover 0% cover 100%;
+    }
+
+    .manifesto[data-motion-ready="full"] .manifesto-line:nth-child(odd) {
+      animation-name: manifesto-drift-left;
+    }
+
+    .manifesto[data-motion-ready="full"] .manifesto-line:nth-child(even) {
+      animation-name: manifesto-drift-right;
+    }
+  }
+
+  .manifesto-line:nth-child(2) {
+    justify-self: end;
+  }
+
+  .manifesto-line--signal {
+    padding: 0.04em 0.12em 0.1em;
+    color: var(--color-text-on-paper);
+    background: var(--color-brand-lime);
+    transform: rotate(1.5deg);
+  }
+
+  .manifesto-intro {
+    max-inline-size: 38ch;
+    color: var(--color-text-secondary);
+  }
+
+  .manifesto-transmission {
+    position: relative;
+    display: grid;
+    block-size: 3.5rem;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    align-items: center;
+    overflow: hidden;
+    border-block: var(--size-rule-hairline) solid var(--color-border-subtle);
+  }
+
+  .manifesto-transmission span {
+    block-size: var(--size-rule-strong);
+    background: var(--flavor-signal);
+  }
+
+  .manifesto-transmission i {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 0;
+    inline-size: 0.75rem;
+    block-size: 0.75rem;
+    border: 0.18rem solid var(--color-surface-page);
+    border-radius: 50%;
+    background: var(--color-brand-lime);
+    box-shadow: 0 0 0 0.4rem rgb(145 212 1 / 16%);
+    transform: translateY(-50%);
+  }
+
+  .manifesto-rail {
+    position: relative;
+    min-inline-size: 0;
+  }
+
+  .manifesto-rail::after {
+    position: absolute;
+    inset-block: var(--space-5) 0;
+    inset-inline-end: 0;
+    inline-size: var(--space-8);
+    background: linear-gradient(90deg, transparent, var(--color-surface-page));
+    content: "";
+    pointer-events: none;
+  }
+
+  ol {
+    display: flex;
+    overflow-x: auto;
+    padding: var(--space-5) var(--space-8) 0 0;
+    margin: var(--space-3) 0 0;
+    border-block-start: var(--size-rule-hairline) solid
+      var(--color-border-strong);
+    list-style: none;
+    overscroll-behavior-inline: contain;
+    scroll-padding-inline: var(--space-gutter);
+    scroll-snap-type: inline mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  ol::-webkit-scrollbar {
+    display: none;
+  }
+
+  li {
+    position: relative;
+    display: grid;
+    min-inline-size: min(15rem, 72vw);
+    grid-template-columns: auto 1fr;
+    gap: var(--space-2) var(--space-3);
+    padding: var(--space-3) var(--space-5);
+    border-inline-end: var(--size-rule-hairline) solid
+      var(--color-border-subtle);
+    scroll-snap-align: start;
+  }
+
+  li::before {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: var(--space-5);
+    block-size: var(--size-rule-strong);
+    background: var(--flavor-signal);
+    content: "";
+  }
+
+  li > span:first-child {
+    color: var(--flavor-signal);
+  }
+
+  li > span:last-child {
+    grid-column: 2;
+    color: var(--color-text-secondary);
+  }
+
+  .manifesto-rail-hint {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    color: var(--color-text-secondary);
+  }
+
+  .manifesto-rail-hint::before {
+    inline-size: clamp(3rem, 18vw, 5rem);
+    block-size: var(--size-rule-hairline);
+    background: var(--color-border-strong);
+    content: "";
+  }
+
+  .manifesto-rail-hint b {
+    color: var(--color-signal-brand);
+    font-family: var(--font-data);
+    font-size: 1.25rem;
+    animation: manifesto-swipe-hint 1.4s var(--motion-ease-material) infinite;
+  }
+
+  @media (min-width: 64rem) {
+    .manifesto {
+      min-block-size: 100svh;
+    }
+
+    :global(html[data-motion-tier="full"]:not([data-motion-static]))
+      .manifesto {
+      min-block-size: 112svh;
+    }
+
+    .manifesto-frame {
+      position: sticky;
+      inset-block-start: var(--size-header);
+      min-block-size: calc(100svh - var(--size-header));
+    }
+
+    h2 {
+      grid-column: 1 / 11;
+      font-size: clamp(6rem, 8.2vw, 9.5rem);
+    }
+
+    .manifesto-frame {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+
+    .manifesto-frame > .type-label {
+      grid-column: 1 / -1;
+    }
+
+    .manifesto-intro {
+      grid-column: 9 / 13;
+      grid-row: 2;
+      align-self: end;
+      margin-block-end: var(--space-3);
+    }
+
+    .manifesto-transmission,
+    .manifesto-rail,
+    .manifesto-rail-hint {
+      grid-column: 1 / -1;
+    }
+
+    ol {
+      overflow: hidden;
+      padding-inline-end: 0;
+    }
+
+    li {
+      min-inline-size: 20%;
+      flex: 1;
+    }
+
+    .manifesto-rail::after,
+    .manifesto-rail-hint {
+      display: none;
+    }
+  }
+
+  @media (max-width: 47.99rem) {
+    .manifesto,
+    .manifesto-frame {
+      min-block-size: 46rem;
+    }
+
+    h2 {
+      font-size: clamp(3.25rem, 14vw, 5.5rem);
+    }
+
+    .manifesto-line {
+      inline-size: fit-content;
+      max-inline-size: calc(100vw - (2 * var(--space-gutter)));
+    }
+
+    li {
+      min-inline-size: min(15rem, 74vw);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .manifesto-rail-hint b,
+    .manifesto-transmission i {
+      animation: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .manifesto {
+      color: CanvasText;
+      background: Canvas;
+    }
+
+    .manifesto-line--signal {
+      color: CanvasText;
+      background: Canvas;
+      outline: 2px solid CanvasText;
+    }
+  }
+
+  @keyframes manifesto-drift-left {
+    from {
+      translate: 4% 0;
+    }
+
+    to {
+      translate: -4% 0;
+    }
+  }
+
+  @keyframes manifesto-drift-right {
+    from {
+      translate: -4% 0;
+    }
+
+    to {
+      translate: 4% 0;
+    }
+  }
+
+  @keyframes manifesto-swipe-hint {
+    50% {
+      translate: 0.35rem 0;
+    }
+  }
+
+  @supports (animation-timeline: view(block)) {
+    .manifesto[data-motion-ready="full"] .manifesto-transmission i {
+      animation: manifesto-pulse linear both;
+      animation-timeline: view(block);
+      animation-range: entry 10% cover 78%;
+    }
+  }
+
+  @keyframes manifesto-pulse {
+    to {
+      inset-inline-start: calc(100% - 0.75rem);
+    }
+  }
+</style>

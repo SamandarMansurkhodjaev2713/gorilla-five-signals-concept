@@ -1,0 +1,30 @@
+{
+  "alt": {
+    "en": "Five Gorilla Energy cans over wet aluminum, condensation, ice, and colored night reflections",
+    "ru": "Пять банок Gorilla Energy на фоне мокрого алюминия, конденсата, льда и цветных ночных отражений",
+    "uz": "Beshta Gorilla Energy bankasi nam alyuminiy, kondensat, muz va rangli tungi akslar fonida"
+  },
+  "checksumSha256": "f5940e9bb8af00521a619ec24c40e6272e1298b53b92180315dcf173418e7179",
+  "decorative": false,
+  "derivatives": [
+    {
+      "checksumSha256": "350b58fc3abb3f7b93db919a739742bfcf62bd38d41e73bc4a6a1846a698b042",
+      "path": "/media/generated/material/material-film-afterdark-desktop-poster.avif"
+    },
+    {
+      "checksumSha256": "876154341703f298f249c7e8e05b6a894828aa4dea9aa7bf04bd41ba45543849",
+      "path": "/media/generated/material/material-film-afterdark-mobile-poster.webp"
+    },
+    {
+      "checksumSha256": "1cf628142632d28f752622c252f66693752deee3d8dd231c75f162b43b42a363",
+      "path": "/media/generated/material/material-film-afterdark-mobile-poster.avif"
+    }
+  ],
+  "kind": "image",
+  "license": "Project-owned composite of AI-generated material artwork and release-registered packshots covered by PERM-USER-2026-07-26",
+  "mediaId": "media-material-film-afterdark-posters",
+  "owner": "Project owner",
+  "path": "/media/generated/material/material-film-afterdark-desktop-poster.webp",
+  "permissionEvidence": "Built-in OpenAI image generation material plate on 2026-08-11; deterministic Sharp screen composite with release-registered material-film posters; PERM-USER-2026-07-26",
+  "territories": ["UZ"]
+}

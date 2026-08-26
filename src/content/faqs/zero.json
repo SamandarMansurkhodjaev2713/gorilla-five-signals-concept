@@ -1,0 +1,15 @@
+{
+  "answer": {
+    "en": "The official catalogue includes ZERO. Its nutrition will be published after final verification against local packaging.",
+    "ru": "В официальном каталоге есть продукт ZERO. Его пищевая ценность будет опубликована после окончательной сверки с локальной упаковкой.",
+    "uz": "Rasmiy katalogda Shakarsiz nomli variant mavjud. Uning ozuqaviy ko‘rsatkichlari mahalliy qadoq bilan yakuniy solishtirishdan so‘ng saytda e’lon qilinadi."
+  },
+  "faqId": "zero",
+  "question": {
+    "en": "Is there a sugar-free product?",
+    "ru": "Есть ли вариант без сахара?",
+    "uz": "Shakarsiz mahsulot bormi?"
+  },
+  "sourceIds": ["gorilla-products-uz-2026"],
+  "status": "approved"
+}

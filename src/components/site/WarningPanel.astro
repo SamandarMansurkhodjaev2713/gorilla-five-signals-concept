@@ -1,0 +1,25 @@
+---
+interface Props {
+  label: string;
+  text: string;
+}
+
+const { label, text } = Astro.props;
+---
+
+<aside class="warning-panel" aria-label={label}>
+  <p class="type-label">{label}</p>
+  <p class="type-legal">{text}</p>
+</aside>
+
+<style>
+  .warning-panel {
+    display: grid;
+    max-inline-size: var(--measure-body);
+    gap: var(--space-3);
+    padding: var(--space-5);
+    border-inline-start: 0.3rem solid var(--color-status-warning);
+    color: var(--color-text-on-paper);
+    background: var(--color-surface-paper);
+  }
+</style>

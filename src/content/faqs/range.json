@@ -1,0 +1,15 @@
+{
+  "answer": {
+    "en": "The current official local catalogue contains five: Original, ZERO, EXTRA, Mango–Coconut, and Lychee–Pear. The range is rechecked before release.",
+    "ru": "В текущем официальном локальном каталоге пять вариантов: Оригинал, ZERO, EXTRA, Манго — Кокос и Личи — груша. Линейка повторно проверяется перед запуском.",
+    "uz": "Hozirgi rasmiy mahalliy katalogda beshta variant bor: Asl, Shakarsiz, EXTRA, Mango–Kokos va Lichi–Nok. Qator ishga tushirishdan oldin yana tekshiriladi."
+  },
+  "faqId": "range",
+  "question": {
+    "en": "Which Gorilla products are listed for Uzbekistan?",
+    "ru": "Какие продукты Gorilla представлены для Узбекистана?",
+    "uz": "O‘zbekistonda qaysi Gorilla mahsulotlari ko‘rsatilgan?"
+  },
+  "sourceIds": ["gorilla-products-uz-2026"],
+  "status": "approved"
+}

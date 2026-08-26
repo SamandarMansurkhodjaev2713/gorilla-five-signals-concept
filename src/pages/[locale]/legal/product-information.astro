@@ -1,0 +1,107 @@
+---
+import { getCollection } from "astro:content";
+
+import PageLead from "@/components/site/PageLead.astro";
+import WarningPanel from "@/components/site/WarningPanel.astro";
+import type { SupportedLocale } from "@/config/site";
+import { getApprovedProducts } from "@/features/site/catalog";
+import { getSiteCopy } from "@/features/site/copy";
+import { localePath, localize } from "@/features/site/localization";
+import { createLocaleRoutes } from "@/features/site/static-paths";
+import SiteLayout from "@/layouts/SiteLayout.astro";
+
+export function getStaticPaths() {
+  return createLocaleRoutes();
+}
+
+interface Props {
+  locale: SupportedLocale;
+}
+
+const { locale } = Astro.props;
+const copy = getSiteCopy(locale);
+const [legal, products] = await Promise.all([
+  getCollection("legal"),
+  getApprovedProducts(locale),
+]);
+const warning = legal.find(({ data }) => data.documentId === "responsible-use");
+
+if (warning === undefined) {
+  throw new Error("Product information requires an approved warning.");
+}
+---
+
+<SiteLayout
+  lang={locale}
+  title={`${copy.productInfo} — Gorilla Energy Uzbekistan`}
+  description={localize(warning.data.body, locale)}
+>
+  <PageLead
+    eyebrow={copy.legal}
+    title={copy.productInfo}
+    intro={localize(warning.data.body, locale)}
+    variant="task"
+  />
+  <section class="product-legal surface-paper" data-motion-scene="product-lab">
+    <WarningPanel
+      label={copy.warning}
+      text={localize(warning.data.body, locale)}
+    />
+    <div class="product-list">
+      {
+        products.map((product, index) => (
+          <article data-flavor={product.slug} data-motion-reveal>
+            <span class="marker" aria-hidden="true" />
+            <p class="type-label">{String(index + 1).padStart(2, "0")} / 05</p>
+            <h2 class="type-title-sm">{product.name}</h2>
+            <p>{copy.verifiedPending}</p>
+            <a href={localePath(locale, `/products/${product.slug}`)}>
+              {copy.openDetails}
+            </a>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+</SiteLayout>
+
+<style>
+  .product-legal {
+    display: grid;
+    gap: var(--space-8);
+    padding: var(--space-section) var(--space-gutter);
+  }
+
+  .product-list {
+    display: grid;
+  }
+
+  .product-list article {
+    position: relative;
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-5) 0 var(--space-6) var(--space-5);
+    border-block-start: var(--size-rule-hairline) solid
+      var(--color-border-strong);
+  }
+
+  .marker {
+    position: absolute;
+    inset: var(--space-5) auto 0 0;
+    inline-size: 0.35rem;
+    background: var(--flavor-signal);
+  }
+
+  .product-list a {
+    color: inherit;
+    font-weight: 700;
+    text-decoration-color: var(--flavor-signal);
+    text-underline-offset: 0.3em;
+  }
+
+  @media (min-width: 48rem) {
+    .product-legal {
+      grid-template-columns: 4fr 8fr;
+    }
+  }
+</style>

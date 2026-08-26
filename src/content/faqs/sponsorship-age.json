@@ -1,0 +1,15 @@
+{
+  "answer": {
+    "en": "The official FAQ says sponsorship proposals are considered only from people over 18.",
+    "ru": "Согласно официальному FAQ, предложения о спонсорстве рассматриваются только от лиц старше 18 лет.",
+    "uz": "Rasmiy FAQ’ga ko‘ra, homiylik takliflari faqat 18 yoshdan katta shaxslardan ko‘rib chiqiladi."
+  },
+  "faqId": "sponsorship-age",
+  "question": {
+    "en": "Can someone under 18 submit a sponsorship proposal?",
+    "ru": "Можно ли отправить предложение о сотрудничестве до 18 лет?",
+    "uz": "18 yoshga to‘lmagan shaxs hamkorlik taklifini yubora oladimi?"
+  },
+  "sourceIds": ["gorilla-faq-uz-2026"],
+  "status": "approved"
+}

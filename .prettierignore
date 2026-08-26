@@ -1,0 +1,12 @@
+.astro
+.cache
+.codex-*
+coverage
+dist
+node_modules
+performance-report
+playwright-report
+test-results
+_reference
+_reference-analysis
+pnpm-lock.yaml

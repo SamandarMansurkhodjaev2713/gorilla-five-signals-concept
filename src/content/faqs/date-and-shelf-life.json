@@ -1,0 +1,15 @@
+{
+  "answer": {
+    "en": "According to the official FAQ, the production and expiry dates appear on the outside of the can’s base.",
+    "ru": "По данным официального FAQ, дата производства и срок годности указаны с внешней стороны на дне банки.",
+    "uz": "Rasmiy FAQ ma’lumotiga ko‘ra, ishlab chiqarilgan sana va yaroqlilik muddati bankaning tashqi tub qismida ko‘rsatilgan."
+  },
+  "faqId": "date-and-shelf-life",
+  "question": {
+    "en": "Where can I find the production and expiry dates?",
+    "ru": "Где найти дату производства и срок годности?",
+    "uz": "Ishlab chiqarilgan sana va yaroqlilik muddatini qayerdan topaman?"
+  },
+  "sourceIds": ["gorilla-faq-uz-2026"],
+  "status": "approved"
+}

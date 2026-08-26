@@ -1,0 +1,254 @@
+/* Lychee-Pear: a prismatic orbit with copy and product on opposing poles. */
+.product-detail[data-flavor="lychee-pear"] {
+  --world-lychee-bright: #ff9bb4;
+  --world-lychee-signal: #ff3e6f;
+  --world-lychee-glass: rgb(255 255 255 / 13%);
+  --world-lychee-orbit: rgb(255 116 151 / 64%);
+  --world-lychee-glow: rgb(255 62 111 / 38%);
+}
+
+.product-detail[data-flavor="lychee-pear"] .product-hero {
+  background:
+    linear-gradient(
+      112deg,
+      transparent 0 41%,
+      var(--world-lychee-glass) 41% 52%,
+      transparent 52%
+    ),
+    radial-gradient(
+      circle at 35% 54%,
+      var(--world-lychee-glow),
+      transparent 27rem
+    ),
+    var(--flavor-surface);
+}
+
+.product-detail[data-flavor="lychee-pear"] .product-world-plane {
+  inset: -12% 38% -16% 2%;
+  border-color: var(--world-lychee-orbit);
+  clip-path: polygon(8% 8%, 82% 0, 100% 76%, 38% 100%, 0 64%);
+  background: linear-gradient(
+    120deg,
+    transparent 0 38%,
+    var(--world-lychee-glass) 38% 56%,
+    transparent 56%
+  );
+  transform: perspective(52rem) rotateY(22deg) rotateZ(-8deg);
+}
+
+.product-detail[data-flavor="lychee-pear"] .product-world-plane--mid {
+  inset: 10% 15% 4% 48%;
+  transform: perspective(52rem) rotateY(-19deg) rotateZ(13deg);
+}
+
+.product-detail[data-flavor="lychee-pear"] .product-world-horizon {
+  inset-inline: 2% 42%;
+  inset-block-end: -5%;
+  border-color: var(--world-lychee-orbit);
+  background: linear-gradient(
+    to bottom,
+    var(--world-lychee-glow),
+    transparent 62%
+  );
+  transform: perspective(30rem) rotateX(65deg) rotateZ(-11deg);
+}
+
+.product-detail[data-flavor="lychee-pear"] .product-world-impact {
+  inset: 29% auto auto 24%;
+  background: var(--world-lychee-signal);
+}
+
+.product-detail[data-flavor="lychee-pear"] .product-world-particle {
+  block-size: clamp(3rem, 9vw, 9rem);
+  background: var(--world-lychee-bright);
+  transform: rotate(-16deg);
+}
+
+.product-detail[data-flavor="lychee-pear"] .product-world-particle--alpha {
+  inset: 9% auto auto 30%;
+}
+
+.product-detail[data-flavor="lychee-pear"] .product-world-particle--beta {
+  inset: 18% 14% auto auto;
+  transform: rotate(17deg);
+}
+
+.product-detail[data-flavor="lychee-pear"] .product-world-particle--gamma {
+  inset: auto 8% 18% auto;
+  transform: rotate(43deg);
+}
+
+.product-detail[data-flavor="lychee-pear"] .product-world-particle--delta {
+  inset: auto auto 9% 41%;
+  opacity: 0.24;
+}
+
+.product-detail[data-flavor="lychee-pear"] .product-world-particle--epsilon {
+  inset: 52% auto auto 55%;
+  opacity: 0.18;
+}
+
+.product-detail[data-flavor="lychee-pear"] .product-world-field {
+  inset: -8%;
+  clip-path: polygon(9% 3%, 84% 0, 100% 76%, 38% 100%, 0 63%);
+  background:
+    linear-gradient(
+      119deg,
+      transparent 0 36%,
+      var(--world-lychee-glass) 36% 49%,
+      transparent 49%
+    ),
+    linear-gradient(
+      -118deg,
+      transparent 0 44%,
+      color-mix(in srgb, var(--world-lychee-signal) 22%, transparent) 44% 57%,
+      transparent 57%
+    );
+}
+
+.product-detail[data-flavor="lychee-pear"] .product-world-field::before,
+.product-detail[data-flavor="lychee-pear"] .product-world-field::after {
+  position: absolute;
+  inset: 12% 14% 11% 8%;
+  border: clamp(0.35rem, 0.8vw, 0.8rem) solid var(--world-lychee-orbit);
+  border-radius: var(--radius-pill);
+  box-shadow:
+    0 0 0 clamp(0.75rem, 2vw, 2rem)
+      color-mix(in srgb, var(--world-lychee-signal) 9%, transparent),
+    0 0 0 clamp(1.5rem, 4vw, 4rem) rgb(255 255 255 / 5%);
+  content: "";
+  transform: rotate(8deg);
+}
+
+.product-detail[data-flavor="lychee-pear"] .product-world-field::after {
+  inset: 29% 32%;
+  border-width: var(--size-rule-strong);
+  transform: rotate(-17deg);
+}
+
+.product-detail[data-flavor="lychee-pear"] .product-world-vector {
+  inset-block-start: 48%;
+  inset-inline-start: -10%;
+  inline-size: 120%;
+  block-size: var(--size-rule-strong);
+  background: var(--flavor-signal);
+  transform: rotate(-16deg);
+}
+
+.product-detail[data-flavor="lychee-pear"] .product-world-vector--b {
+  transform: rotate(17deg);
+  opacity: 0.46;
+}
+
+.product-detail[data-flavor="lychee-pear"] .product-world-vector--c {
+  transform: rotate(43deg);
+  opacity: 0.24;
+}
+
+.product-detail[data-flavor="lychee-pear"] .product-heading {
+  text-align: end;
+}
+
+.product-detail[data-flavor="lychee-pear"] .product-heading :is(p, .actions) {
+  justify-self: end;
+}
+
+.product-detail[data-flavor="lychee-pear"] .product-heading h1 {
+  color: var(--world-lychee-bright);
+  line-height: 0.76;
+  transform: rotate(3deg);
+}
+
+.product-detail[data-flavor="lychee-pear"]
+  .product-heading__title-line:first-child::after {
+  position: absolute;
+  inset-block-start: 48%;
+  inset-inline-end: calc(100% + 0.08em);
+  inline-size: 0.62em;
+  block-size: 0.1em;
+  background: currentcolor;
+  content: "";
+}
+
+.product-detail[data-flavor="lychee-pear"] .can-stage__aura {
+  border-color: var(--world-lychee-orbit);
+  background:
+    radial-gradient(circle, var(--world-lychee-glow), transparent 65%),
+    conic-gradient(
+      from 26deg,
+      transparent,
+      var(--world-lychee-glass),
+      transparent 38%
+    );
+  transform: rotate(-12deg) scaleX(1.24);
+}
+
+.product-detail[data-flavor="lychee-pear"] .can-stage__reflection {
+  opacity: 0.52;
+  transform: translateX(-1.8rem) rotate(-3deg);
+}
+
+.product-detail[data-flavor="lychee-pear"] .product-information::before {
+  position: absolute;
+  inset: -12% 49%;
+  border-inline: var(--size-rule-hairline) solid var(--world-lychee-glow);
+  content: "";
+  transform: rotate(-10deg);
+}
+
+.product-detail[data-flavor="lychee-pear"] .adjacent-product--next {
+  clip-path: polygon(0 9%, 92% 0, 100% 91%, 8% 100%);
+}
+
+@media (min-width: 64rem) {
+  .product-detail[data-flavor="lychee-pear"] .product-heading {
+    grid-area: 2 / 7 / 12 / 13;
+    align-content: center;
+    padding-inline-start: var(--space-8);
+  }
+
+  .product-detail[data-flavor="lychee-pear"] .product-heading h1 {
+    max-inline-size: 7ch;
+    font-size: clamp(5.5rem, 9.5vw, 11rem);
+  }
+
+  .product-detail[data-flavor="lychee-pear"] .can-stage {
+    grid-area: 1 / 1 / 13 / 7;
+    padding-inline-start: var(--space-6);
+  }
+
+  .product-detail[data-flavor="lychee-pear"] .can-stage img {
+    block-size: min(72svh, 48rem);
+  }
+
+  .product-detail[data-flavor="lychee-pear"] .facts {
+    grid-column: 7 / 13;
+    padding-block-start: var(--space-7);
+  }
+
+  .product-detail[data-flavor="lychee-pear"] .truth {
+    grid-column: 1 / 6;
+    grid-row: 1;
+    padding-block-start: var(--space-10);
+  }
+
+  .product-detail[data-flavor="lychee-pear"] .adjacent-products {
+    grid-template-columns: minmax(13rem, 0.5fr) minmax(0, 1.45fr);
+  }
+
+  .product-detail[data-flavor="lychee-pear"] .adjacent-product--previous {
+    grid-template-columns: 1fr;
+  }
+
+  .product-detail[data-flavor="lychee-pear"] .adjacent-product--previous img {
+    position: absolute;
+    inset: auto -3rem -5rem auto;
+    max-block-size: 18rem;
+    opacity: 0.5;
+  }
+
+  .product-detail[data-flavor="lychee-pear"] .adjacent-product--next {
+    grid-template-columns: minmax(0, 0.85fr) minmax(13rem, 0.5fr);
+    margin: var(--space-5);
+  }
+}

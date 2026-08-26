@@ -1,0 +1,45 @@
+---
+import { getCollection } from "astro:content";
+
+import type { SupportedLocale } from "@/config/site";
+import FaqFieldManual from "@/features/faq/FaqFieldManual.astro";
+import { groupFaqs } from "@/features/faq/faq-groups";
+import { getSiteCopy } from "@/features/site/copy";
+import { localize } from "@/features/site/localization";
+import { createLocaleRoutes } from "@/features/site/static-paths";
+import SiteLayout from "@/layouts/SiteLayout.astro";
+
+export function getStaticPaths() {
+  return createLocaleRoutes();
+}
+
+interface Props {
+  locale: SupportedLocale;
+}
+
+const { locale } = Astro.props;
+const copy = getSiteCopy(locale);
+const [faqs, legal] = await Promise.all([
+  getCollection("faqs", ({ data }) => data.status === "approved"),
+  getCollection("legal"),
+]);
+const warning = legal.find(({ data }) => data.documentId === "responsible-use");
+const faqGroups = groupFaqs(faqs, locale);
+
+if (warning === undefined) {
+  throw new Error("FAQ requires responsible-use content.");
+}
+---
+
+<SiteLayout
+  lang={locale}
+  title={`${copy.navigation.faq} — Gorilla Energy Uzbekistan`}
+  description={copy.productInfo}
+>
+  <FaqFieldManual
+    copy={copy}
+    groups={faqGroups}
+    locale={locale}
+    warningText={localize(warning.data.body, locale)}
+  />
+</SiteLayout>

@@ -1,0 +1,23 @@
+---
+interface Props {
+  indexLabel: string;
+  name: string;
+  slug: string;
+}
+
+const { indexLabel, name, slug } = Astro.props;
+---
+
+<div class="flavor-art" data-detail-art={slug} aria-hidden="true">
+  <div class="flavor-art__field">
+    <span class="flavor-art__line flavor-art__line--one"></span>
+    <span class="flavor-art__line flavor-art__line--two"></span>
+    <span class="flavor-art__line flavor-art__line--three"></span>
+    <span class="flavor-art__orbit flavor-art__orbit--outer"></span>
+    <span class="flavor-art__orbit flavor-art__orbit--inner"></span>
+    <span class="flavor-art__core"></span>
+  </div>
+  <span class="flavor-art__index">{indexLabel}</span>
+  <span class="flavor-art__word flavor-art__word--primary">{name}</span>
+  <span class="flavor-art__word flavor-art__word--echo">{name}</span>
+</div>

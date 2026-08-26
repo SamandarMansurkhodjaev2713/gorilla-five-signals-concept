@@ -1,0 +1,61 @@
+{
+  "alt": {
+    "en": "Five Gorilla Energy cans moving through colored light over a dark brushed-metal field",
+    "ru": "Пять банок Gorilla Energy движутся сквозь цветной свет на тёмном фоне из шлифованного металла",
+    "uz": "Beshta Gorilla Energy bankasi qoramtir silliqlangan metall maydon ustida rangli yorug‘lik orasidan harakatlanadi"
+  },
+  "checksumSha256": "352f7685a5821fe743639692c9f287770e187b162596e22afbad76823c86e01b",
+  "decorative": false,
+  "derivatives": [
+    {
+      "checksumSha256": "e748a99a45b1319e0ced7d8e7d7593515325ea17db58af64649992931da85a36",
+      "path": "/media/generated/film/material-film-desktop.webm"
+    },
+    {
+      "checksumSha256": "2871a76bcb70a27be1aa46461accd99f84f7ba84b0400de38d27a2f27a9851f6",
+      "path": "/media/generated/film/material-film-desktop-poster.avif"
+    },
+    {
+      "checksumSha256": "3665cee0d76b6d41fa06accd4dafd49a4e8e125770178acee97f1be410592665",
+      "path": "/media/generated/film/material-film-desktop-poster.webp"
+    },
+    {
+      "checksumSha256": "c930cce11666a20fbde85ab6822e6104085f3c5d870e48e484935c049807933e",
+      "path": "/media/generated/film/material-film-desktop-poster.jpg"
+    },
+    {
+      "checksumSha256": "2c2b4d6c7f3b79e8afb116988d948c23d62553f534d3cbfc5c79b4a913d8931a",
+      "path": "/media/generated/film/material-film-mobile.mp4"
+    },
+    {
+      "checksumSha256": "c4e6dc51cafb56b38bfa3c53ae418938ff022158c269420940943d6dcd3b2d3e",
+      "path": "/media/generated/film/material-film-mobile.webm"
+    },
+    {
+      "checksumSha256": "f9b1e079ae8b43535e7b3de50edb6b66158ca22a4db0b2d82dd94399efdcae24",
+      "path": "/media/generated/film/material-film-mobile-poster.avif"
+    },
+    {
+      "checksumSha256": "e095976af89971823e0792a6948a8902b99c355f5e45458c154ecee426dd1ee8",
+      "path": "/media/generated/film/material-film-mobile-poster.webp"
+    },
+    {
+      "checksumSha256": "c2f36df6f4925ac8f00cae46965edebe4518eec0ba662746256b7809cb1572c9",
+      "path": "/media/generated/film/material-film-mobile-poster.jpg"
+    }
+  ],
+  "generator": {
+    "binarySha256": "04e1307997530f9cf2fe35cba2ca7e8875ca91da02f89d6c7243df819c94ad00",
+    "buildHost": "win32-x64",
+    "package": "ffmpeg-static@5.3.0",
+    "script": "scripts/build-product-film.mjs",
+    "version": "6.1.1-essentials_build-www.gyan.dev"
+  },
+  "kind": "video",
+  "license": "Project-owned motion derivative of brand assets covered by PERM-USER-2026-07-26",
+  "mediaId": "media-material-film",
+  "owner": "Project owner",
+  "path": "/media/generated/film/material-film-desktop.mp4",
+  "permissionEvidence": "PERM-USER-2026-07-26; derived only from release-registered packshots; scripts/build-product-film.mjs",
+  "territories": ["UZ"]
+}

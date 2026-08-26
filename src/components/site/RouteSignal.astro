@@ -1,0 +1,223 @@
+<div
+  class="route-signal"
+  data-route-signal
+  data-route-phase="idle"
+  data-route-motion="reduced"
+  transition:persist="gorilla-route-signal"
+  aria-hidden="true"
+>
+  <div class="route-signal__rails">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <p class="route-signal__code">
+    <span>GORILLA /</span>
+    <strong data-route-signal-code>UZ</strong>
+  </p>
+</div>
+
+<style>
+  .route-signal {
+    --route-signal-depart: 340ms;
+    --route-signal-arrive: 380ms;
+    --route-signal-stagger: 24ms;
+    position: fixed;
+    z-index: calc(var(--z-dialog) - 2);
+    inset: 0;
+    overflow: hidden;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .route-signal[data-route-phase="departing"],
+  .route-signal[data-route-phase="arriving"] {
+    visibility: visible;
+  }
+
+  .route-signal__rails {
+    position: absolute;
+    inset: -20dvb -16dvi;
+    display: grid;
+    grid-template-rows: repeat(5, 1fr);
+    gap: var(--space-2);
+    rotate: -8deg;
+  }
+
+  .route-signal__rails span {
+    transform: translate3d(-125%, 0, 0);
+    background: var(--color-signal-brand);
+    box-shadow: 0 0 0 var(--size-rule-hairline) rgb(5 6 5 / 18%);
+    will-change: transform;
+  }
+
+  .route-signal__rails span:nth-child(2) {
+    background: var(--color-marker-zero);
+  }
+
+  .route-signal__rails span:nth-child(3) {
+    background: var(--color-marker-extra);
+  }
+
+  .route-signal__rails span:nth-child(4) {
+    background: var(--color-marker-tropical);
+  }
+
+  .route-signal__rails span:nth-child(5) {
+    background: var(--color-marker-lychee);
+  }
+
+  .route-signal__code {
+    position: absolute;
+    inset: auto max(var(--space-gutter), env(safe-area-inset-right))
+      max(var(--space-5), env(safe-area-inset-bottom)) auto;
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    color: var(--color-ink-950);
+    background: var(--color-signal-brand);
+    font-family: var(--font-data);
+    font-size: var(--type-label);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    opacity: 0;
+    text-transform: uppercase;
+    max-inline-size: calc(100dvi - (2 * var(--space-gutter)));
+    overflow: hidden;
+  }
+
+  .route-signal__code strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .route-signal[data-route-phase="departing"] .route-signal__rails span {
+    animation: route-rail-depart var(--route-signal-depart)
+      var(--motion-ease-enter) both;
+  }
+
+  .route-signal[data-route-phase="arriving"] .route-signal__rails span {
+    animation: route-rail-arrive var(--route-signal-arrive)
+      var(--motion-ease-enter) both;
+  }
+
+  .route-signal[data-route-phase="departing"]
+    .route-signal__rails
+    span:nth-child(2),
+  .route-signal[data-route-phase="arriving"]
+    .route-signal__rails
+    span:nth-child(2) {
+    animation-delay: var(--route-signal-stagger);
+  }
+
+  .route-signal[data-route-phase="departing"]
+    .route-signal__rails
+    span:nth-child(3),
+  .route-signal[data-route-phase="arriving"]
+    .route-signal__rails
+    span:nth-child(3) {
+    animation-delay: calc(var(--route-signal-stagger) * 2);
+  }
+
+  .route-signal[data-route-phase="departing"]
+    .route-signal__rails
+    span:nth-child(4),
+  .route-signal[data-route-phase="arriving"]
+    .route-signal__rails
+    span:nth-child(4) {
+    animation-delay: calc(var(--route-signal-stagger) * 3);
+  }
+
+  .route-signal[data-route-phase="departing"]
+    .route-signal__rails
+    span:nth-child(5),
+  .route-signal[data-route-phase="arriving"]
+    .route-signal__rails
+    span:nth-child(5) {
+    animation-delay: calc(var(--route-signal-stagger) * 4);
+  }
+
+  .route-signal[data-route-phase="departing"] .route-signal__code {
+    animation: route-code-depart var(--route-signal-depart)
+      var(--motion-ease-enter) both;
+  }
+
+  .route-signal[data-route-motion="lite"] {
+    --route-signal-depart: 220ms;
+    --route-signal-arrive: 220ms;
+    --route-signal-stagger: 0ms;
+  }
+
+  .route-signal[data-route-motion="lite"]
+    .route-signal__rails
+    span:nth-child(n + 2) {
+    display: none;
+  }
+
+  .route-signal[data-route-motion="reduced"] {
+    display: none;
+  }
+
+  :global(html[data-route-phase="arriving"]) :global([data-route-content]) {
+    animation: route-content-arrive 420ms var(--motion-ease-enter) both;
+  }
+
+  @media (max-width: 48rem) {
+    .route-signal__rails {
+      inset: -8dvb -44dvi;
+      rotate: -12deg;
+    }
+
+    .route-signal__code {
+      inset-inline-end: max(var(--space-4), env(safe-area-inset-right));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .route-signal {
+      display: none;
+    }
+
+    :global(html[data-route-phase="arriving"]) :global([data-route-content]) {
+      animation: none;
+    }
+  }
+
+  @keyframes route-rail-depart {
+    from {
+      transform: translate3d(-125%, 0, 0);
+    }
+    to {
+      transform: translate3d(125%, 0, 0);
+    }
+  }
+
+  @keyframes route-rail-arrive {
+    from {
+      transform: translate3d(-125%, 0, 0);
+    }
+    to {
+      transform: translate3d(125%, 0, 0);
+    }
+  }
+
+  @keyframes route-code-depart {
+    0%,
+    100% {
+      opacity: 0;
+      transform: translate3d(0, var(--space-3), 0);
+    }
+    28%,
+    72% {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes route-content-arrive {
+    from {
+      opacity: 0.68;
+      transform: translate3d(0, var(--space-4), 0);
+    }
+  }
+</style>

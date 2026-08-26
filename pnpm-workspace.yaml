@@ -1,0 +1,18 @@
+packages:
+  - "."
+
+allowBuilds:
+  esbuild: true
+  ffmpeg-static: true
+  sharp: true
+
+engineStrict: true
+nodeVersion: 24.13.1
+overrides:
+  brace-expansion: 5.0.9
+  fast-uri: 3.1.5
+  js-yaml: 4.3.1
+  nanoid: 3.3.18
+preferFrozenLockfile: true
+saveExact: true
+strictPeerDependencies: true

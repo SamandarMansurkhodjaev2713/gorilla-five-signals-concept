@@ -1,0 +1,27 @@
+{
+  "alt": {
+    "en": "Front view of a dark teal Gorilla EXTRA can with gold graphics",
+    "ru": "Вид спереди на тёмно-бирюзовую банку Gorilla EXTRA с золотистой графикой",
+    "uz": "Oltin rangli grafikali to‘q feruza Gorilla EXTRA bankasining old ko‘rinishi"
+  },
+  "checksumSha256": "5dde607c142214070d644325ff2232d27f363d8fcd9e1d2cfc8d0340c19a315a",
+  "decorative": false,
+  "derivatives": [
+    {
+      "checksumSha256": "e464059f1455abbdd74672ccd8fed48f8cc245f315d3d22dc9100c6314c1db9b",
+      "path": "/media/generated/products/can-extra-320.webp"
+    },
+    {
+      "checksumSha256": "5de301538e55a49e0f908ecbb50202f480a30a99ff2089e295dc77cb9c4f3bf1",
+      "path": "/media/generated/products/can-extra-480.webp"
+    }
+  ],
+  "kind": "image",
+  "license": "Brand-use permission confirmed by the project owner on 2026-07-26",
+  "mediaId": "media-can-extra",
+  "owner": "Gorilla Energy asset rights holder",
+  "path": "/media/generated/products/can-extra.webp",
+  "permissionEvidence": "PERM-USER-2026-07-26; docs/content/ASSET_PROVENANCE.md#release-registered-generated-derivatives",
+  "sourceUrl": "https://www.gorillaenergy.uz/img/products_big_can_extra.a7450f28.png",
+  "territories": ["UZ"]
+}

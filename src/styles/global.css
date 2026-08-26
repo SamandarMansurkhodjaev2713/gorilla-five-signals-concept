@@ -1,0 +1,171 @@
+@layer reset, tokens, base, utilities, components;
+
+@import "./reset.css" layer(reset);
+@import "./tokens.css" layer(tokens);
+@import "./typography.css" layer(base);
+@import "./utilities.css" layer(utilities);
+@import "./controls.css" layer(components);
+@import "./forms.css" layer(components);
+
+@layer base {
+  @view-transition {
+    navigation: auto;
+  }
+
+  :root {
+    background: var(--color-surface-page);
+  }
+
+  body {
+    color: var(--color-text-primary);
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 1.5%), transparent 18rem),
+      var(--color-surface-page);
+  }
+
+  :where(main, section, article, header, footer, nav, div, ol, ul, li) {
+    min-inline-size: 0;
+  }
+
+  :where(p, a, button, summary, label, dt, dd) {
+    overflow-wrap: anywhere;
+  }
+
+  :where(h1, h2, h3) {
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  @supports (content-visibility: auto) {
+    main
+      > [data-motion-scene]:not([data-motion-scene="responsible-entry"]):not(
+        [data-motion-scene="hero"]
+      ),
+    body > [data-motion-scene="footer"] {
+      --scene-intrinsic-block-size: 64rem;
+
+      content-visibility: auto;
+      contain-intrinsic-block-size: auto var(--scene-intrinsic-block-size);
+    }
+
+    [data-motion-scene="range-manifesto"] {
+      --scene-intrinsic-block-size: 88rem;
+    }
+
+    [data-motion-scene="flavor-explorer"] {
+      --scene-intrinsic-block-size: 110rem;
+    }
+
+    [data-motion-scene="product-lab"] {
+      --scene-intrinsic-block-size: 50rem;
+    }
+
+    [data-motion-scene="product-compare"] {
+      --scene-intrinsic-block-size: 78rem;
+    }
+
+    [data-motion-scene="material-film"] {
+      --scene-intrinsic-block-size: 58rem;
+    }
+
+    [data-motion-scene="culture-signal"],
+    [data-motion-scene="store-locator"] {
+      --scene-intrinsic-block-size: 60rem;
+    }
+
+    [data-motion-scene="faq-safety"] {
+      --scene-intrinsic-block-size: 50rem;
+    }
+
+    [data-motion-scene="contact-partnership"] {
+      --scene-intrinsic-block-size: 56rem;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    [data-motion-scene="flavor-explorer"] {
+      --scene-intrinsic-block-size: 230rem;
+    }
+
+    [data-motion-scene="product-compare"] {
+      --scene-intrinsic-block-size: 120rem;
+    }
+
+    :where(h1, h2, h3) {
+      overflow-wrap: break-word;
+    }
+  }
+
+  ::selection {
+    color: var(--color-ink-950);
+    background: var(--color-brand-lime);
+  }
+
+  :target {
+    scroll-margin-block-start: calc(var(--size-header) + var(--space-4));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      scroll-behavior: auto !important;
+    }
+
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation-duration: 0.001ms;
+    }
+  }
+
+  ::view-transition-old(root) {
+    z-index: 1;
+    animation: route-shutter-out var(--motion-duration-scene)
+      var(--motion-ease-exit) both;
+  }
+
+  ::view-transition-new(root) {
+    z-index: 2;
+    animation: route-shutter-in var(--motion-duration-scene)
+      var(--motion-ease-enter) both;
+  }
+
+  ::view-transition-image-pair(root) {
+    isolation: isolate;
+    background: linear-gradient(
+      90deg,
+      var(--color-marker-original) 0 20%,
+      var(--color-marker-zero) 20% 40%,
+      var(--color-marker-extra) 40% 60%,
+      var(--color-marker-tropical) 60% 80%,
+      var(--color-marker-lychee) 80% 100%
+    );
+  }
+
+  @keyframes route-shutter-out {
+    0% {
+      clip-path: inset(0);
+    }
+
+    50%,
+    100% {
+      clip-path: inset(0 0 100% 0);
+    }
+  }
+
+  @keyframes route-shutter-in {
+    0%,
+    50% {
+      clip-path: inset(100% 0 0 0);
+    }
+
+    to {
+      clip-path: inset(0);
+    }
+  }
+
+  html[data-motion-tier="reduced"]::view-transition-old(root),
+  html[data-motion-tier="reduced"]::view-transition-new(root) {
+    animation-duration: 0.001ms;
+  }
+}

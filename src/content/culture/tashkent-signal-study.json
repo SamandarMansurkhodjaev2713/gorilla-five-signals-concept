@@ -1,0 +1,22 @@
+{
+  "body": {
+    "en": "Tashkent changes frequency after dark. Street light runs across metal, the city grid fractures, and five Gorilla signals take their own line through the night.",
+    "ru": "После заката Ташкент меняет частоту. Уличный свет скользит по металлу, городская сетка распадается на линии, и пять сигналов Gorilla прокладывают собственный маршрут сквозь ночь.",
+    "uz": "Toshkent tunda chastotasini o‘zgartiradi. Ko‘cha nuri metall bo‘ylab yuradi, shahar chiziqlarga ajraladi va beshta Gorilla signali tun ichida o‘z yo‘lini topadi."
+  },
+  "mediaIds": [
+    "media-can-original",
+    "media-can-zero",
+    "media-can-extra",
+    "media-can-mango-coconut",
+    "media-can-lychee-pear"
+  ],
+  "publishedAt": "2026-07-27",
+  "slug": "tashkent-signal-study",
+  "status": "approved",
+  "title": {
+    "en": "Tashkent after dark",
+    "ru": "Ташкент после заката",
+    "uz": "Toshkent tunda"
+  }
+}

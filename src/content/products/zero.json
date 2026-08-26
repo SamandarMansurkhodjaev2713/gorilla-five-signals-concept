@@ -1,0 +1,62 @@
+{
+  "canMediaId": "media-can-zero",
+  "claims": [],
+  "ctas": [
+    {
+      "href": "/find?product=zero",
+      "label": {
+        "en": "Find ZERO",
+        "ru": "Где искать ZERO",
+        "uz": "Shakarsizni qayerdan izlash"
+      },
+      "type": "find"
+    }
+  ],
+  "description": {
+    "en": "Cold metal. Clean line. The quiet, precise rhythm of the sugar-free variant.",
+    "ru": "Холодный металл. Чистая линия. Спокойный и точный ритм варианта без сахара.",
+    "uz": "Sovuq metall. Toza chiziq. Shakarsiz variantning sokin va aniq ritmi."
+  },
+  "flavorNotes": [
+    {
+      "en": "ZERO",
+      "ru": "ZERO",
+      "uz": "Shakarsiz"
+    }
+  ],
+  "name": {
+    "en": "ZERO",
+    "ru": "ZERO",
+    "uz": "Shakarsiz"
+  },
+  "posterMediaId": "media-can-zero",
+  "seo": {
+    "description": {
+      "en": "Explore Gorilla ZERO for Uzbekistan; numeric nutrition remains hidden until packaging verification.",
+      "ru": "Изучите Gorilla ZERO для Узбекистана; пищевая ценность будет опубликована после сверки с упаковкой.",
+      "uz": "O‘zbekiston uchun Gorilla Shakarsiz variantini ko‘ring; raqamli ozuqaviy ma’lumot qadoq bilan tekshirilgach e’lon qilinadi."
+    },
+    "title": {
+      "en": "ZERO — Gorilla Energy Uzbekistan",
+      "ru": "ZERO — Gorilla Energy Узбекистан",
+      "uz": "Shakarsiz — Gorilla Energy O‘zbekiston"
+    }
+  },
+  "sku": null,
+  "slug": "zero",
+  "sourceId": "gorilla-products-uz-2026",
+  "status": "approved",
+  "themeId": "zero",
+  "warnings": [
+    {
+      "sourceId": "owner-legal-warning-2026",
+      "status": "legal-approved",
+      "text": {
+        "en": "Excessive consumption of energy drinks is harmful. Check the packaging for information about people for whom consumption is not recommended.",
+        "ru": "Чрезмерное употребление энергетических напитков вредно. Проверьте на упаковке информацию о лицах, которым употребление не рекомендуется.",
+        "uz": "Energetik ichimliklarni haddan ziyod iste’mol qilish zararli. Iste’mol qilish tavsiya etilmaydigan shaxslar haqidagi ma’lumotni mahsulot qadoqlaridan tekshiring."
+      },
+      "warningId": "responsible-use"
+    }
+  ]
+}

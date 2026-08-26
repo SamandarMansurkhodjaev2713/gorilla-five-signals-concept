@@ -1,0 +1,251 @@
+---
+import WarningPanel from "@/components/site/WarningPanel.astro";
+import type { SupportedLocale } from "@/config/site";
+import type { ProductView } from "@/features/site/catalog";
+import type { SiteCopy } from "@/features/site/copy";
+import { localePath } from "@/features/site/localization";
+
+import ProductDetailArt from "./ProductDetailArt.astro";
+
+interface Props {
+  copy: SiteCopy;
+  locale: SupportedLocale;
+  nextProduct: ProductView;
+  previousProduct: ProductView;
+  product: ProductView;
+  productCount: string;
+  productNumber: string;
+  responsibleUse: string;
+}
+
+const {
+  copy,
+  locale,
+  nextProduct,
+  previousProduct,
+  product,
+  productCount,
+  productNumber,
+  responsibleUse,
+} = Astro.props;
+
+const WORLD_NAMES = new Map<string, string>([
+  ["extra", "Gold overdrive / axial burst"],
+  ["lychee-pear", "Pink refraction / prismatic orbit"],
+  ["mango-coconut", "Warm / cool collision"],
+  ["original", "Rupture / green strike"],
+  ["zero", "Precision / frequency chamber"],
+]);
+
+const VOLUME_PARTICLES = ["alpha", "beta", "gamma", "delta", "epsilon"];
+
+const worldName = WORLD_NAMES.get(product.slug);
+const splitTitle = product.name
+  .split(/[-–—]/u)
+  .map((part) => part.trim())
+  .filter((part) => part.length > 0);
+const titleParts = splitTitle.length > 0 ? splitTitle : [product.name];
+
+if (worldName === undefined) {
+  throw new Error(`Missing product world for ${product.slug}.`);
+}
+---
+
+<article
+  class="product-detail"
+  data-flavor={product.slug}
+  data-product-world={product.slug}
+  data-motion-scene="product-lab"
+>
+  <header class="product-hero material-grain" data-world-hero>
+    <div class="product-world-volume" aria-hidden="true" data-world-volume>
+      <span
+        class="product-world-plane product-world-plane--rear"
+        data-world-volume-layer></span>
+      <span
+        class="product-world-plane product-world-plane--mid"
+        data-world-volume-layer></span>
+      <span class="product-world-horizon" data-world-volume-layer></span>
+      <span class="product-world-impact" data-world-volume-layer></span>
+      {
+        VOLUME_PARTICLES.map((particle) => (
+          <span
+            class={`product-world-particle product-world-particle--${particle}`}
+            data-world-particle
+          />
+        ))
+      }
+    </div>
+
+    <div class="product-world-field" data-world-art>
+      <ProductDetailArt
+        indexLabel={productNumber}
+        name={product.name}
+        slug={product.slug}
+      />
+      <span
+        class="product-world-vector product-world-vector--a"
+        data-world-vector></span>
+      <span
+        class="product-world-vector product-world-vector--b"
+        data-world-vector></span>
+      <span
+        class="product-world-vector product-world-vector--c"
+        data-world-vector></span>
+    </div>
+
+    <div class="product-heading" data-motion-copy data-world-copy>
+      <p class="type-label product-heading__index">
+        {productNumber} / {productCount} · Gorilla Energy
+      </p>
+      <p class="type-label product-heading__world" aria-hidden="true">
+        {worldName}
+      </p>
+      <h1 class="type-display product-heading__title" aria-label={product.name}>
+        {
+          titleParts.map((part) => (
+            <span class="product-heading__title-line" aria-hidden="true">
+              {part}
+            </span>
+          ))
+        }
+      </h1>
+      <p class="type-body-lg measure-compact product-heading__description">
+        {product.description}
+      </p>
+      <div class="actions">
+        <a
+          class="control control--primary"
+          href={`${localePath(locale, "/find")}?product=${product.slug}`}
+        >
+          <span>{product.findLabel}</span>
+          <i class="product-action-mark" aria-hidden="true"></i>
+        </a>
+        <a
+          class="text-link product-compare-link"
+          href={`${localePath(locale, "/compare")}?products=${product.slug}`}
+        >
+          {copy.navigation.compare}
+        </a>
+      </div>
+    </div>
+
+    <figure class="can-stage" data-motion-product data-world-can>
+      <span class="can-stage__aura" aria-hidden="true" data-world-can-aura
+      ></span>
+      <span
+        class="can-stage__reflection"
+        aria-hidden="true"
+        data-world-reflection></span>
+      <span class="can-stage__contact" aria-hidden="true"></span>
+      <div class="can-stage__media" data-world-can-media>
+        <img
+          src={product.imagePath}
+          srcset={product.imageSrcSet}
+          sizes="(min-width: 90rem) 25rem, (min-width: 64rem) 21rem, 11rem"
+          width={product.width}
+          height={product.height}
+          alt={product.alt}
+          fetchpriority="high"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+    </figure>
+
+    <div class="product-world-readout" aria-hidden="true">
+      <span class="product-world-readout__index">{productNumber}</span>
+      <span class="product-world-readout__notes">
+        {product.flavorNotes.join(" / ")}
+      </span>
+      <span class="product-world-readout__market">UZ</span>
+    </div>
+  </header>
+
+  <section class="product-information surface-paper" data-world-information>
+    <div class="facts" data-motion-reveal>
+      <p class="type-label">{copy.productInfo}</p>
+      <h2 class="type-title-sm">{product.flavorNotes.join(" · ")}</h2>
+      <p>{product.description}</p>
+      <dl>
+        <div>
+          <dt>{copy.market}</dt>
+          <dd class="type-data">UZ</dd>
+        </div>
+        <div>
+          <dt>SKU</dt>
+          <dd class="type-data">{product.sku ?? copy.verifiedPending}</dd>
+        </div>
+        <div>
+          <dt>{copy.sourceRecord}</dt>
+          <dd class="type-data">{product.sourceId}</dd>
+        </div>
+      </dl>
+    </div>
+    <div class="truth" data-motion-reveal>
+      <WarningPanel label={copy.warning} text={product.warningText} />
+      <p class="type-body-lg">{copy.productInfoUnavailable}</p>
+      <p class="type-legal">{responsibleUse}</p>
+    </div>
+  </section>
+
+  <aside
+    class="adjacent-products"
+    aria-label={copy.allProducts}
+    data-world-handoff
+  >
+    <article
+      class="adjacent-product adjacent-product--previous material-grain"
+      data-flavor={previousProduct.slug}
+      data-previous-handoff
+    >
+      <div>
+        <p class="type-label">{copy.previous}</p>
+        <h2 class="type-title">{previousProduct.name}</h2>
+        <a
+          class="control"
+          href={localePath(locale, `/products/${previousProduct.slug}`)}
+        >
+          {copy.openDetails}
+        </a>
+      </div>
+      <img
+        src={previousProduct.imagePath}
+        srcset={previousProduct.imageSrcSet}
+        sizes="(min-width: 64rem) 10rem, 28vw"
+        width={previousProduct.width}
+        height={previousProduct.height}
+        alt={previousProduct.alt}
+        loading="lazy"
+        decoding="async"
+      />
+    </article>
+
+    <article
+      class="adjacent-product adjacent-product--next material-grain"
+      data-flavor={nextProduct.slug}
+      data-next-handoff
+    >
+      <div>
+        <p class="type-label">{copy.next}</p>
+        <h2 class="type-title">{nextProduct.name}</h2>
+        <a
+          class="control control--primary"
+          href={localePath(locale, `/products/${nextProduct.slug}`)}
+        >
+          {copy.openDetails}
+        </a>
+      </div>
+      <img
+        src={nextProduct.imagePath}
+        srcset={nextProduct.imageSrcSet}
+        sizes="(min-width: 64rem) 18rem, 42vw"
+        width={nextProduct.width}
+        height={nextProduct.height}
+        alt={nextProduct.alt}
+        loading="lazy"
+        decoding="async"
+      />
+    </article>
+  </aside>
+</article>

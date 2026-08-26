@@ -1,0 +1,226 @@
+.tashkent-terminal {
+  position: relative;
+  display: grid;
+  min-inline-size: 0;
+  overflow: clip;
+  border-block-end: var(--size-rule-hairline) solid var(--color-ink-950);
+  isolation: isolate;
+}
+
+.tashkent-terminal::before {
+  position: absolute;
+  z-index: 7;
+  inset-block-start: 0;
+  inset-inline-start: 50%;
+  inline-size: var(--size-rule-strong);
+  block-size: var(--space-8);
+  background: var(--color-brand-lime);
+  content: "";
+}
+
+.tashkent-terminal__copy {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  align-content: center;
+  gap: var(--space-4);
+  padding: var(--space-8) var(--space-gutter);
+}
+
+.tashkent-terminal__copy h2 {
+  max-inline-size: 10ch;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(3.4rem, 8vw, 6.5rem);
+  font-weight: 700;
+  letter-spacing: -0.055em;
+  line-height: 0.84;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.tashkent-terminal__copy > p {
+  max-inline-size: 39ch;
+}
+
+.tashkent-terminal__copy .control {
+  justify-self: start;
+}
+
+.tashkent-terminal__field {
+  position: relative;
+  display: grid;
+  min-block-size: 28rem;
+  overflow: clip;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: end;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  color: var(--color-text-primary);
+  background:
+    linear-gradient(
+      132deg,
+      transparent 0 51%,
+      rgb(145 212 1 / 82%) 51% 55%,
+      transparent 55%
+    ),
+    var(--color-ink-950);
+  isolation: isolate;
+}
+
+.tashkent-terminal__word {
+  position: absolute;
+  z-index: -1;
+  inset: 0 auto auto -0.04em;
+  color: var(--color-brand-lime);
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 19vw, 15rem);
+  font-weight: 700;
+  letter-spacing: -0.08em;
+  line-height: 0.78;
+  opacity: 0.15;
+  writing-mode: vertical-rl;
+}
+
+.tashkent-terminal__coordinate,
+.tashkent-terminal__field strong {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-data);
+  letter-spacing: -0.035em;
+}
+
+.tashkent-terminal__coordinate {
+  font-size: clamp(1.35rem, 4vw, 2.7rem);
+}
+
+.tashkent-terminal__field strong {
+  grid-column: 1 / -1;
+  font-size: var(--font-size-label);
+  letter-spacing: 0.12em;
+}
+
+.tashkent-terminal__route {
+  position: absolute;
+  inset: 13% 8% 24%;
+  border: var(--size-rule-hairline) solid rgb(244 244 237 / 28%);
+  clip-path: polygon(
+    4% 64%,
+    28% 18%,
+    51% 76%,
+    73% 8%,
+    96% 45%,
+    91% 92%,
+    11% 88%
+  );
+  transform-origin: left center;
+}
+
+.tashkent-terminal__route i {
+  position: absolute;
+  inline-size: 0.8rem;
+  block-size: 0.8rem;
+  border: 0.2rem solid var(--color-ink-950);
+  border-radius: 50%;
+  background: var(--color-brand-lime);
+  box-shadow: 0 0 0 0.32rem rgb(145 212 1 / 20%);
+}
+
+.tashkent-terminal__route i:nth-child(1) {
+  inset: 62% auto auto 3%;
+}
+
+.tashkent-terminal__route i:nth-child(2) {
+  inset: 17% auto auto 27%;
+}
+
+.tashkent-terminal__route i:nth-child(3) {
+  inset: 73% auto auto 50%;
+}
+
+.tashkent-terminal__route i:nth-child(4) {
+  inset: 6% auto auto 72%;
+}
+
+.tashkent-terminal__route i:nth-child(5) {
+  inset: 43% auto auto 95%;
+}
+
+.tashkent-terminal__locator {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  min-block-size: 27rem;
+  overflow: clip;
+  place-content: center;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  border: var(--size-rule-strong) solid var(--color-brand-lime);
+  color: var(--color-text-primary);
+  background: rgb(5 6 5 / 96%);
+  isolation: isolate;
+  text-align: center;
+  text-decoration: none;
+}
+
+.tashkent-terminal__grid {
+  position: absolute;
+  z-index: -2;
+  inset: -20%;
+  background:
+    linear-gradient(
+      28deg,
+      transparent 49%,
+      rgb(244 244 237 / 9%) 49% 51%,
+      transparent 51%
+    ),
+    linear-gradient(
+      118deg,
+      transparent 49%,
+      rgb(244 244 237 / 7%) 49% 51%,
+      transparent 51%
+    );
+  background-size:
+    4.4rem 4.4rem,
+    6rem 6rem;
+  transform: rotate(-8deg) scale(1.12);
+  transition: transform 620ms var(--motion-ease-material);
+}
+
+.tashkent-terminal__marker {
+  position: absolute;
+  z-index: -1;
+  inset: 50% auto auto 50%;
+  inline-size: clamp(8rem, 18vw, 16rem);
+  block-size: clamp(8rem, 18vw, 16rem);
+  border: var(--size-rule-strong) solid var(--color-brand-lime);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 1.5rem rgb(145 212 1 / 8%),
+    0 0 0 3rem rgb(145 212 1 / 4%);
+  transform: translate(-50%, -50%);
+}
+
+.tashkent-terminal__locator > strong {
+  max-inline-size: 10ch;
+  font-family: var(--font-display);
+  font-size: clamp(3.2rem, 8vw, 6.5rem);
+  line-height: 0.84;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.tashkent-terminal__locator > small {
+  max-inline-size: 36ch;
+  justify-self: center;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-body);
+}
+
+.tashkent-terminal__locator > b {
+  position: absolute;
+  inset: auto var(--space-4) var(--space-4) auto;
+  color: var(--color-brand-lime);
+  font-family: var(--font-data);
+  font-size: 2.5rem;
+}

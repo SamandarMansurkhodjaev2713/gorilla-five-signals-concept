@@ -1,0 +1,109 @@
+@media (hover: hover) and (pointer: fine) {
+  .home-duel__product img {
+    transition: scale var(--motion-duration-standard)
+      var(--motion-ease-material);
+  }
+
+  .home-duel__arena:hover .home-duel__product img {
+    scale: 1.045;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .home-duel__product--left img,
+  .home-duel__product--right img {
+    animation: home-duel-lock linear both;
+    animation-timeline: view(block);
+    animation-range: entry 10% cover 46%;
+  }
+
+  .home-duel__product--right img {
+    animation-name: home-duel-lock-right;
+  }
+
+  .home-truth__register i {
+    animation: home-truth-register linear both;
+    animation-timeline: view(block);
+    animation-range: entry 0% cover 40%;
+  }
+}
+
+@media (min-width: 64rem) {
+  .home-truth-duel {
+    grid-template-columns: minmax(23rem, 4fr) minmax(0, 8fr);
+    align-items: stretch;
+  }
+
+  .home-truth {
+    grid-template-rows: auto auto minmax(15rem, 1fr);
+    padding-block: clamp(4rem, 8svh, 7rem);
+  }
+
+  .home-duel__arena {
+    min-block-size: min(64rem, 100svh);
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .home-truth {
+    gap: var(--space-5);
+  }
+
+  .home-truth__heading h2 {
+    max-inline-size: 10ch;
+    overflow-wrap: normal;
+    font-size: clamp(3.15rem, 13vw, 4.8rem);
+  }
+
+  .home-duel__arena {
+    min-block-size: 39rem;
+  }
+
+  .home-duel__product img {
+    block-size: clamp(17rem, 46svh, 24rem);
+  }
+
+  .home-duel__action {
+    inset-inline: var(--space-3);
+    inset-block-end: var(--space-3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-duel__product img,
+  .home-truth__register i {
+    animation: none;
+    transition: none;
+    scale: 1;
+  }
+}
+
+@keyframes home-duel-lock {
+  from {
+    transform: translateX(-28%) rotate(-13deg) scale(0.84);
+  }
+
+  to {
+    transform: translateX(7%) rotate(-7deg) scale(1);
+  }
+}
+
+@keyframes home-duel-lock-right {
+  from {
+    transform: translateX(28%) rotate(13deg) scale(0.84);
+  }
+
+  to {
+    transform: translateX(-7%) rotate(7deg) scale(1);
+  }
+}
+
+@keyframes home-truth-register {
+  from {
+    transform: scaleX(0.08);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}

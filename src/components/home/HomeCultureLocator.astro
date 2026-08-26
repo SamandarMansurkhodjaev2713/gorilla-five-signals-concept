@@ -1,0 +1,74 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+import type { SupportedLocale } from "@/config/site";
+import type { SiteCopy } from "@/features/site/copy";
+import { localePath, localize } from "@/features/site/localization";
+import "@/features/home-signal/home-tashkent-terminal.css";
+import "@/features/home-signal/home-tashkent-terminal-responsive.css";
+
+interface Props {
+  copy: SiteCopy;
+  culture: CollectionEntry<"culture">;
+  locale: SupportedLocale;
+}
+
+const { copy, culture, locale } = Astro.props;
+---
+
+<section
+  class="tashkent-terminal surface-paper"
+  data-motion-scene="culture-signal"
+>
+  <div class="tashkent-terminal__copy">
+    <p class="type-label" data-motion-reveal>06 / TASHKENT</p>
+    <h2 data-motion-home-culture-heading data-motion-reveal>
+      {localize(culture.data.title, locale)}
+    </h2>
+    <p class="type-body-lg" data-motion-reveal>
+      {localize(culture.data.body, locale)}
+    </p>
+    <a
+      class="control control--on-paper"
+      href={localePath(locale, "/culture")}
+      data-motion-reveal
+    >
+      {copy.navigation.culture}
+    </a>
+  </div>
+
+  <div
+    class="tashkent-terminal__field"
+    aria-hidden="true"
+    data-motion-home-culture-poster
+    data-motion-reveal
+  >
+    <span class="tashkent-terminal__word">TASHKENT</span>
+    <span class="tashkent-terminal__coordinate">41.2995° N</span>
+    <span class="tashkent-terminal__coordinate">69.2401° E</span>
+    <span class="tashkent-terminal__route">
+      <i></i><i></i><i></i><i></i><i></i>
+    </span>
+    <strong>UZ / 05 SIGNALS</strong>
+  </div>
+
+  <a
+    class="tashkent-terminal__locator"
+    href={localePath(locale, "/find")}
+    data-motion-scene="store-locator"
+    data-motion-result
+  >
+    <span
+      class="tashkent-terminal__grid"
+      aria-hidden="true"
+      data-motion-home-locator-field></span>
+    <span
+      class="tashkent-terminal__marker"
+      aria-hidden="true"
+      data-motion-home-locator-marker></span>
+    <span class="type-label">07 / TASHKENT</span>
+    <strong>{copy.navigation.find}</strong>
+    <small>{copy.findIntro}</small>
+    <b aria-hidden="true">↗</b>
+  </a>
+</section>

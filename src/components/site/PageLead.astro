@@ -1,0 +1,57 @@
+---
+interface Props {
+  eyebrow: string;
+  intro: string;
+  title: string;
+  variant?: "cinematic" | "task";
+}
+
+const { eyebrow, intro, title, variant = "cinematic" } = Astro.props;
+---
+
+<header class:list={["page-lead", `page-lead--${variant}`]} data-page-lead>
+  <p class="type-label">{eyebrow}</p>
+  <h1 class="type-display">{title}</h1>
+  <p class="type-body-lg measure-compact">{intro}</p>
+</header>
+
+<style>
+  .page-lead {
+    display: grid;
+    min-block-size: min(44rem, calc(100svh - var(--size-header)));
+    grid-template-columns: minmax(0, 1fr);
+    align-content: end;
+    gap: var(--space-5);
+    padding: var(--space-8) var(--space-gutter);
+    border-block-end: var(--size-rule-hairline) solid var(--color-border-subtle);
+  }
+
+  .page-lead > * {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+
+  .page-lead--task {
+    min-block-size: min(30rem, 52svh);
+  }
+
+  .page-lead .type-label {
+    color: var(--color-signal-brand);
+  }
+
+  .page-lead .type-display {
+    max-inline-size: min(11ch, 100%);
+    overflow-wrap: anywhere;
+  }
+
+  .page-lead .type-body-lg {
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 48rem) {
+    .page-lead--task {
+      min-block-size: min(22rem, 42svh);
+      padding-block: var(--space-6);
+    }
+  }
+</style>

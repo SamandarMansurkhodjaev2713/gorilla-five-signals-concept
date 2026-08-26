@@ -1,0 +1,190 @@
+---
+import "@/styles/global.css";
+
+import { getCollection } from "astro:content";
+import { ClientRouter } from "astro:transitions";
+
+import ResponsibleEntry from "@/components/site/ResponsibleEntry.astro";
+import RouteSignal from "@/components/site/RouteSignal.astro";
+import SiteFooter from "@/components/site/SiteFooter.astro";
+import SiteHeader from "@/components/site/SiteHeader.astro";
+import { parsePublicEnvironment } from "@/config/environment";
+import { createRobotsMeta } from "@/config/release";
+import {
+  siteConfig,
+  SUPPORTED_LOCALES,
+  type SupportedLocale,
+} from "@/config/site";
+import { createCanonicalHref } from "@/features/site/canonical";
+import { withBasePath, withoutBasePath } from "@/features/site/base-path";
+import { getSiteCopy } from "@/features/site/copy";
+import { localize, replaceLocale } from "@/features/site/localization";
+
+interface Props {
+  description?: string;
+  lang?: SupportedLocale;
+  noIndex?: boolean;
+  showChrome?: boolean;
+  title?: string;
+}
+
+const environment = parsePublicEnvironment(import.meta.env);
+const {
+  description = siteConfig.description,
+  lang = environment.defaultLocale,
+  noIndex = false,
+  showChrome = true,
+  title = siteConfig.title,
+} = Astro.props;
+const copy = getSiteCopy(lang);
+const canonicalUrl = createCanonicalHref(Astro.url.pathname, Astro.site);
+const robots = noIndex
+  ? "noindex, nofollow"
+  : createRobotsMeta(environment.releaseMode);
+const THEME_COLOR = "#050605";
+const CONTENT_SECURITY_POLICY =
+  "default-src 'self'; base-uri 'self'; connect-src 'self'; font-src 'self'; form-action 'self'; img-src 'self' data:; media-src 'self'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'";
+const REFERRER_POLICY = "strict-origin-when-cross-origin";
+const SOCIAL_IMAGE_WIDTH = 1732;
+const SOCIAL_IMAGE_HEIGHT = 908;
+const socialImage = (
+  await getCollection(
+    "media",
+    ({ data }) => data.mediaId === "media-social-card-five-signals",
+  )
+)[0];
+
+if (socialImage === undefined || socialImage.data.alt === null) {
+  throw new Error("The inspected social-card media record is missing.");
+}
+const socialImageUrl =
+  Astro.site === undefined
+    ? withBasePath(socialImage.data.path)
+    : new URL(withBasePath(socialImage.data.path), Astro.site);
+const localizedNavigationUrl = `${Astro.url.pathname}${Astro.url.search}`;
+const pathSegments = withoutBasePath(Astro.url.pathname)
+  .split("/")
+  .filter(Boolean);
+const responsibleEntryEnabled =
+  showChrome &&
+  SUPPORTED_LOCALES.some((locale) => locale === pathSegments.at(0)) &&
+  pathSegments.at(1) !== "legal";
+const responsibleWarning = responsibleEntryEnabled
+  ? (await getCollection("legal")).find(
+      ({ data }) => data.documentId === "responsible-use",
+    )
+  : undefined;
+
+if (responsibleEntryEnabled && responsibleWarning === undefined) {
+  throw new Error("Responsible entry requires approved warning content.");
+}
+const fontPreloads = [
+  withBasePath("/fonts/oswald/oswald-latin-variable.woff2"),
+  withBasePath("/fonts/onest/onest-latin-variable.woff2"),
+  ...(lang === "ru"
+    ? [
+        withBasePath("/fonts/oswald/oswald-cyrillic-variable.woff2"),
+        withBasePath("/fonts/onest/onest-cyrillic-variable.woff2"),
+      ]
+    : []),
+];
+---
+
+<!doctype html>
+<html lang={lang} transition:animate="none">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content={CONTENT_SECURITY_POLICY}
+    />
+    <meta name="referrer" content={REFERRER_POLICY} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content={THEME_COLOR} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content={lang} />
+    <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:image:width" content={String(SOCIAL_IMAGE_WIDTH)} />
+    <meta property="og:image:height" content={String(SOCIAL_IMAGE_HEIGHT)} />
+    <meta property="og:image:type" content="image/png" />
+    <meta
+      property="og:image:alt"
+      content={localize(socialImage.data.alt, lang)}
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={socialImageUrl} />
+    <link rel="icon" href={withBasePath("/favicon.svg")} type="image/svg+xml" />
+    <link rel="manifest" href={withBasePath("/site.webmanifest")} />
+    {
+      fontPreloads.map((href) => (
+        <link
+          rel="preload"
+          href={href}
+          as="font"
+          type="font/woff2"
+          crossorigin="anonymous"
+        />
+      ))
+    }
+    <title>{title}</title>
+    <link rel="canonical" href={canonicalUrl} />
+    {
+      SUPPORTED_LOCALES.map((locale) => (
+        <link
+          rel="alternate"
+          hreflang={locale}
+          href={createCanonicalHref(
+            replaceLocale(Astro.url.pathname, locale),
+            Astro.site,
+          )}
+        />
+      ))
+    }
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={createCanonicalHref(
+        replaceLocale(Astro.url.pathname, "uz"),
+        Astro.site,
+      )}
+    />
+    <slot name="head" />
+    <ClientRouter fallback="swap" />
+    <script>
+      import "@/scripts/motion-runtime";
+      import "@/scripts/route-lifecycle";
+    </script>
+  </head>
+  <body>
+    <RouteSignal />
+    <a class="skip-link" href="#main-content">{copy.skip}</a>
+    {
+      showChrome && (
+        <SiteHeader locale={lang} pathname={localizedNavigationUrl} />
+      )
+    }
+    {
+      responsibleEntryEnabled && responsibleWarning !== undefined && (
+        <ResponsibleEntry
+          copy={copy}
+          locale={lang}
+          pathname={localizedNavigationUrl}
+          warning={localize(responsibleWarning.data.body, lang)}
+        />
+      )
+    }
+    <main id="main-content" tabindex="-1" data-route-content>
+      <slot />
+    </main>
+    {
+      showChrome && (
+        <SiteFooter locale={lang} pathname={localizedNavigationUrl} />
+      )
+    }
+  </body>
+</html>

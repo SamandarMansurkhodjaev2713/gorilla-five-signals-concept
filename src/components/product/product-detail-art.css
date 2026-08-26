@@ -1,0 +1,107 @@
+.product-detail .flavor-art {
+  --detail-field-transform: none;
+
+  position: absolute;
+  z-index: 0;
+  inset: 2% 3%;
+  overflow: clip;
+  pointer-events: none;
+}
+
+.product-detail .flavor-art__field,
+.product-detail .flavor-art__field::before,
+.product-detail .flavor-art__field::after,
+.product-detail .flavor-art__line,
+.product-detail .flavor-art__orbit,
+.product-detail .flavor-art__core,
+.product-detail .flavor-art__word,
+.product-detail .flavor-art__index {
+  position: absolute;
+}
+
+.product-detail .flavor-art__field {
+  inset: 5%;
+  transform: var(--detail-field-transform);
+  transition: transform var(--motion-duration-standard) var(--motion-ease-enter);
+}
+
+.product-detail .flavor-art__field::before,
+.product-detail .flavor-art__field::after {
+  inset: 0;
+  content: "";
+}
+
+.product-detail .flavor-art__line {
+  display: block;
+  background: var(--flavor-signal);
+}
+
+.product-detail .flavor-art__orbit {
+  display: block;
+  border: var(--size-rule-hairline) solid
+    color-mix(in srgb, var(--flavor-signal) 72%, white);
+  border-radius: var(--radius-pill);
+}
+
+.product-detail .flavor-art__word,
+.product-detail .flavor-art__index {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: var(--tracking-display);
+  line-height: var(--line-height-solid);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.product-detail .flavor-art__index {
+  inset-block-end: 0;
+  inset-inline-start: 0;
+  color: color-mix(in srgb, var(--flavor-signal) 18%, transparent);
+  font-size: clamp(10rem, 42vw, 26rem);
+}
+
+.product-detail .flavor-art__word {
+  color: color-mix(in srgb, var(--flavor-signal) 24%, transparent);
+  font-size: clamp(4.5rem, 14vw, 10rem);
+}
+
+.product-detail .flavor-art__word--primary {
+  inset-block-start: 2%;
+  inset-inline-start: 0;
+}
+
+.product-detail .flavor-art__word--echo {
+  inset-block-end: 3%;
+  inset-inline-end: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html[data-motion-tier="full"]
+    .product-detail
+    .product-hero:hover
+    .flavor-art__field {
+    transform: var(--detail-field-transform) translateY(-0.5rem);
+  }
+}
+
+@media (max-width: 63.9375rem) {
+  .product-detail .flavor-art__word {
+    font-size: clamp(3.5rem, 20vw, 7rem);
+  }
+
+  .product-detail .flavor-art__index {
+    font-size: clamp(9rem, 48vw, 15rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-detail .flavor-art__field {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .product-detail .flavor-art {
+    display: none;
+  }
+}

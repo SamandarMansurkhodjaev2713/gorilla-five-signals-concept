@@ -1,0 +1,11 @@
+{
+  "accentToken": "--color-marker-tropical",
+  "flavorId": "mango-coconut",
+  "name": {
+    "en": "Mango–Coconut",
+    "ru": "Манго — Кокос",
+    "uz": "Mango–Kokos"
+  },
+  "productSlug": "mango-coconut",
+  "status": "draft"
+}

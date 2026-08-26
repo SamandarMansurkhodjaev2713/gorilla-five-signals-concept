@@ -1,0 +1,11 @@
+{
+  "evidencePath": "docs/content/SOURCE_REGISTRY.md#src-gorilla-uz-products-uz-001",
+  "kind": "brand-record",
+  "market": "UZ",
+  "reference": "https://core.gorillaenergy.com/api/products?page%5Ball%5D=1&filter%5Bpublish%5D=1&filter%5Bsite_version%5D=9 | Accept-Language: uz",
+  "sourceId": "gorilla-products-uz-2026",
+  "status": "brand-approved",
+  "title": "Gorilla Uzbekistan official product API snapshot — Uzbek",
+  "verifiedAt": "2026-07-26",
+  "verifiedBy": "content-strategy-audit"
+}

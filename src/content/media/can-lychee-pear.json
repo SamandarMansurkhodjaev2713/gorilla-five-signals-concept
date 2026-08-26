@@ -1,0 +1,27 @@
+{
+  "alt": {
+    "en": "Front view of a Gorilla Lychee–Pear can with pink graphics",
+    "ru": "Вид спереди на банку Gorilla Личи — Груша с розовой графикой",
+    "uz": "Pushti grafikali Gorilla Lichi–Nok bankasining old ko‘rinishi"
+  },
+  "checksumSha256": "42c8ac292d2d2f28914a442e400432d362a158f14e42d551c0cf10044451f4ee",
+  "decorative": false,
+  "derivatives": [
+    {
+      "checksumSha256": "e6e3ddefb968488622e0a1892352d299b8969bffa4934febb117910fc210506a",
+      "path": "/media/generated/products/can-lychee-pear-320.webp"
+    },
+    {
+      "checksumSha256": "110b7d279da4f9b9531d86ea5825187ea140beb6cf346fea85d016e16b2559bd",
+      "path": "/media/generated/products/can-lychee-pear-480.webp"
+    }
+  ],
+  "kind": "image",
+  "license": "Brand-use permission confirmed by the project owner on 2026-07-26",
+  "mediaId": "media-can-lychee-pear",
+  "owner": "Gorilla Energy asset rights holder",
+  "path": "/media/generated/products/can-lychee-pear.webp",
+  "permissionEvidence": "PERM-USER-2026-07-26; docs/content/ASSET_PROVENANCE.md#release-registered-generated-derivatives",
+  "sourceUrl": "https://www.gorillaenergy.uz/img/products_big_can_lychee.21654ae1.png",
+  "territories": ["UZ"]
+}

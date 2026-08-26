@@ -1,0 +1,105 @@
+---
+import WarningPanel from "@/components/site/WarningPanel.astro";
+import type { SupportedLocale } from "@/config/site";
+import type { ProductView } from "@/features/site/catalog";
+import type { SiteCopy } from "@/features/site/copy";
+import { localePath } from "@/features/site/localization";
+import "@/features/home-signal/home-truth-duel.css";
+import "@/features/home-signal/home-truth-duel-responsive.css";
+
+interface Props {
+  copy: SiteCopy;
+  locale: SupportedLocale;
+  products: readonly ProductView[];
+  warning: string;
+}
+
+const { copy, locale, products, warning } = Astro.props;
+const firstProduct = products.at(0);
+const lastProduct = products.at(-1);
+
+if (firstProduct === undefined || lastProduct === undefined) {
+  throw new Error("The homepage signal duel requires approved products.");
+}
+---
+
+<div class="home-truth-duel surface-paper">
+  <section class="home-truth" data-motion-scene="product-lab">
+    <span class="home-truth__handoff" aria-hidden="true"></span>
+    <div class="home-truth__heading" data-motion-copy data-motion-reveal>
+      <p class="type-label">04 / {copy.productTruth}</p>
+      <h2>{copy.productInfo}</h2>
+      <p class="type-body-lg">{copy.compareIntro}</p>
+      <a
+        class="control control--on-paper"
+        href={localePath(locale, "/legal/product-information")}
+      >
+        {copy.productInfo}
+      </a>
+    </div>
+
+    <ol class="home-truth__register" aria-label={copy.allProducts}>
+      {
+        products.map((product, index) => (
+          <li data-flavor={product.slug} data-motion-reveal>
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <strong>{product.name}</strong>
+            <i aria-hidden="true" />
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="home-truth__responsibility" data-motion-reveal>
+      <span class="home-truth__age" aria-hidden="true">18+</span>
+      <WarningPanel label={copy.warning} text={warning} />
+    </div>
+  </section>
+
+  <section class="home-duel" data-motion-scene="product-compare">
+    <a
+      class="home-duel__arena"
+      href={localePath(locale, "/compare")}
+      aria-label={`${copy.navigation.compare}: ${firstProduct.name} / ${lastProduct.name}`}
+      data-motion-reveal
+    >
+      <span class="home-duel__frequency" aria-hidden="true">01</span>
+      <div class="home-duel__product home-duel__product--left">
+        <img
+          src={firstProduct.imagePath}
+          srcset={firstProduct.imageSrcSet}
+          sizes="(min-width: 64rem) 20rem, 11rem"
+          width={firstProduct.width}
+          height={firstProduct.height}
+          alt=""
+          loading="lazy"
+          decoding="async"
+        />
+        <strong>{firstProduct.name}</strong>
+      </div>
+
+      <span class="home-duel__beam" aria-hidden="true"></span>
+
+      <div class="home-duel__product home-duel__product--right">
+        <img
+          src={lastProduct.imagePath}
+          srcset={lastProduct.imageSrcSet}
+          sizes="(min-width: 64rem) 20rem, 11rem"
+          width={lastProduct.width}
+          height={lastProduct.height}
+          alt=""
+          loading="lazy"
+          decoding="async"
+        />
+        <strong>{lastProduct.name}</strong>
+      </div>
+      <span class="home-duel__frequency" aria-hidden="true">05</span>
+
+      <span class="home-duel__action">
+        <small>04—05 / {copy.navigation.compare}</small>
+        <b>{copy.navigation.compare}</b>
+        <i aria-hidden="true">↗</i>
+      </span>
+    </a>
+  </section>
+</div>

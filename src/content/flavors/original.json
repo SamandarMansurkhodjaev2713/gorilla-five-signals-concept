@@ -1,0 +1,11 @@
+{
+  "accentToken": "--color-marker-original",
+  "flavorId": "original",
+  "name": {
+    "en": "Original",
+    "ru": "Оригинал",
+    "uz": "Asl"
+  },
+  "productSlug": "original",
+  "status": "draft"
+}

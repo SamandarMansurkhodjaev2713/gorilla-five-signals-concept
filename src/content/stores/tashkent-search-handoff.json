@@ -1,0 +1,16 @@
+{
+  "address": {
+    "en": "Tashkent city centre is search context only; this is not a store address.",
+    "ru": "Центр Ташкента указан только как область поиска; это не адрес магазина.",
+    "uz": "Toshkent markazi faqat qidiruv hududi sifatida ko‘rsatilgan; bu do‘kon manzili emas."
+  },
+  "coordinates": {
+    "latitude": 41.2994958,
+    "longitude": 69.2400734
+  },
+  "name": "Tashkent map-search handoff — no verified retailer list",
+  "retailerUrl": "https://www.google.com/maps/search/?api=1&query=Gorilla%20Energy%20Tashkent",
+  "status": "temporarily-unavailable",
+  "storeId": "tashkent-search-handoff",
+  "verifiedAt": "2026-07-26"
+}

@@ -1,0 +1,11 @@
+{
+  "evidencePath": "docs/content/SOURCE_REGISTRY.md#src-gorilla-uz-cities-001",
+  "kind": "brand-record",
+  "market": "UZ",
+  "reference": "https://core.gorillaenergy.com/api/cities?page%5Ball%5D=1 | country.code=uz",
+  "sourceId": "gorilla-cities-uz-2026",
+  "status": "brand-approved",
+  "title": "Gorilla official cities API snapshot — Uzbekistan",
+  "verifiedAt": "2026-07-26",
+  "verifiedBy": "content-strategy-audit"
+}
