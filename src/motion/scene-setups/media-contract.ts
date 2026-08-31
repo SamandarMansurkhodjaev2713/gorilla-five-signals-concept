@@ -14,7 +14,6 @@ export interface PlaybackSession {
   inProximity: boolean;
   phase: "active" | "destroyed";
   playbackTimeoutId: number | null;
-  resumeAfterVisibility: boolean;
 }
 
 export type MediaControllerPolicy =
@@ -32,6 +31,5 @@ export function createPlaybackSession(
     inProximity: false,
     phase: "active",
     playbackTimeoutId: null,
-    resumeAfterVisibility: false,
   };
 }

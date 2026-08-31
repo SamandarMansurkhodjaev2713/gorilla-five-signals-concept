@@ -2,7 +2,7 @@
 
 - Objective: complete and release the approved Gorilla Uzbekistan product experience
 - Started: 2026-07-26
-- Last updated: 2026-08-10
+- Last updated: 2026-08-31
 - Source of truth: `docs/product/GORILLA_MASTER_PLAN.md`
 
 Statuses: `[ ]` pending, `[~]` active, `[x]` evidence-complete, `[!]`
@@ -73,8 +73,11 @@ environment/external evidence blocked.
 - [!] Signed-in post-deploy application smoke may require owner authentication.
 - [x] The project owner explicitly authorized public GitHub and Pages promotion
       on 2026-08-26.
-- [ ] The first Pages workflow must complete and its public URL must pass route,
-      asset, locale, responsible-entry, metadata, and console smoke checks.
+- [x] The first Pages workflow completed and its public URL passed route, asset,
+      locale, responsible-entry, metadata, and console smoke checks.
+- [~] The Awwwards rebuild is active on `codex/awwwards-rebuild`; homepage and
+  global-motion milestones pass current source and Chromium gates, while
+  Product Atlas, Compare, and detail-world art direction remain open.
 - [!] Seventy-two-hour monitoring starts only after a future public promotion.
 
 ## Operating rule

@@ -1,84 +1,141 @@
 @media (min-width: 48rem) {
-  .home-material-film__stage,
-  .home-material-film__poster,
-  .home-material-film__stage video,
-  .home-material-film__stage img {
-    aspect-ratio: 16 / 9;
+  .home-material-film__stage {
+    block-size: clamp(46rem, 100svh, 64rem);
   }
 
-  .home-material-film__crosshair {
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    align-items: end;
-  }
-}
-
-@media (min-width: 64rem) {
-  .home-material-film {
-    min-block-size: min(64rem, 100svh);
+  .home-material-film__stage::before {
+    background:
+      linear-gradient(
+        180deg,
+        rgb(5 6 5 / 46%) 0,
+        transparent 28% 66%,
+        rgb(5 6 5 / 76%) 100%
+      ),
+      linear-gradient(90deg, rgb(5 6 5 / 76%) 0, transparent 56%);
   }
 
   .home-material-film__copy {
-    position: absolute;
-    z-index: 6;
-    inset: auto auto clamp(2rem, 6svh, 5rem) var(--space-gutter);
-    inline-size: min(25rem, 29vw);
-    padding: 0;
-    background: transparent;
+    inset: auto auto clamp(4.5rem, 9svh, 7rem) var(--space-gutter);
+    inline-size: min(41rem, 53vw);
   }
 
   .home-material-film__copy-inner {
-    padding: var(--space-5);
-    border-inline-start: 0.42rem solid var(--color-brand-lime);
-    background: rgb(5 6 5 / 88%);
-    box-shadow: 1.25rem 1.25rem 0 rgb(5 6 5 / 24%);
+    max-inline-size: none;
   }
 
   .home-material-film__copy h2 {
     max-inline-size: 9ch;
-    font-size: clamp(3.2rem, 4.6vw, 5.25rem);
+    font-size: clamp(5.5rem, 10vw, 9.5rem);
   }
 
+  .home-material-film__crosshair {
+    inset: 46% var(--space-gutter) auto 56%;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-material-film__crosshair strong {
+    font-size: clamp(2.75rem, 5vw, 5.25rem);
+  }
+
+  .home-material-film__controls {
+    inset: auto var(--space-gutter) var(--space-5) auto;
+    justify-content: end;
+  }
+}
+
+@media (min-width: 80rem) {
+  .home-material-film__copy {
+    inline-size: min(47rem, 48vw);
+  }
+
+  .home-material-film__copy h2 {
+    font-size: clamp(6.5rem, 8vw, 10rem);
+  }
+
+  .home-material-film__copy .type-body-lg {
+    max-inline-size: 34ch;
+  }
+
+  .home-material-film__calibration {
+    inset-inline: var(--space-gutter);
+    inset-block-start: var(--space-5);
+  }
+
+  .home-material-film__crosshair {
+    inset-inline-start: 59%;
+  }
+}
+
+@media (max-width: 47.99rem) {
   .home-material-film__copy .type-body-lg {
     font-size: var(--font-size-body);
   }
 
-  .home-material-film__figure,
-  .home-material-film__stage,
-  .home-material-film__poster,
-  .home-material-film__stage video,
-  .home-material-film__stage img {
-    min-block-size: min(64rem, 100svh);
-    aspect-ratio: auto;
+  .home-material-film__crosshair strong {
+    max-inline-size: 9ch;
+  }
+}
+
+@media (max-width: 22.5rem) {
+  .home-material-film__copy {
+    inset-inline: var(--space-3);
   }
 
-  .home-material-film__controls {
-    position: absolute;
-    z-index: 6;
-    inset: auto var(--space-gutter) var(--space-6) auto;
-    justify-content: end;
-    padding: 0;
-  }
-
-  .home-material-film__calibration {
-    inset: var(--space-5);
+  .home-material-film__copy h2 {
+    font-size: clamp(3.2rem, 14vw, 4.5rem);
   }
 
   .home-material-film__crosshair {
-    inset: auto var(--space-gutter) 43% calc(var(--space-gutter) + 28rem);
+    inset-inline: var(--space-3);
+  }
+
+  .home-material-film__controls {
+    inset-inline: var(--space-3);
+  }
+}
+
+@media (min-width: 48rem) and (max-height: 32rem) {
+  .home-material-film__stage {
+    block-size: 30rem;
+  }
+
+  .home-material-film__copy {
+    inset: var(--space-8) auto auto var(--space-gutter);
+    inline-size: min(25rem, 47vw);
+  }
+
+  .home-material-film__copy h2 {
+    font-size: clamp(3.6rem, 7vw, 5rem);
+  }
+
+  .home-material-film__copy .type-body-lg {
+    font-size: var(--font-size-body-sm);
+  }
+
+  .home-material-film__crosshair {
+    inset: 45% var(--space-gutter) auto 58%;
+  }
+
+  .home-material-film__crosshair strong {
+    font-size: 2.75rem;
+  }
+
+  .home-material-film__controls {
+    inset-block-end: var(--space-3);
   }
 }
 
 @supports (animation-timeline: view()) {
   .home-material-film[data-motion-ready="full"] .home-material-film__aperture {
     animation: material-aperture linear both;
-    animation-timeline: view(block);
     animation-range: entry 0% cover 72%;
+    animation-timeline: view(block);
   }
 
   .home-material-film[data-motion-ready="full"] .home-material-film__scan {
     animation: material-scan linear both;
-    animation-timeline: view(block);
     animation-range: entry 0% exit 80%;
+    animation-timeline: view(block);
   }
 }
 
@@ -91,6 +148,13 @@
   .home-material-film__aperture,
   .home-material-film__scan {
     animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .home-material-film__controls .control,
+  .home-material-film__crosshair strong {
+    forced-color-adjust: none;
   }
 }
 

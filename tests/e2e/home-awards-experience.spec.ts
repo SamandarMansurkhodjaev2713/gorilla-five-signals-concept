@@ -100,11 +100,85 @@ test.describe("homepage authored chapter system", () => {
     );
     await expect(reactor.locator("[data-motion-selected]")).toHaveCount(1);
     await expect(reactor.locator("[data-reactor-leaving]")).toHaveCount(0);
+
+    await page.locator(".site-header > [data-motion-toggle]").click();
+    await expect(page.locator("html")).toHaveAttribute(
+      "data-motion-tier",
+      "reduced",
+    );
+    const residue = await reactor.evaluate((root) => {
+      const properties = [
+        "clip-path",
+        "opacity",
+        "rotate",
+        "scale",
+        "transform",
+        "translate",
+        "visibility",
+      ] as const;
+      return Array.from(
+        root.querySelectorAll<HTMLElement>(
+          "[data-reactor-world], [data-motion-product], [data-motion-copy], [data-reactor-material], [data-reactor-orbit], [data-reactor-shard], [data-reactor-word]",
+        ),
+      ).flatMap((element) =>
+        properties.filter(
+          (property) => element.style.getPropertyValue(property) !== "",
+        ),
+      );
+    });
+    expect(residue).toEqual([]);
   });
 });
 
 test.describe("homepage resilient baselines", () => {
   test.skip(({ browserName }) => browserName !== "chromium");
+
+  test("GIVEN Lite motion WHEN flavor changes THEN product continuity remains without material-field choreography", async ({
+    page,
+  }) => {
+    await page.addInitScript(() =>
+      localStorage.setItem("gorilla:motion-preference:v1", "lite"),
+    );
+    await page.setViewportSize(MOBILE_VIEWPORT);
+    await openHome(page, "lite");
+    const reactor = page.locator(".flavor-reactor");
+    await reactor.scrollIntoViewIfNeeded();
+    await expect(reactor).toHaveAttribute("data-motion-ready", "lite");
+
+    await reactor.locator('[data-product-selector="extra"]').click();
+
+    await expect(reactor).toHaveAttribute("data-selected-product", "extra");
+    await expect
+      .poll(() =>
+        reactor
+          .locator('[data-product-card="extra"] [data-motion-product]')
+          .evaluate((element) => element.getAttribute("style") ?? ""),
+      )
+      .not.toBe("");
+    const materialResidue = await reactor
+      .locator(
+        '[data-product-card="extra"] :is([data-reactor-material], [data-reactor-orbit], [data-reactor-shard])',
+      )
+      .evaluateAll((elements) => {
+        const properties = [
+          "clip-path",
+          "opacity",
+          "rotate",
+          "scale",
+          "transform",
+          "translate",
+          "visibility",
+        ];
+        return elements.flatMap((element) =>
+          properties.filter(
+            (property) =>
+              element instanceof HTMLElement &&
+              element.style.getPropertyValue(property) !== "",
+          ),
+        );
+      });
+    expect(materialResidue).toEqual([]);
+  });
 
   test("GIVEN reduced motion WHEN the homepage renders THEN spatial loops are absent and content remains available", async ({
     page,

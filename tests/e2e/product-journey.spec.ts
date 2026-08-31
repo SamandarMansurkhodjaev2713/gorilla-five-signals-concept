@@ -138,16 +138,67 @@ test.describe("responsible product journey", () => {
     await expect(explorer).toHaveAttribute("data-selected-product", "zero");
     await expect(explorer.locator("[data-reactor-current]")).toHaveText("02");
 
-    const box = await stage.boundingBox();
-    expect(box).not.toBeNull();
-    if (box !== null) {
-      await page.mouse.move(box.x + box.width * 0.78, box.y + box.height * 0.5);
-      await page.mouse.down();
-      await page.mouse.move(box.x + box.width * 0.2, box.y + box.height * 0.5);
-      await page.mouse.up();
-    }
+    await explorer.locator("[data-product-previous]").click();
+    await expect(explorer).toHaveAttribute("data-selected-product", "original");
+    await explorer.locator("[data-product-next]").click();
+    await expect(explorer).toHaveAttribute("data-selected-product", "zero");
+
+    await stage.evaluate((element) => {
+      element.setPointerCapture = (): void => undefined;
+      for (const [type, clientX] of [
+        ["pointerdown", 320],
+        ["pointermove", 120],
+        ["pointerup", 120],
+      ] as const) {
+        element.dispatchEvent(
+          new PointerEvent(type, {
+            bubbles: true,
+            clientX,
+            clientY: 160,
+            isPrimary: true,
+            pointerId: 70,
+            pointerType: "touch",
+          }),
+        );
+      }
+    });
 
     await expect(explorer).toHaveAttribute("data-selected-product", "extra");
+    await stage.evaluate((element) => {
+      element.setPointerCapture = (): void => undefined;
+      element.dispatchEvent(
+        new PointerEvent("pointerdown", {
+          bubbles: true,
+          clientX: 320,
+          clientY: 160,
+          isPrimary: true,
+          pointerId: 71,
+          pointerType: "touch",
+        }),
+      );
+      element.dispatchEvent(
+        new PointerEvent("pointermove", {
+          bubbles: true,
+          clientX: 120,
+          clientY: 160,
+          isPrimary: true,
+          pointerId: 71,
+          pointerType: "touch",
+        }),
+      );
+      element.dispatchEvent(
+        new PointerEvent("pointercancel", {
+          bubbles: true,
+          clientX: 120,
+          clientY: 160,
+          isPrimary: true,
+          pointerId: 71,
+          pointerType: "touch",
+        }),
+      );
+    });
+    await expect(explorer).toHaveAttribute("data-selected-product", "extra");
+    await expect(stage).not.toHaveAttribute("style", /reactor-drag/u);
     await expect(explorer.locator("[data-product-card]:visible")).toHaveCount(
       1,
     );
