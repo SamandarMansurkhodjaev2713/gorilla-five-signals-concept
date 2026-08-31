@@ -1,50 +1,65 @@
 .tashkent-terminal {
+  --terminal-line: rgb(244 244 237 / 24%);
   position: relative;
   display: grid;
   min-inline-size: 0;
   overflow: clip;
-  border-block-end: var(--size-rule-hairline) solid var(--color-ink-950);
+  border-block-end: var(--size-rule-hairline) solid var(--color-paper-50);
+  color: var(--color-text-primary);
+  background: var(--color-ink-950);
   isolation: isolate;
 }
 
 .tashkent-terminal::before {
   position: absolute;
-  z-index: 7;
-  inset-block-start: 0;
-  inset-inline-start: 50%;
-  inline-size: var(--size-rule-strong);
-  block-size: var(--space-8);
-  background: var(--color-brand-lime);
+  z-index: 8;
+  inset: 0 0 auto;
+  block-size: var(--size-rule-strong);
+  background: linear-gradient(
+    90deg,
+    var(--color-marker-original) 0 20%,
+    var(--color-marker-zero) 20% 40%,
+    var(--color-marker-extra) 40% 60%,
+    var(--color-marker-tropical) 60% 80%,
+    var(--color-marker-lychee) 80%
+  );
   content: "";
 }
 
 .tashkent-terminal__copy {
   position: relative;
-  z-index: 3;
+  z-index: 4;
   display: grid;
-  align-content: center;
+  align-content: start;
   gap: var(--space-4);
-  padding: var(--space-8) var(--space-gutter);
+  padding: var(--space-8) var(--space-gutter) var(--space-6);
 }
 
 .tashkent-terminal__copy h2 {
-  max-inline-size: 10ch;
+  max-inline-size: 8.5ch;
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(3.4rem, 8vw, 6.5rem);
+  font-size: clamp(4rem, 15vw, 6rem);
   font-weight: 700;
-  letter-spacing: -0.055em;
-  line-height: 0.84;
+  letter-spacing: -0.06em;
+  line-height: 0.78;
   text-transform: uppercase;
   text-wrap: balance;
 }
 
 .tashkent-terminal__copy > p {
-  max-inline-size: 39ch;
+  max-inline-size: 37ch;
+}
+
+.tashkent-terminal__copy .type-body-lg {
+  color: var(--color-text-secondary);
 }
 
 .tashkent-terminal__copy .control {
   justify-self: start;
+  border-color: var(--color-paper-50);
+  color: var(--color-paper-50);
+  background: transparent;
 }
 
 .tashkent-terminal__field {
@@ -55,31 +70,45 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-content: end;
   gap: var(--space-2);
-  padding: var(--space-5);
+  padding: var(--space-5) var(--space-gutter);
   color: var(--color-text-primary);
   background:
     linear-gradient(
       132deg,
-      transparent 0 51%,
-      rgb(145 212 1 / 82%) 51% 55%,
-      transparent 55%
+      transparent 0 52%,
+      rgb(145 212 1 / 78%) 52% 54%,
+      transparent 54%
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 4rem,
+      rgb(244 244 237 / 4%) 4rem calc(4rem + 1px)
     ),
     var(--color-ink-950);
   isolation: isolate;
 }
 
+.tashkent-terminal__field::after {
+  position: absolute;
+  inset: var(--space-4);
+  border-block: var(--size-rule-hairline) solid var(--terminal-line);
+  content: "";
+  pointer-events: none;
+}
+
 .tashkent-terminal__word {
   position: absolute;
   z-index: -1;
-  inset: 0 auto auto -0.04em;
-  color: var(--color-brand-lime);
+  inset: 14% auto auto -0.04em;
+  color: transparent;
   font-family: var(--font-display);
-  font-size: clamp(6rem, 19vw, 15rem);
+  font-size: clamp(6.5rem, 25vw, 16rem);
   font-weight: 700;
-  letter-spacing: -0.08em;
+  letter-spacing: -0.075em;
   line-height: 0.78;
-  opacity: 0.15;
-  writing-mode: vertical-rl;
+  opacity: 0.42;
+  -webkit-text-stroke: 1px var(--color-brand-lime);
+  white-space: nowrap;
 }
 
 .tashkent-terminal__coordinate,
@@ -91,7 +120,11 @@
 }
 
 .tashkent-terminal__coordinate {
-  font-size: clamp(1.35rem, 4vw, 2.7rem);
+  font-size: clamp(1.45rem, 4.8vw, 2.75rem);
+}
+
+.tashkent-terminal__coordinate:nth-of-type(3) {
+  text-align: end;
 }
 
 .tashkent-terminal__field strong {
@@ -103,7 +136,7 @@
 .tashkent-terminal__route {
   position: absolute;
   inset: 13% 8% 24%;
-  border: var(--size-rule-hairline) solid rgb(244 244 237 / 28%);
+  border: var(--size-rule-hairline) solid rgb(244 244 237 / 32%);
   clip-path: polygon(
     4% 64%,
     28% 18%,
@@ -148,18 +181,17 @@
 
 .tashkent-terminal__locator {
   position: relative;
-  z-index: 4;
+  z-index: 5;
   display: grid;
-  min-block-size: 27rem;
+  min-block-size: 24rem;
   overflow: clip;
-  place-content: center;
+  align-content: end;
   gap: var(--space-3);
-  padding: var(--space-6);
-  border: var(--size-rule-strong) solid var(--color-brand-lime);
+  padding: var(--space-6) var(--space-gutter);
+  border-block: var(--size-rule-strong) solid var(--color-brand-lime);
   color: var(--color-text-primary);
-  background: rgb(5 6 5 / 96%);
+  background: rgb(5 6 5 / 94%);
   isolation: isolate;
-  text-align: center;
   text-decoration: none;
 }
 
@@ -190,10 +222,10 @@
 .tashkent-terminal__marker {
   position: absolute;
   z-index: -1;
-  inset: 50% auto auto 50%;
-  inline-size: clamp(8rem, 18vw, 16rem);
-  block-size: clamp(8rem, 18vw, 16rem);
-  border: var(--size-rule-strong) solid var(--color-brand-lime);
+  inset: 42% auto auto 74%;
+  inline-size: clamp(8rem, 25vw, 16rem);
+  block-size: clamp(8rem, 25vw, 16rem);
+  border: var(--size-rule-hairline) solid var(--color-brand-lime);
   border-radius: 50%;
   box-shadow:
     0 0 0 1.5rem rgb(145 212 1 / 8%),
@@ -201,18 +233,37 @@
   transform: translate(-50%, -50%);
 }
 
+.tashkent-terminal__marker::before,
+.tashkent-terminal__marker::after {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  background: var(--color-brand-lime);
+  content: "";
+  transform: translate(-50%, -50%);
+}
+
+.tashkent-terminal__marker::before {
+  inline-size: 140%;
+  block-size: var(--size-rule-hairline);
+}
+
+.tashkent-terminal__marker::after {
+  inline-size: var(--size-rule-hairline);
+  block-size: 140%;
+}
+
 .tashkent-terminal__locator > strong {
-  max-inline-size: 10ch;
+  max-inline-size: 9ch;
   font-family: var(--font-display);
-  font-size: clamp(3.2rem, 8vw, 6.5rem);
-  line-height: 0.84;
+  font-size: clamp(3.4rem, 13vw, 6.7rem);
+  letter-spacing: -0.055em;
+  line-height: 0.78;
   text-transform: uppercase;
   text-wrap: balance;
 }
 
 .tashkent-terminal__locator > small {
-  max-inline-size: 36ch;
-  justify-self: center;
+  max-inline-size: 38ch;
   color: var(--color-text-secondary);
   font-size: var(--font-size-body);
 }

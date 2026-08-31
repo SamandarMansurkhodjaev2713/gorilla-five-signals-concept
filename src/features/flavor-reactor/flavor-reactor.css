@@ -2,24 +2,25 @@
   --reactor-signal: var(--color-marker-original);
   --reactor-surface: color-mix(
     in srgb,
-    var(--reactor-signal) 11%,
+    var(--reactor-signal) 8%,
     var(--color-ink-950)
   );
   --reactor-border: color-mix(
     in srgb,
-    var(--reactor-signal) 46%,
+    var(--reactor-signal) 42%,
     var(--color-border-subtle)
   );
-  --reactor-control-size: 3rem;
+  --reactor-control-size: var(--size-control-min);
   --reactor-drag-x: 0px;
-  --reactor-stage-min: 43rem;
+  --reactor-stage-min: 42rem;
+  --reactor-can-size: min(55svh, 31rem);
 
   position: relative;
   min-block-size: 100svh;
+  overflow: clip;
   color: var(--color-text-primary);
   background: var(--reactor-surface);
   isolation: isolate;
-  overflow: clip;
   transition: background var(--motion-duration-scene)
     var(--motion-ease-material);
 }
@@ -33,8 +34,6 @@
   background: var(--reactor-signal);
   content: "";
   transform: translateX(-50%);
-  transition: background var(--motion-duration-standard)
-    var(--motion-ease-enter);
 }
 
 .flavor-reactor[data-selected-product="zero"] {
@@ -57,59 +56,58 @@
   position: relative;
   display: grid;
   min-block-size: 100svh;
-  grid-template-rows: auto auto minmax(0, 1fr);
-  padding: var(--space-5) var(--space-gutter);
+  grid-template-rows: auto minmax(var(--reactor-stage-min), 1fr) auto auto;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-gutter) var(--space-4);
 }
 
 .reactor-intro {
   position: relative;
-  z-index: var(--z-content);
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: end;
-  gap: var(--space-2) var(--space-4);
-  border-block-start: var(--size-rule-hairline) solid var(--reactor-border);
+  z-index: var(--z-sticky);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
   padding-block-start: var(--space-3);
+  border-block-start: var(--size-rule-hairline) solid var(--reactor-border);
 }
 
 .reactor-intro .type-label {
+  flex: none;
   color: color-mix(in srgb, var(--reactor-signal) 76%, white);
 }
 
 .reactor-intro h2 {
-  grid-column: 1 / -1;
-  max-inline-size: 12ch;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.24em;
   margin: 0;
+  color: var(--color-text-secondary);
   font-family: var(--font-display);
-  font-size: clamp(3.5rem, 1.4rem + 10vw, 7.5rem);
+  font-size: clamp(1.25rem, 2.15vw, 2.25rem);
   font-weight: 700;
-  letter-spacing: var(--tracking-display);
-  line-height: 0.82;
-  overflow-wrap: normal;
+  letter-spacing: -0.035em;
+  line-height: 0.9;
+  text-align: end;
   text-transform: uppercase;
 }
 
-.reactor-intro__code {
-  margin: 0;
-  color: var(--color-text-secondary);
-  font-family: var(--font-data);
-  font-size: var(--font-size-label);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
+.reactor-intro h2 span:last-child {
+  color: var(--reactor-signal);
 }
 
 .reactor-console {
   position: relative;
-  z-index: var(--z-content);
+  z-index: var(--z-sticky);
   display: grid;
-  gap: var(--space-3);
-  padding-block: var(--space-4);
+  grid-row: 3;
+  gap: var(--space-2);
 }
 
 .selector-list {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  border: var(--size-rule-hairline) solid var(--reactor-border);
+  border-block: var(--size-rule-hairline) solid var(--reactor-border);
 }
 
 .signal-selector {
@@ -117,20 +115,19 @@
   display: grid;
   min-inline-size: 0;
   min-block-size: var(--reactor-control-size);
-  align-content: center;
-  gap: var(--space-1);
-  padding: var(--space-2);
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
   border: 0;
   border-inline-end: var(--size-rule-hairline) solid var(--reactor-border);
   color: var(--color-text-secondary);
-  background: color-mix(in srgb, var(--color-ink-950) 72%, transparent);
+  background: transparent;
   font-family: var(--font-data);
   text-align: start;
   cursor: pointer;
   touch-action: manipulation;
-  transition:
-    color var(--motion-duration-quick) var(--motion-ease-enter),
-    background var(--motion-duration-standard) var(--motion-ease-enter);
+  transition: color var(--motion-duration-quick) var(--motion-ease-enter);
 }
 
 .signal-selector:last-child {
@@ -139,23 +136,23 @@
 
 .signal-selector__index {
   color: color-mix(in srgb, var(--flavor-signal) 78%, white);
-  font-size: var(--font-size-caption);
+  font-size: var(--font-size-label);
   font-variant-numeric: tabular-nums;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .signal-selector__name {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
   overflow: hidden;
-  font-size: var(--font-size-label);
-  text-overflow: ellipsis;
-  text-transform: uppercase;
+  clip-path: inset(50%);
   white-space: nowrap;
 }
 
 .signal-selector__meter {
   position: absolute;
-  inset-inline: 0;
-  inset-block-end: 0;
+  inset: auto var(--space-3) 0;
   block-size: var(--size-rule-strong);
   background: var(--flavor-signal);
   transform: scaleX(0);
@@ -166,11 +163,6 @@
 .signal-selector:is(:hover, :focus-visible),
 .signal-selector[aria-pressed="true"] {
   color: var(--color-text-primary);
-  background: color-mix(
-    in srgb,
-    var(--flavor-signal) 18%,
-    var(--color-ink-950)
-  );
 }
 
 .signal-selector[aria-pressed="true"] .signal-selector__meter {
@@ -181,7 +173,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-3);
 }
 
 .reactor-step {
@@ -190,8 +182,8 @@
   align-items: center;
   justify-content: flex-start;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  border: var(--size-rule-hairline) solid var(--reactor-border);
+  padding: var(--space-2) 0;
+  border: 0;
   color: var(--color-text-primary);
   background: transparent;
   font-family: var(--font-data);
@@ -214,11 +206,19 @@
   stroke-linecap: square;
   stroke-linejoin: miter;
   stroke-width: 1.5;
+  transition: translate var(--motion-duration-quick) var(--motion-ease-enter);
 }
 
 .reactor-step:is(:hover, :focus-visible) {
-  border-color: var(--reactor-signal);
   color: var(--reactor-signal);
+}
+
+.reactor-step:first-child:is(:hover, :focus-visible) svg {
+  translate: -0.25rem 0;
+}
+
+.reactor-step--next:is(:hover, :focus-visible) svg {
+  translate: 0.25rem 0;
 }
 
 .reactor-progress {
@@ -232,14 +232,16 @@
 
 .reactor-progress [data-reactor-current] {
   color: var(--reactor-signal);
-  font-size: var(--font-size-body-lg);
-  font-weight: 700;
+  font-size: var(--font-size-title-sm);
+  font-weight: 800;
 }
 
 .reactor-stage {
   position: relative;
   z-index: var(--z-base);
+  grid-row: 2;
   min-block-size: var(--reactor-stage-min);
+  overflow: clip;
   outline: none;
   transform: translate3d(var(--reactor-drag-x), 0, 0);
   touch-action: pan-y;
@@ -247,7 +249,7 @@
 
 .reactor-stage:focus-visible {
   outline: var(--size-rule-strong) solid var(--color-focus-on-dark);
-  outline-offset: var(--space-1);
+  outline-offset: calc(-1 * var(--space-1));
 }
 
 .reactor-worlds,
@@ -263,7 +265,7 @@
 .reactor-world {
   position: relative;
   display: grid;
-  grid-template-rows: minmax(20rem, 1fr) auto;
+  grid-template-rows: minmax(24rem, 1fr) auto;
   overflow: clip;
 }
 
@@ -295,18 +297,15 @@
 }
 
 .comparison-tray {
-  position: absolute;
-  z-index: var(--z-sticky);
-  inset-inline: var(--space-gutter);
-  inset-block-end: var(--space-4);
-  display: flex;
+  position: relative;
+  z-index: var(--z-content);
+  display: grid;
+  grid-row: 4;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-3);
-  padding: var(--space-3);
-  border: var(--size-rule-hairline) solid var(--reactor-border);
-  background: color-mix(in srgb, var(--color-ink-950) 94%, transparent);
-  box-shadow: 0 1rem 3rem rgb(0 0 0 / 45%);
+  padding-block-start: var(--space-3);
+  border-block-start: var(--size-rule-hairline) solid var(--reactor-border);
 }
 
 .comparison-tray[hidden] {
@@ -314,15 +313,26 @@
 }
 
 .comparison-tray p {
-  display: grid;
-  gap: var(--space-1);
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  min-inline-size: 0;
   margin: 0;
 }
 
 .comparison-tray strong {
+  overflow: hidden;
   color: var(--reactor-signal);
   font-family: var(--font-display);
-  font-size: var(--font-size-title-sm);
+  font-size: var(--font-size-body-lg);
   line-height: var(--line-height-solid);
+  text-overflow: ellipsis;
   text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.comparison-tray .control {
+  --control-background: var(--reactor-signal);
+  --control-border: var(--reactor-signal);
+  --control-foreground: var(--color-ink-950);
 }

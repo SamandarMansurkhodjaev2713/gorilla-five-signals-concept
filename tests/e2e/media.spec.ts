@@ -82,6 +82,61 @@ test.describe("bounded product film", () => {
     expect(videoRequests).toEqual([]);
   });
 
+  test("GIVEN Lite motion WHEN the film enters view THEN media loads only after explicit intent and pause releases it", async ({
+    page,
+  }) => {
+    const videoRequests: string[] = [];
+    page.on("request", (request): void => {
+      if (VIDEO_REQUEST_PATTERN.test(request.url())) {
+        videoRequests.push(request.url());
+      }
+    });
+    await page.addInitScript(() =>
+      localStorage.setItem("gorilla:motion-preference:v1", "lite"),
+    );
+    await expectSemanticPage(page, "uz");
+
+    const scene = page.locator(MEDIA_SCENE_SELECTOR);
+    const media = scene.locator(MEDIA_SELECTOR);
+    await scene.scrollIntoViewIfNeeded();
+    await expect(scene).toHaveAttribute("data-motion-ready", "lite");
+    await expect(scene.locator("[data-motion-media-controls]")).toBeVisible();
+    await expect(scene).toHaveAttribute("data-media-state", "poster");
+    await expect(media.locator("source[src]")).toHaveCount(0);
+    expect(videoRequests).toEqual([]);
+
+    await scene.locator("[data-motion-media-play]").click();
+    await expect(scene).toHaveAttribute("data-media-state", "playing");
+    await expect(media.locator("source[src]")).toHaveCount(4);
+    await scene.locator("[data-motion-media-pause]").click();
+    await expect(scene).toHaveAttribute("data-media-state", "paused");
+    await expect(media.locator("source[src]")).toHaveCount(0);
+    await expect(media).toBeHidden();
+  });
+
+  test("GIVEN Full playback WHEN the film leaves proximity THEN sources and decoder return to poster state", async ({
+    page,
+  }) => {
+    await page.addInitScript(() =>
+      localStorage.setItem("gorilla:motion-preference:v1", "full"),
+    );
+    await expectSemanticPage(page, "uz");
+    const scene = page.locator(MEDIA_SCENE_SELECTOR);
+    const media = scene.locator(MEDIA_SELECTOR);
+
+    await scene.scrollIntoViewIfNeeded();
+    await expect(scene).toHaveAttribute(
+      "data-media-state",
+      /^(?:loading|playing)$/,
+    );
+    await expect(media.locator("source[src]")).toHaveCount(4);
+    await page.evaluate(() => window.scrollTo({ top: 0 }));
+
+    await expect(scene).toHaveAttribute("data-media-state", "poster");
+    await expect(media.locator("source[src]")).toHaveCount(0);
+    await expect(media).toBeHidden();
+  });
+
   test("GIVEN an active film WHEN motion capability rebuilds THEN media sources and decoder are released", async ({
     browserName,
     page,

@@ -1,7 +1,7 @@
 # Release checklist
 
 - Candidate: public GitHub Pages review build
-- Updated: 2026-08-26
+- Updated: 2026-08-31
 - Rule: `[x]` means current evidence exists; `[ ]` is unfinished; `[!]` requires external/manual evidence
 
 ## Artifact and provenance
@@ -13,8 +13,9 @@
 - [x] Local research, source masters, secrets, private legal files, source maps, and generated reports are excluded.
 - [x] CycloneDX 1.6 SBOM and dependency license policy pass for 640 components.
 - [x] Original project rights and third-party notices are documented.
-- [ ] Final public source commit, Pages workflow run, and deployment URL are
+- [x] Public baseline source commit, Pages workflow run, and deployment URL are
       recorded after successful deployment.
+- [ ] Final Awwwards rebuild source commit and deployment evidence are recorded.
 
 ## Product and experience
 
@@ -60,9 +61,11 @@
 ## Deployment and rollback
 
 - [x] The project base path is validated and applied through one URL helper.
-- [ ] Commit and push the exact validated current source with a clean public history.
-- [ ] Wait for the immutable Pages workflow to complete successfully.
-- [ ] Run post-deploy route, asset, locale, responsible-entry, metadata,
+- [x] Commit and push the validated public baseline with a clean public history.
+- [x] Wait for the baseline immutable Pages workflow to complete successfully.
+- [x] Run baseline post-deploy route, asset, locale, responsible-entry, metadata,
       keyboard, reduced-motion, and console smoke checks.
+- [ ] Merge and deploy the exact final Awwwards rebuild commit after its full
+      route, cross-browser, visual, performance, and legal gates pass.
 - [!] The 72-hour monitoring window starts only after the concept is presented
-      as portfolio-final; the current public artifact is explicitly a review build.
+  as portfolio-final; the current public artifact is explicitly a review build.
