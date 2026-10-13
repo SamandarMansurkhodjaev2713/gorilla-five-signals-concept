@@ -20,8 +20,10 @@ The detail console violation was traced to Astro inlining the small packshot
 script under the existing CSP. Disabling asset inlining makes it an external
 script; native packshot reaches ready state with zero console errors. Hero
 responsive sizes were corrected, verified selecting the 320 px source at
-390 px/DPR 1.75. The corrected Lighthouse series is running; final performance
-approval remains open.
+390 px/DPR 1.75. The corrected Lighthouse series passes all numeric gates:
+homepage 96/100/100/100, detail and locator 99/100/100/100. Homepage median LCP
+is 2,499.03 ms, narrowly inside the 2.5 s limit; the small margin remains
+explicit. All three median CLS values are zero.
 
 Node is now pinned to 24.16.0; Astro ESLint plugin 2.1.1 replaces the vulnerable
 fast-glob/micromatch/braces dependency chain. No audit exception is introduced.
@@ -61,12 +63,12 @@ The current milestone's dated five-lens evidence and corrective actions are in
 
 | Route                    | Performance | Accessibility | Best practices | SEO |      LCP |     CLS |    TBT |
 | ------------------------ | ----------: | ------------: | -------------: | --: | -------: | ------: | -----: |
-| `/uz/`                   |          96 |           100 |            100 | 100 | 2,339 ms | 0.03347 | 141 ms |
-| `/uz/products/original/` |         100 |           100 |            100 | 100 | 1,891 ms |       0 |  36 ms |
-| `/uz/find/`              |         100 |           100 |            100 | 100 | 1,737 ms |       0 |  35 ms |
+| `/uz/`                   |          96 |           100 |            100 | 100 | 2,499 ms |       0 |  99 ms |
+| `/uz/products/original/` |          99 |           100 |            100 | 100 | 2,110 ms |       0 | 8.5 ms |
+| `/uz/find/`              |          99 |           100 |            100 | 100 | 1,889 ms |       0 | 3.5 ms |
 
 The runner built a dedicated artifact with entry SHA-256
-`7129ed0ed7a5190539642cbc287ab9a536383504d775342a4461e3363899f5ca`,
+`42bd41cf7dd502bd03c9569f4e96b2f504d533dd0f22d52ca4323cd53e4a07c0`,
 executed exactly three reports per route, validated every JSON boundary, and
 wrote the local evidence under `test-results/lighthouse/`. Reports are not
 uploaded to a public result service.

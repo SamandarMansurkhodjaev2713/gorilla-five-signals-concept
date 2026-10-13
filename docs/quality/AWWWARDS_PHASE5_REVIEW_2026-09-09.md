@@ -140,6 +140,17 @@ performance corrects the hero `sizes` from CSS height/aspect ratio and confirms
 console errors and passing build/budget/format gates. The corrected Lighthouse
 series is pending and is not declared passed.
 
+The subsequent responsive-media iteration adds only 160 px WebP derivatives
+for small imagery and accurate ghost `sizes`. Correctness verifies registered
+checksums and unchanged existing outputs; architecture keeps the same catalog
+boundary; UX keeps original quality settings and native dimensions; performance
+reduces the four mobile ghost requests from about 205 KB to 83 KB; maintenance
+updates generation and provenance together. The completed nine-report series
+passes: homepage 96/100/100/100, detail and locator 99/100/100/100. Median homepage
+LCP is 2,499.03 ms, TBT 99 ms, CLS zero. LCP has little margin; the exact artifact
+hash is recorded in QA_STATUS.md. Full cross-engine release coverage remains
+open.
+
 These are P2 art-direction refinements, not concealed release blockers. They
 remain explicit work before the final portfolio claim.
 
