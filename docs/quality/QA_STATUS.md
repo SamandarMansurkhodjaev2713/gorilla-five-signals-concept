@@ -28,6 +28,35 @@ explicit. All three median CLS values are zero.
 Node is now pinned to 24.16.0; Astro ESLint plugin 2.1.1 replaces the vulnerable
 fast-glob/micromatch/braces dependency chain. No audit exception is introduced.
 
+### Pre-push correction review — 2026-10-14
+
+The broad browser attempt stopped with 240 passed, ten failed, one interrupted,
+and 535 not run; it is not a release pass. Corrections were reviewed through
+the five required lenses:
+
+1. Correctness: remove static dialog autofocus, which stole focus even from
+   preconfirmed sessions; focus Continue only when opening the required dialog.
+   Focus, modal, mobile chrome, and terminal checks pass in ten focused tests.
+2. Architecture/lifecycle: keep focus ownership in the existing entry controller;
+   no additional listeners, timers, global cleanup, or dependencies introduced.
+3. UX/accessibility: mobile terminal line-height raised from 0.78 to 0.88.
+   Fifteen visual baselines regenerated; selected phone, landscape, comparison,
+   and desktop contact captures inspected. This is not full device sign-off.
+4. Performance/security: footer assertions now wait for actual rendered geometry,
+   rather than measuring the content-visibility intrinsic placeholder. The 800 px
+   limit is unchanged. Product copy no longer asserts unverified sugar or finish
+   claims; provenance identifiers remain in source, not consumer comparison rows.
+5. Maintenance/release: the Back test clicks the measured visible sticky menu
+   instead of triggering Playwright's centering scroll. Three repeats pass with
+   the unchanged 12 px restoration tolerance. Updated baselines and tests are
+   versioned together; full cross-engine and final Lighthouse reruns remain open.
+
+The pre-push `pnpm quality` run completed successfully: formatting, lint,
+219-file strict type check, 111 unit tests, 47-page build, artifact checks,
+617-component SBOM/license verification, pinned film toolchain, and dependency
+audit with no known vulnerabilities. GitHub private vulnerability reporting is
+enabled; repository secret scanning and push protection are also enabled.
+
 - Snapshot date: 2026-09-09
 - Technical verdict: **Product Atlas, Signal Duel, and five product worlds pass the current source and focused Chromium gates**
 - Deployment verdict: **public GitHub Pages review release is live; rebuild remains on a feature branch**

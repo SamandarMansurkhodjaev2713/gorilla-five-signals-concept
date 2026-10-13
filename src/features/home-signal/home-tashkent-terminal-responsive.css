@@ -5,6 +5,10 @@
 }
 
 @media (max-width: 47.99rem) {
+  .tashkent-terminal__copy h2 {
+    line-height: 0.88;
+  }
+
   .tashkent-terminal__copy .type-body-lg {
     font-size: var(--font-size-body);
   }

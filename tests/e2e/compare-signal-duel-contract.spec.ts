@@ -391,7 +391,7 @@ test.describe("no-JavaScript Signal Duel", () => {
     await expectSemanticPage(page, "uz", "/compare/");
     await expect(page.locator("[data-compare-enhanced]")).toBeHidden();
     await expect(page.locator("[data-compare-fallback] tbody tr")).toHaveCount(
-      6,
+      5,
     );
     await expect(page.locator("[data-compare-fallback]")).toContainText(
       "Hali tasdiqlanmagan",

@@ -81,16 +81,6 @@ const { copy, locale, products, ui } = Astro.props;
         }
       </tr>
       <tr>
-        <th scope="row">{ui.source}</th>
-        {
-          products.map((product) => (
-            <td class="type-data" data-product-slug={product.slug}>
-              {product.sourceId}
-            </td>
-          ))
-        }
-      </tr>
-      <tr>
         <th scope="row">{copy.openDetails}</th>
         {
           products.map((product) => (

@@ -18,7 +18,7 @@ const PRODUCT_ATLAS_COPY: Readonly<Record<SupportedLocale, ProductAtlasCopy>> =
     en: {
       activeFrequency: "Active frequency",
       archiveBrief:
-        "A vertical record of the approved Uzbekistan range. Every product remains visible; scroll changes the scan, never the collection.",
+        "Explore five Gorilla products. Choose a can, open its details, or compare your selection.",
       chapter: "Frequency record",
       collectionWall: "Five-can collection wall",
       currentRange: "Current Uzbekistan range",
@@ -31,7 +31,7 @@ const PRODUCT_ATLAS_COPY: Readonly<Record<SupportedLocale, ProductAtlasCopy>> =
     ru: {
       activeFrequency: "Активная частота",
       archiveBrief:
-        "Вертикальная запись одобренной линейки Узбекистана. Каждый продукт остаётся в поле; скролл меняет сканирование, а не коллекцию.",
+        "Откройте пять продуктов Gorilla. Выберите банку, узнайте о ней больше или сравните варианты.",
       chapter: "Запись частоты",
       collectionWall: "Стена коллекции из пяти банок",
       currentRange: "Актуальная линейка Узбекистана",
@@ -44,7 +44,7 @@ const PRODUCT_ATLAS_COPY: Readonly<Record<SupportedLocale, ProductAtlasCopy>> =
     uz: {
       activeFrequency: "Faol chastota",
       archiveBrief:
-        "O‘zbekiston uchun tasdiqlangan qatorning vertikal yozuvi. Har bir mahsulot ko‘rinishda qoladi; skroll kolleksiyani emas, skan holatini o‘zgartiradi.",
+        "Gorilla’ning beshta mahsuloti bilan tanishing. Bankani tanlang, batafsil ko‘ring yoki variantlarni taqqoslang.",
       chapter: "Chastota yozuvi",
       collectionWall: "Besh banka kolleksiya devori",
       currentRange: "O‘zbekistonning joriy qatori",

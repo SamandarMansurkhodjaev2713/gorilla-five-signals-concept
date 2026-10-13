@@ -97,9 +97,11 @@ async function expectMobileManifestoAndOutro(page: Page): Promise<void> {
     );
   const footer = page.locator("footer.site-footer");
   await footer.scrollIntoViewIfNeeded();
-  const footerHeight = await footer.evaluate(
-    (element) => element.getBoundingClientRect().height,
-  );
+  await expect
+    .poll(() =>
+      footer.evaluate((element) => element.getBoundingClientRect().height),
+    )
+    .toBeLessThanOrEqual(800);
 
   await expect(manifesto.locator(".manifesto-carrier img")).toBeVisible();
   await expect(manifesto.locator(".manifesto-rail")).toHaveCount(0);
@@ -109,7 +111,6 @@ async function expectMobileManifestoAndOutro(page: Page): Promise<void> {
   for (const line of lineMetrics) {
     expect(line.scrollWidth).toBeLessThanOrEqual(line.clientWidth + 1);
   }
-  expect(footerHeight).toBeLessThanOrEqual(800);
 }
 
 for (const reducedMotion of ["no-preference", "reduce"] as const) {

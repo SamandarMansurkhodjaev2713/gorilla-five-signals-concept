@@ -197,7 +197,7 @@ test.describe("compare no-JavaScript baseline", () => {
       page.locator("[data-compare-fallback] thead th[data-product-slug]"),
     ).toHaveCount(PRODUCT_SLUGS.length);
     await expect(page.locator("[data-compare-fallback] tbody tr")).toHaveCount(
-      6,
+      5,
     );
     await expect(
       page.locator("[data-compare-fallback] a[href*='/products/']"),
