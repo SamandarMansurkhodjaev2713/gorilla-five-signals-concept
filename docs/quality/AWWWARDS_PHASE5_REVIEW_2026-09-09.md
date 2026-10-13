@@ -130,6 +130,16 @@ regressions, and the isolated Lighthouse CLI server fix. Lighthouse now uses
 documented `--ignore-lock` to start its dedicated artifact server while an
 owner preview is running, retaining entry-hash validation and owned cleanup.
 
+Performance revalidation: the completed median-of-three series fails homepage
+Performance/LCP and detail Performance/Best Practices. These numeric failures
+stay open. Correctness traced the detail console error to build-generated
+inline packshot script; architecture now emits external assets through Vite's
+`assetsInlineLimit: 0`, preserving CSP. UX verifies the packshot ready state;
+performance corrects the hero `sizes` from CSS height/aspect ratio and confirms
+320 px instead of 480 px at 390 px/DPR 1.75; maintenance records zero browser
+console errors and passing build/budget/format gates. The corrected Lighthouse
+series is pending and is not declared passed.
+
 These are P2 art-direction refinements, not concealed release blockers. They
 remain explicit work before the final portfolio claim.
 

@@ -28,6 +28,7 @@ export function createAstroConfig(outputDirectory?: string) {
     },
     vite: {
       build: {
+        assetsInlineLimit: 0,
         sourcemap: false,
       },
     },

@@ -14,8 +14,14 @@ The post-refinement product matrix passes all five worlds in three locales
 at seven viewports, plus 200% text/WCAG spacing. The shortened 844×390 Atlas
 contract passes; measured localized hero height is 322 px without overflow.
 WebKit 320 px and 844×390 pass after the test uses verified native scrolling.
-Fresh Lighthouse median-of-three is running against a separately built,
-hash-checked public-base artifact; results are pending.
+Fresh Lighthouse median-of-three failed the current performance gate: homepage
+Performance 90/LCP 3.62 s; product detail Performance 91/Best Practices 92.
+The detail console violation was traced to Astro inlining the small packshot
+script under the existing CSP. Disabling asset inlining makes it an external
+script; native packshot reaches ready state with zero console errors. Hero
+responsive sizes were corrected, verified selecting the 320 px source at
+390 px/DPR 1.75. The corrected Lighthouse series is running; final performance
+approval remains open.
 
 Node is now pinned to 24.16.0; Astro ESLint plugin 2.1.1 replaces the vulnerable
 fast-glob/micromatch/braces dependency chain. No audit exception is introduced.
