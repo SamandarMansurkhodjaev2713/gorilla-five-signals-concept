@@ -1,0 +1,59 @@
+---
+import type { SupportedLocale } from "@/config/site";
+import type { ProductView } from "@/features/site/catalog";
+import type { SiteCopy } from "@/features/site/copy";
+
+import ProductDetailHandoff from "./ProductDetailHandoff.astro";
+import ProductDetailHero from "./ProductDetailHero.astro";
+import ProductDetailTruth from "./ProductDetailTruth.astro";
+import { getProductDetailCopy } from "./product-detail-copy";
+import {
+  PRODUCT_WORLD_SPECS,
+  requireProductSlug,
+} from "./product-world-contract";
+
+interface Props {
+  copy: SiteCopy;
+  locale: SupportedLocale;
+  nextProduct: ProductView;
+  previousProduct: ProductView;
+  product: ProductView;
+  productCount: string;
+  productNumber: string;
+}
+
+const {
+  copy,
+  locale,
+  nextProduct,
+  previousProduct,
+  product,
+  productCount,
+  productNumber,
+} = Astro.props;
+const slug = requireProductSlug(product.slug);
+const world = PRODUCT_WORLD_SPECS[slug];
+const { visualUnavailable: fallbackLabel } = getProductDetailCopy(locale);
+---
+
+<article
+  class="product-detail"
+  data-flavor={slug}
+  data-product-world={slug}
+  data-motion-scene="product-world"
+  data-world-geometry={world.geometry}
+  data-world-material={world.material}
+>
+  <ProductDetailHero
+    {copy}
+    {fallbackLabel}
+    {locale}
+    {product}
+    {productCount}
+    {productNumber}
+    {slug}
+    {world}
+  />
+  <ProductDetailTruth {copy} {product} />
+  <ProductDetailHandoff {copy} {locale} {nextProduct} {previousProduct} />
+</article>

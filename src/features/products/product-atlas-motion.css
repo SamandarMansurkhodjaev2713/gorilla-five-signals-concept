@@ -1,0 +1,91 @@
+@supports (animation-timeline: view()) {
+  .archive-chapter__visual img {
+    animation: archive-can-pass linear both;
+    animation-range: entry 0% cover 72%;
+    animation-timeline: view();
+  }
+
+  .archive-chapter__copy {
+    animation: archive-copy-enter linear both;
+    animation-range: entry 5% cover 38%;
+    animation-timeline: view();
+  }
+}
+
+@keyframes archive-can-pass {
+  from {
+    opacity: 0.45;
+    transform: translateY(12svh)
+      rotate(calc(var(--chapter-can-rotation) - 5deg)) scale(0.9);
+  }
+
+  52% {
+    opacity: 1;
+    transform: translateY(0) rotate(var(--chapter-can-rotation)) scale(1);
+  }
+}
+
+@keyframes archive-copy-enter {
+  from {
+    opacity: 0.35;
+    transform: translateY(var(--space-6));
+  }
+}
+
+:where(html[data-motion-tier="lite"], html[data-motion-tier="reduced"])
+  .archive-scan,
+:where(html[data-motion-tier="lite"], html[data-motion-tier="reduced"])
+  .archive-scan__sticky {
+  position: relative;
+  inset-block-start: auto;
+}
+
+:where(html[data-motion-tier="lite"], html[data-motion-tier="reduced"])
+  .archive-chapter {
+  scroll-margin-block-start: 0;
+}
+
+:where(html[data-motion-tier="lite"], html[data-motion-tier="reduced"])
+  .archive-chapter__visual
+  img,
+:where(html[data-motion-tier="lite"], html[data-motion-tier="reduced"])
+  .archive-chapter__copy {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .archive-scan,
+  .archive-scan__sticky {
+    position: relative;
+    inset-block-start: auto;
+  }
+
+  .archive-wall::after,
+  .archive-wall a,
+  .archive-wall i,
+  .archive-wall__can img {
+    transition-duration: 0ms;
+  }
+
+  .archive-chapter__visual img,
+  .archive-chapter__copy {
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .archive-hero,
+  .archive-scan__sticky,
+  .archive-chapter,
+  .archive-decision {
+    border: var(--size-rule-strong) solid CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .archive-wall a[aria-current] {
+    border: var(--size-rule-strong) solid Highlight;
+    color: HighlightText;
+    background: Highlight;
+  }
+}

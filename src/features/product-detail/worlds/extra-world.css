@@ -1,0 +1,71 @@
+.product-detail[data-flavor="extra"] .product-hero {
+  background:
+    conic-gradient(
+      from 162deg at 66% 53%,
+      transparent,
+      rgb(20 245 255 / 12%),
+      transparent 28%
+    ),
+    linear-gradient(128deg, #031317, var(--flavor-surface) 58%, #02090b);
+}
+
+.product-detail[data-flavor="extra"] .extra-pressure {
+  inset: -12% -5% -22% 20%;
+  transform: perspective(48rem) rotateX(66deg) rotateZ(-8deg);
+  transform-origin: center 58%;
+}
+
+.product-detail[data-flavor="extra"] .extra-pressure__cage {
+  inset: 50% auto auto 54%;
+  aspect-ratio: 1;
+  border: clamp(0.15rem, 0.42cqi, 0.38rem) solid
+    color-mix(in srgb, var(--flavor-signal) 70%, white);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.product-detail[data-flavor="extra"] .extra-pressure__cage--outer {
+  inline-size: 72cqi;
+  box-shadow: 0 0 5rem rgb(0 238 255 / 14%);
+}
+
+.product-detail[data-flavor="extra"] .extra-pressure__cage--inner {
+  inline-size: 39cqi;
+  border-style: double;
+  border-width: clamp(0.24rem, 0.8cqi, 0.72rem);
+}
+
+.product-detail[data-flavor="extra"] .extra-pressure__trace {
+  inset: 50% -10% auto;
+  block-size: clamp(0.16rem, 0.5cqi, 0.44rem);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--flavor-signal) 28% 78%,
+    transparent
+  );
+  box-shadow: 0 0 1.8rem var(--flavor-signal);
+}
+
+.product-detail[data-flavor="extra"] .extra-pressure__core {
+  inset: 50% auto auto 54%;
+  inline-size: 17cqi;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    white,
+    var(--flavor-signal) 16%,
+    transparent 68%
+  );
+  filter: blur(0.1rem);
+  transform: translate(-50%, -50%);
+}
+
+.product-detail[data-flavor="extra"] .product-world-plane {
+  border-radius: 50%;
+  transform: rotate(45deg) scaleX(1.2);
+}
+
+.product-detail[data-flavor="extra"] .product-world-impact {
+  inset: 31% auto auto 58%;
+}

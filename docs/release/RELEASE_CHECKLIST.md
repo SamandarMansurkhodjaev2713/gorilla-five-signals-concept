@@ -1,7 +1,7 @@
 # Release checklist
 
 - Candidate: public GitHub Pages review build
-- Updated: 2026-08-31
+- Updated: 2026-09-09
 - Rule: `[x]` means current evidence exists; `[ ]` is unfinished; `[!]` requires external/manual evidence
 
 ## Artifact and provenance
@@ -11,7 +11,7 @@
 - [x] Every shipped brand, media, and font checksum matches the provenance ledger.
 - [x] Published facts resolve to approved Uzbekistan source records; contradictory or unverified facts are omitted.
 - [x] Local research, source masters, secrets, private legal files, source maps, and generated reports are excluded.
-- [x] CycloneDX 1.6 SBOM and dependency license policy pass for 640 components.
+- [x] CycloneDX 1.6 SBOM and dependency license policy pass for 617 components.
 - [x] Original project rights and third-party notices are documented.
 - [x] Public baseline source commit, Pages workflow run, and deployment URL are
       recorded after successful deployment.
@@ -45,7 +45,8 @@
 - [x] Application frame work and LoAF blocking stay at or below 16 ms; no measured long task exceeds 50 ms.
 - [x] Initial JavaScript, critical transfer, font, and responsive-image budgets pass.
 - [x] Media is responsive and poster/fallback-first; no below-fold film request occurs before proximity/intent.
-- [x] Dependency audit reports no known vulnerabilities; SBOM/license verification passes.
+- [x] Dependency audit reports no known vulnerabilities on 2026-10-14;
+      SBOM/license verification passes.
 - [x] Document-level CSP and referrer fallbacks are present; response-level
       policies are explicitly recorded as GitHub Pages platform responsibilities.
 - [x] No secret, PII telemetry, production console output, or unbounded client operation is present.

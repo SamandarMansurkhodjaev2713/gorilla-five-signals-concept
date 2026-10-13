@@ -16,16 +16,17 @@ and finite motion.
 
 ## Current status
 
-The public site is an active art-direction rebuild. Its architecture, localized
-routes, product detail worlds, accessibility modes, and deployment pipeline are
-implemented; the home-page scroll film and final motion polish are still being
-iterated. The current Pages build is published for review, not presented as a
-finished commercial release.
+The public Pages build is a stable review baseline. The active feature branch
+adds the authored Product Atlas, Signal Duel, and five distinct product-detail
+worlds; final cross-engine, Lighthouse, physical-device, and legal screenshot
+sign-off remain open. The concept is not presented as a finished commercial
+release.
 
 ## Experience
 
-- Five localized product worlds: Original, Zero Sugar, Extra, Mango Coconut,
-  and Lychee Pear.
+- Five localized product worlds plus an authored frequency-based Product Atlas.
+- A responsive Signal Duel that preserves up to three selected products on
+  every viewport.
 - Uzbek, Russian, and English routes with canonical, alternate, and sitemap
   metadata.
 - Full, lite, paused, reduced-motion, and no-script experience paths.
@@ -49,6 +50,8 @@ corepack enable
 pnpm install --frozen-lockfile
 pnpm dev
 ```
+
+Use Node.js 24.16.0 from `.node-version`/`.nvmrc` before running these commands.
 
 The local site opens at `http://localhost:4321/` and redirects to the Uzbek
 route by default.

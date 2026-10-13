@@ -1,0 +1,75 @@
+---
+import type { SupportedLocale } from "@/config/site";
+import type { ProductView } from "@/features/site/catalog";
+import type { SiteCopy } from "@/features/site/copy";
+import { localePath } from "@/features/site/localization";
+
+interface Props {
+  copy: SiteCopy;
+  locale: SupportedLocale;
+  nextProduct: ProductView;
+  previousProduct: ProductView;
+}
+
+const { copy, locale, nextProduct, previousProduct } = Astro.props;
+---
+
+<aside
+  class="adjacent-products"
+  aria-label={copy.allProducts}
+  data-world-handoff
+>
+  <article
+    class="adjacent-product adjacent-product--previous material-grain"
+    data-flavor={previousProduct.slug}
+    data-previous-handoff
+  >
+    <div>
+      <p class="type-label">{copy.previous}</p>
+      <h2 class="type-title">{previousProduct.name}</h2>
+      <a
+        class="control"
+        href={localePath(locale, `/products/${previousProduct.slug}`)}
+      >
+        {copy.openDetails}
+      </a>
+    </div>
+    <img
+      src={previousProduct.imagePath}
+      srcset={previousProduct.imageSrcSet}
+      sizes="(min-width: 64rem) 10rem, 28vw"
+      width={previousProduct.width}
+      height={previousProduct.height}
+      alt={previousProduct.alt}
+      loading="lazy"
+      decoding="async"
+    />
+  </article>
+
+  <article
+    class="adjacent-product adjacent-product--next material-grain"
+    data-flavor={nextProduct.slug}
+    data-next-handoff
+  >
+    <div>
+      <p class="type-label">{copy.next}</p>
+      <h2 class="type-title">{nextProduct.name}</h2>
+      <a
+        class="control control--primary"
+        href={localePath(locale, `/products/${nextProduct.slug}`)}
+      >
+        {copy.openDetails}
+      </a>
+    </div>
+    <img
+      src={nextProduct.imagePath}
+      srcset={nextProduct.imageSrcSet}
+      sizes="(min-width: 64rem) 18rem, 42vw"
+      width={nextProduct.width}
+      height={nextProduct.height}
+      alt={nextProduct.alt}
+      loading="lazy"
+      decoding="async"
+    />
+  </article>
+</aside>

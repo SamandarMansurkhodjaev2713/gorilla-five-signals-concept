@@ -1,0 +1,87 @@
+.product-detail .product-information {
+  position: relative;
+  display: grid;
+  gap: var(--space-8);
+  overflow: clip;
+  padding: var(--space-section) var(--space-gutter);
+  color: var(--color-text-on-paper);
+}
+
+.product-detail .product-information::before {
+  position: absolute;
+  inset: 0 auto 0 14%;
+  inline-size: var(--size-rule-strong);
+  background: var(--flavor-signal);
+  content: "";
+  opacity: 0.7;
+}
+
+.product-detail :is(.facts, .truth) {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  min-inline-size: 0;
+  max-inline-size: var(--measure-body);
+  align-content: start;
+  gap: var(--space-5);
+}
+
+.product-detail .facts h2 {
+  max-inline-size: 16ch;
+}
+
+.product-detail .facts > p:last-of-type,
+.product-detail .truth > p {
+  color: var(--color-text-muted-on-paper);
+}
+
+.product-detail dl {
+  margin: 0;
+}
+
+.product-detail dl div {
+  display: grid;
+  grid-template-columns: minmax(6rem, 1fr) minmax(0, 2fr);
+  padding-block: var(--space-4);
+  border-block-start: var(--size-rule-hairline) solid var(--color-border-strong);
+}
+
+.product-detail dt {
+  font-weight: 700;
+}
+
+.product-detail dd {
+  min-inline-size: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 64rem) {
+  .product-detail .product-information {
+    min-block-size: 52rem;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .product-detail .facts {
+    grid-column: 2 / 7;
+  }
+
+  .product-detail .truth {
+    grid-column: 8 / 12;
+    margin-block-start: 11rem;
+  }
+
+  .product-detail[data-flavor="zero"] .facts,
+  .product-detail[data-flavor="lychee-pear"] .truth {
+    margin-block-start: 7rem;
+  }
+
+  .product-detail[data-flavor="extra"] .facts {
+    grid-column: 3 / 8;
+  }
+
+  .product-detail[data-flavor="mango-coconut"] .truth {
+    margin-block-start: 3rem;
+  }
+}

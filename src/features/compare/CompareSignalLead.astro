@@ -1,0 +1,35 @@
+---
+import type { SiteCopy } from "@/features/site/copy";
+
+import type { CompareUi } from "./compare-ui";
+
+interface Props {
+  copy: SiteCopy;
+  ui: CompareUi;
+}
+
+const { copy, ui } = Astro.props;
+---
+
+<header class="duel-lead" data-page-lead>
+  <div class="duel-lead__axis" aria-hidden="true">
+    <span>00</span>
+    <i></i>
+    <span>05</span>
+  </div>
+  <div class="duel-lead__meta">
+    <p class="type-label">{ui.eyebrow}</p>
+    <p class="duel-lead__counter type-data" aria-hidden="true">05:01</p>
+  </div>
+  <h1>
+    <span>{ui.titleTop}</span>
+    <span>{ui.titleBottom}</span>
+  </h1>
+  <div class="duel-lead__footer">
+    <p class="type-body-lg">{copy.compareIntro}</p>
+    <div class="duel-lead__trace" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+  <p class="duel-lead__stamp type-data" aria-hidden="true">DUEL / TASHKENT</p>
+</header>

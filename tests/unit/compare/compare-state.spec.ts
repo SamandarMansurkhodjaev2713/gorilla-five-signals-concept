@@ -106,7 +106,7 @@ describe("compare URL state", () => {
   });
 
   it("GIVEN a viewport tier WHEN its limit is resolved THEN compact and desktop contracts remain explicit", () => {
-    expect(slotLimitForViewport("compact")).toBe(2);
+    expect(slotLimitForViewport("compact")).toBe(3);
     expect(slotLimitForViewport("desktop")).toBe(3);
   });
 });

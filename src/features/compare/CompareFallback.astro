@@ -1,0 +1,113 @@
+---
+import type { SupportedLocale } from "@/config/site";
+import type { ProductView } from "@/features/site/catalog";
+import type { SiteCopy } from "@/features/site/copy";
+import { localePath } from "@/features/site/localization";
+
+import type { CompareUi } from "./compare-ui";
+
+interface Props {
+  copy: SiteCopy;
+  locale: SupportedLocale;
+  products: readonly ProductView[];
+  ui: CompareUi;
+}
+
+const { copy, locale, products, ui } = Astro.props;
+---
+
+<div
+  class="comparison-table"
+  role="region"
+  aria-labelledby="comparison-caption"
+  tabindex="0"
+  data-compare-fallback
+>
+  <table data-compare-matrix>
+    <caption id="comparison-caption">
+      <strong>{ui.allProducts}</strong>
+      <span>{copy.compareIntro}</span>
+    </caption>
+    <thead>
+      <tr>
+        <th scope="col">{copy.productInfo}</th>
+        {
+          products.map((product) => (
+            <th
+              scope="col"
+              data-flavor={product.slug}
+              data-product-slug={product.slug}
+            >
+              <span aria-hidden="true" />
+              {product.name}
+            </th>
+          ))
+        }
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">{ui.signal}</th>
+        {
+          products.map((product) => (
+            <td data-product-slug={product.slug}>
+              {product.flavorNotes.join(" · ")}
+            </td>
+          ))
+        }
+      </tr>
+      <tr>
+        <th scope="row">{ui.overview}</th>
+        {
+          products.map((product) => (
+            <td data-product-slug={product.slug}>{product.description}</td>
+          ))
+        }
+      </tr>
+      <tr>
+        <th scope="row">{ui.sugar}</th>
+        {
+          products.map((product) => (
+            <td data-product-slug={product.slug}>{copy.verifiedPending}</td>
+          ))
+        }
+      </tr>
+      <tr>
+        <th scope="row">{ui.composition}</th>
+        {
+          products.map((product) => (
+            <td data-product-slug={product.slug}>{copy.verifiedPending}</td>
+          ))
+        }
+      </tr>
+      <tr>
+        <th scope="row">{ui.source}</th>
+        {
+          products.map((product) => (
+            <td class="type-data" data-product-slug={product.slug}>
+              {product.sourceId}
+            </td>
+          ))
+        }
+      </tr>
+      <tr>
+        <th scope="row">{copy.openDetails}</th>
+        {
+          products.map((product) => (
+            <td data-product-slug={product.slug}>
+              <a href={localePath(locale, `/products/${product.slug}`)}>
+                {product.name}
+              </a>
+            </td>
+          ))
+        }
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<aside class="verification-note">
+  <span class="verification-note__mark" aria-hidden="true"></span>
+  <p class="type-label">{ui.pending}</p>
+  <p>{copy.compareIntro}</p>
+</aside>

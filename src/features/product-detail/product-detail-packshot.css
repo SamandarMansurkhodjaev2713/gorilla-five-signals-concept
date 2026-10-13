@@ -1,0 +1,177 @@
+.product-detail .can-stage {
+  position: relative;
+  z-index: var(--z-media);
+  display: grid;
+  min-block-size: 0;
+  margin: 0;
+  padding: 0 var(--space-gutter) var(--space-4);
+  place-items: center;
+  perspective: 70rem;
+}
+
+.product-detail .can-stage__media,
+.product-detail .product-packshot {
+  position: relative;
+  z-index: var(--z-media);
+  display: grid;
+  inline-size: 100%;
+  block-size: 100%;
+  min-block-size: 0;
+  place-items: center;
+  transform-style: preserve-3d;
+}
+
+.product-detail .product-packshot__picture {
+  display: contents;
+}
+
+.product-detail .product-packshot img {
+  position: relative;
+  z-index: 1;
+  inline-size: auto;
+  max-inline-size: min(100%, 11rem);
+  block-size: min(41svh, 23rem);
+  filter: drop-shadow(var(--detail-shadow));
+  object-fit: contain;
+}
+
+.product-detail .product-packshot__fallback {
+  display: none;
+}
+
+.product-detail
+  .product-packshot[data-media-state="failed"]
+  .product-packshot__picture {
+  visibility: hidden;
+}
+
+.product-detail
+  .product-packshot[data-media-state="failed"]
+  > .product-packshot__fallback {
+  display: grid;
+}
+
+.product-detail .product-packshot__fallback {
+  position: absolute;
+  z-index: 2;
+  gap: var(--space-4);
+  max-inline-size: 13rem;
+  place-items: center;
+  color: var(--color-text-primary);
+  text-align: center;
+}
+
+.product-detail .product-packshot__fallback-shell {
+  display: grid;
+  inline-size: 7.5rem;
+  aspect-ratio: 0.39;
+  grid-template-rows: 1fr auto;
+  align-items: center;
+  padding: var(--space-5) var(--space-2);
+  border: var(--size-rule-strong) solid var(--flavor-signal);
+  border-radius: 3.75rem / 1.2rem;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 0.35rem,
+      color-mix(in srgb, var(--flavor-signal) 12%, transparent) 0.35rem 0.4rem
+    ),
+    color-mix(in srgb, var(--flavor-surface) 84%, black);
+  box-shadow: inset 0.7rem 0 1rem rgb(255 255 255 / 8%);
+}
+
+.product-detail .product-packshot__fallback-shell span {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.product-detail .product-packshot__fallback-shell i {
+  color: var(--flavor-signal);
+  font-family: var(--font-data);
+  font-size: var(--font-size-label);
+  font-style: normal;
+  overflow-wrap: anywhere;
+  text-transform: uppercase;
+}
+
+.product-detail .product-packshot__fallback small {
+  max-inline-size: 18ch;
+  font-family: var(--font-data);
+  font-size: var(--font-size-label);
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.product-detail
+  :is(.can-stage__aura, .can-stage__reflection, .can-stage__contact) {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+
+.product-detail .can-stage__aura {
+  z-index: 0;
+  inline-size: min(28rem, 88%);
+  aspect-ratio: 1;
+  border: var(--size-rule-hairline) solid var(--detail-volume-edge);
+  border-radius: var(--radius-pill);
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--flavor-signal) 24%, transparent),
+    transparent 68%
+  );
+}
+
+.product-detail .can-stage__reflection {
+  z-index: calc(var(--z-media) + 1);
+  inline-size: clamp(1.2rem, 3vw, 2.8rem);
+  block-size: 58%;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 28%),
+    transparent
+  );
+  opacity: 0.3;
+  filter: blur(0.35rem);
+  mix-blend-mode: screen;
+  transform: translateX(-2.2rem) rotate(4deg);
+}
+
+.product-detail .can-stage__contact {
+  z-index: 0;
+  inset-block-end: 5%;
+  inline-size: min(26rem, 72%);
+  block-size: clamp(1.2rem, 4vw, 3rem);
+  border: var(--size-rule-hairline) solid var(--detail-volume-edge);
+  border-radius: var(--radius-pill);
+  background: rgb(0 0 0 / 64%);
+  filter: blur(0.3rem);
+  transform: perspective(18rem) rotateX(62deg);
+}
+
+.product-detail .product-world-readout {
+  position: absolute;
+  z-index: var(--z-content);
+  inset-inline: var(--space-gutter);
+  inset-block-end: var(--space-2);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  color: color-mix(in srgb, var(--color-text-primary) 65%, transparent);
+  font-family: var(--font-data);
+  font-size: max(var(--font-size-label), 0.7rem);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.product-detail .product-world-readout__notes {
+  display: none;
+}
+
+.product-detail .product-world-readout__market {
+  margin-inline-end: 3.5rem;
+}

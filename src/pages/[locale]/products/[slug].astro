@@ -1,17 +1,19 @@
 ---
-import { getCollection } from "astro:content";
-
-import ProductDetailWorld from "@/components/product/ProductDetailWorld.astro";
-import "@/components/product/product-detail-art.css";
-import "@/components/product/product-detail.css";
-import "@/components/product/product-detail-theme-core.css";
-import "@/components/product/product-detail-theme-mobile.css";
-import "@/components/product/product-detail-theme-refraction.css";
-import "@/components/product/product-detail-theme-surge.css";
 import { SUPPORTED_LOCALES, type SupportedLocale } from "@/config/site";
+import ProductDetailWorld from "@/features/product-detail/ProductDetailWorld.astro";
+import "@/features/product-detail/product-detail-shell.css";
+import "@/features/product-detail/product-detail-packshot.css";
+import "@/features/product-detail/product-detail-art.css";
+import "@/features/product-detail/product-detail-truth.css";
+import "@/features/product-detail/product-detail-handoff.css";
+import "@/features/product-detail/worlds/original-world.css";
+import "@/features/product-detail/worlds/zero-world.css";
+import "@/features/product-detail/worlds/extra-world.css";
+import "@/features/product-detail/worlds/mango-coconut-world.css";
+import "@/features/product-detail/worlds/lychee-pear-world.css";
+import "@/features/product-detail/product-detail-responsive.css";
 import { getApprovedProducts, type ProductView } from "@/features/site/catalog";
 import { getSiteCopy } from "@/features/site/copy";
-import { localize } from "@/features/site/localization";
 import SiteLayout from "@/layouts/SiteLayout.astro";
 
 export async function getStaticPaths() {
@@ -41,22 +43,12 @@ const productCount = String(products.length).padStart(2, "0");
 const previousProduct =
   products[(currentIndex - 1 + products.length) % products.length];
 const nextProduct = products[(currentIndex + 1) % products.length];
-const legalRecords = await getCollection("legal");
-const responsibleUse = legalRecords.find(
-  ({ data }) => data.documentId === "responsible-use",
-);
 
-if (
-  previousProduct === undefined ||
-  nextProduct === undefined ||
-  responsibleUse === undefined
-) {
+if (previousProduct === undefined || nextProduct === undefined) {
   throw new Error(
     `Product page requirements are incomplete for ${product.slug}.`,
   );
 }
-
-const responsibleUseCopy = localize(responsibleUse.data.body, locale);
 ---
 
 <SiteLayout
@@ -72,6 +64,5 @@ const responsibleUseCopy = localize(responsibleUse.data.body, locale);
     {product}
     {productCount}
     {productNumber}
-    responsibleUse={responsibleUseCopy}
   />
 </SiteLayout>

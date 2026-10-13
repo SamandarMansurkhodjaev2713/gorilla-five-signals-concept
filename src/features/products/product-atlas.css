@@ -1,6 +1,8 @@
 .product-atlas {
   --archive-column-count: 5;
+  --archive-anchor-offset: 0rem;
   --archive-hero-min: calc(100svh - var(--size-header));
+  --archive-instrument-block-size: 0rem;
 
   overflow: clip;
   background: var(--color-surface-page);
@@ -11,55 +13,82 @@
   position: relative;
   display: grid;
   min-block-size: max(44rem, var(--archive-hero-min));
-  grid-template-rows: auto 1fr auto auto;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
   gap: var(--space-5);
   overflow: hidden;
-  padding: var(--space-6) var(--space-gutter) var(--space-5);
+  padding: var(--space-5) var(--space-gutter) var(--space-4);
   border-block-end: var(--size-rule-strong) solid var(--color-brand-lime);
   background:
     linear-gradient(
-      90deg,
-      transparent 0 49.9%,
-      color-mix(in srgb, var(--color-brand-lime) 14%, transparent) 50%,
-      transparent 50.1%
+      116deg,
+      transparent 0 57%,
+      color-mix(in srgb, var(--color-brand-lime) 92%, transparent) 57% 66%,
+      transparent 66%
     ),
-    linear-gradient(
-      124deg,
-      transparent 0 62%,
-      color-mix(in srgb, var(--color-brand-lime) 84%, transparent) 62% 72%,
-      transparent 72%
+    radial-gradient(
+      circle at 64% 46%,
+      color-mix(in srgb, var(--color-brand-lime) 15%, transparent),
+      transparent 25%
     ),
     var(--color-surface-page);
 }
 
+.archive-hero::before,
 .archive-hero::after {
   position: absolute;
-  inset: 0;
-  background-image: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--color-border-subtle) 56%, transparent)
-      var(--size-rule-hairline),
-    transparent var(--size-rule-hairline)
-  );
-  background-size: calc(100% / var(--archive-column-count)) 100%;
   content: "";
-  mask-image: linear-gradient(black, transparent 76%);
   pointer-events: none;
 }
 
-.archive-hero__meta {
+.archive-hero::before {
+  inset: 0;
+  background-image:
+    linear-gradient(
+      color-mix(in srgb, var(--color-border-subtle) 66%, transparent)
+        var(--size-rule-hairline),
+      transparent var(--size-rule-hairline)
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--color-border-subtle) 66%, transparent)
+        var(--size-rule-hairline),
+      transparent var(--size-rule-hairline)
+    );
+  background-size:
+    100% 12.5%,
+    calc(100% / var(--archive-column-count)) 100%;
+  mask-image: linear-gradient(black, transparent 84%);
+}
+
+.archive-hero::after {
+  inset: 16% 9% 18% auto;
+  inline-size: min(39vw, 35rem);
+  border: var(--size-rule-hairline) solid
+    color-mix(in srgb, var(--color-brand-lime) 44%, transparent);
+  border-radius: 50%;
+  transform: rotate(-24deg) scaleY(0.42);
+}
+
+.archive-hero__meta,
+.archive-hero__title,
+.archive-hero__brief,
+.archive-spectrum {
   position: relative;
   z-index: var(--z-content);
+}
+
+.archive-hero__meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
+  padding-block-end: var(--space-3);
+  border-block-end: var(--size-rule-hairline) solid var(--color-border-subtle);
 }
 
 .archive-hero__title {
-  position: relative;
-  z-index: var(--z-content);
   display: grid;
+  min-block-size: 0;
   align-content: center;
 }
 
@@ -73,41 +102,55 @@
 }
 
 .archive-hero__mark {
-  color: var(--color-brand-lime);
-  font-size: clamp(4rem, 12vw, 12rem);
-  line-height: 0.72;
+  position: absolute;
+  inset: 50% auto auto 50%;
+  margin: 0;
+  color: color-mix(in srgb, var(--color-brand-lime) 18%, transparent);
+  font-size: clamp(17rem, 39vw, 43rem);
+  line-height: 0.62;
+  transform: translate(-50%, -50%);
 }
 
 .archive-hero h1 {
+  position: relative;
   display: grid;
   margin: 0;
-  font-size: clamp(4.5rem, 12.75vw, 14rem);
-  line-height: 0.72;
+  font-size: clamp(5.25rem, 13.4vw, 14.5rem);
+  line-height: 0.69;
 }
 
 .archive-hero h1 span:first-child {
   justify-self: start;
-  padding-inline: var(--space-2);
+  padding-inline: 0.08em 0.13em;
   color: var(--color-ink-950);
   background: var(--color-brand-lime);
+  transform: rotate(-1.25deg);
 }
 
 .archive-hero h1 span:last-child {
-  max-inline-size: 9ch;
+  max-inline-size: 8ch;
   justify-self: end;
   text-align: end;
 }
 
+.archive-hero__stamp {
+  position: absolute;
+  inset: auto auto 1% 38%;
+  padding: var(--space-2) var(--space-3);
+  color: var(--color-ink-950);
+  background: var(--color-brand-lime);
+  transform: rotate(90deg);
+  transform-origin: left bottom;
+}
+
 .archive-hero__brief {
-  position: relative;
-  z-index: var(--z-content);
   display: grid;
-  inline-size: min(100%, 44rem);
+  inline-size: min(100%, 42rem);
   gap: var(--space-3);
   justify-self: end;
-  padding: var(--space-5);
-  border: var(--size-rule-strong) solid var(--color-text-primary);
-  background: var(--color-surface-page);
+  padding: var(--space-4) var(--space-5);
+  border-block-start: var(--size-rule-strong) solid var(--color-text-primary);
+  background: color-mix(in srgb, var(--color-surface-page) 94%, transparent);
 }
 
 .archive-hero__brief .type-label {
@@ -119,53 +162,25 @@
 }
 
 .archive-spectrum {
-  position: relative;
-  z-index: var(--z-content);
   display: grid;
-  block-size: var(--space-3);
+  block-size: var(--space-6);
   grid-template-columns: repeat(var(--archive-column-count), minmax(0, 1fr));
 }
 
 .archive-spectrum span {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-inline: var(--space-2);
+  color: var(--flavor-on-signal);
   background: var(--flavor-signal);
+  font-family: var(--font-data);
+  font-size: 0.625rem;
+  font-weight: 700;
 }
 
 .archive-index {
   position: relative;
   isolation: isolate;
   background: var(--color-surface-page);
-}
-
-.archive-decision {
-  display: grid;
-  min-block-size: 34rem;
-  place-content: center;
-  gap: var(--space-7);
-  padding: var(--space-8) var(--space-gutter);
-  color: var(--color-text-on-paper);
-  background: var(--color-brand-lime);
-  text-align: center;
-}
-
-.archive-decision > div:first-child {
-  display: grid;
-  gap: var(--space-4);
-}
-
-.archive-decision > div:first-child > p:last-child {
-  max-inline-size: 11ch;
-  font-size: clamp(4rem, 11vw, 10rem);
-  line-height: 0.8;
-}
-
-.archive-decision__actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-5);
-}
-
-.archive-decision .text-link {
-  color: var(--color-text-on-paper);
 }

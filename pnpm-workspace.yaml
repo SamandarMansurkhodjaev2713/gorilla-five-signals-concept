@@ -7,12 +7,19 @@ allowBuilds:
   sharp: true
 
 engineStrict: true
-nodeVersion: 24.13.1
+nodeVersion: 24.16.0
 overrides:
-  brace-expansion: 5.0.9
-  fast-uri: 3.1.5
-  js-yaml: 4.3.1
+  brace-expansion: 5.0.12
+  devalue: 5.9.3
+  fast-uri: 3.1.8
+  http-cache-semantics: 4.3.0
+  js-yaml: 4.3.2
   nanoid: 3.3.18
+  postcss-selector-parser: 7.1.6
+  sharp: 0.35.5
+  smol-toml: 1.9.1
+  source-map-js: 1.2.2
+  svgo: 4.1.0
 preferFrozenLockfile: true
 saveExact: true
 strictPeerDependencies: true

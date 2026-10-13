@@ -2,7 +2,7 @@
 
 - Objective: complete and release the approved Gorilla Uzbekistan product experience
 - Started: 2026-07-26
-- Last updated: 2026-08-31
+- Last updated: 2026-09-09
 - Source of truth: `docs/product/GORILLA_MASTER_PLAN.md`
 
 Statuses: `[ ]` pending, `[~]` active, `[x]` evidence-complete, `[!]`
@@ -75,9 +75,10 @@ environment/external evidence blocked.
       on 2026-08-26.
 - [x] The first Pages workflow completed and its public URL passed route, asset,
       locale, responsible-entry, metadata, and console smoke checks.
-- [~] The Awwwards rebuild is active on `codex/awwwards-rebuild`; homepage and
-  global-motion milestones pass current source and Chromium gates, while
-  Product Atlas, Compare, and detail-world art direction remain open.
+- [~] The Awwwards rebuild is active on `codex/awwwards-rebuild`; homepage,
+  global motion, Product Atlas, Signal Duel, and five detail worlds pass the
+  current source and focused Chromium gates. Cross-engine, Lighthouse,
+  physical-device, and final visual/legal sign-off remain open.
 - [!] Seventy-two-hour monitoring starts only after a future public promotion.
 
 ## Operating rule

@@ -88,6 +88,7 @@ export function createSignalSequence(
 export function playOnceWhenVisible(
   context: SceneSetupContext,
   play: () => void,
+  target: Element = context.root,
 ): void {
   const observer = new IntersectionObserver(
     (entries): void => {
@@ -101,7 +102,7 @@ export function playOnceWhenVisible(
     { rootMargin: "0px 0px -12% 0px", threshold: 0.12 },
   );
 
-  observer.observe(context.root);
+  observer.observe(target);
   context.ownObserver(observer);
 }
 

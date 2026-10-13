@@ -1,0 +1,93 @@
+---
+import { localePath } from "@/features/site/localization";
+
+import type {
+  ProductAtlasEntry,
+  ProductAtlasViewModel,
+} from "./product-atlas-view-model";
+
+interface Props {
+  atlas: ProductAtlasViewModel;
+  entry: ProductAtlasEntry;
+}
+
+const { atlas, entry } = Astro.props;
+const { product } = entry;
+---
+
+<section
+  class="archive-chapter"
+  id={`signal-${product.slug}`}
+  aria-labelledby={`archive-link-${product.slug}`}
+  data-atlas-panel
+  data-product-slug={product.slug}
+  data-flavor={product.slug}
+  data-archive-number={entry.number}
+  data-active={entry.index === 0 ? "" : undefined}
+  tabindex="-1"
+>
+  <div
+    class="archive-chapter__mobile-product archive-chapter__visual"
+    data-atlas-visual
+  >
+    <span class="archive-chapter__number" aria-hidden="true">
+      {entry.number}
+    </span>
+    <p class="archive-chapter__band type-data" aria-hidden="true">
+      {atlas.text.chapter} / {entry.number}
+    </p>
+    <p class="archive-chapter__ghost" aria-hidden="true">{product.name}</p>
+    <img
+      src={product.imagePath}
+      srcset={product.imageSrcSet}
+      sizes="(max-width: 47.99rem) 56vw, 17rem"
+      width={product.width}
+      height={product.height}
+      alt={product.alt}
+      loading={entry.index === 0 ? "eager" : "lazy"}
+      decoding="async"
+    />
+    <div class="archive-chapter__field" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="archive-chapter__pulse" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <div class="archive-chapter__copy">
+    <div class="archive-chapter__meta">
+      <p class="type-label">
+        {atlas.text.chapter} / {entry.number}
+      </p>
+      <p class="type-data">CH / {entry.number}</p>
+    </div>
+    <p class="archive-chapter__notes">
+      {product.flavorNotes.join(" · ")}
+    </p>
+    <h2>{product.name}</h2>
+    <p class="archive-chapter__description">{product.description}</p>
+    <div class="archive-chapter__actions">
+      <a
+        class="control"
+        href={localePath(atlas.locale, `/products/${product.slug}`)}
+      >
+        {atlas.copy.openDetails}
+      </a>
+      <a
+        class="text-link"
+        href={`${localePath(atlas.locale, "/compare")}?products=${product.slug}`}
+      >
+        {atlas.copy.navigation.compare} ↗
+      </a>
+    </div>
+    <p class="archive-chapter__warning type-legal">
+      {product.warningText}
+    </p>
+  </div>
+</section>

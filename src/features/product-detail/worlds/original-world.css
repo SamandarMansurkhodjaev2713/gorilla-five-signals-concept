@@ -1,0 +1,72 @@
+.product-detail[data-flavor="original"] .product-hero {
+  background:
+    linear-gradient(101deg, rgb(0 0 0 / 72%) 0 42%, transparent 72%),
+    linear-gradient(160deg, #142206, var(--flavor-surface) 62%, #080b06);
+}
+
+.product-detail[data-flavor="original"] .original-metal {
+  inset: 9% -14% 6% 34%;
+  border: 1px solid color-mix(in srgb, var(--flavor-signal) 62%, white);
+  border-radius: 50% 7% 42% 5%;
+  background:
+    repeating-linear-gradient(
+      93deg,
+      transparent 0 1.8rem,
+      rgb(255 255 255 / 7%) 1.8rem 1.86rem
+    ),
+    linear-gradient(
+      112deg,
+      #111 0 9%,
+      #6c736a 20%,
+      #171c16 38%,
+      #b6bdb2 48%,
+      #1b211b 61%,
+      #080a08 100%
+    );
+  box-shadow:
+    inset 2rem 0 4rem rgb(0 0 0 / 60%),
+    0 0 5rem rgb(135 255 19 / 11%);
+  clip-path: polygon(8% 0, 100% 8%, 91% 100%, 0 86%);
+  transform: rotate(-7deg) skewX(-4deg);
+}
+
+.product-detail[data-flavor="original"] .original-metal__wet {
+  inline-size: clamp(0.4rem, 1.1cqi, 1rem);
+  aspect-ratio: 0.45;
+  border-radius: 80% 35% 70% 45%;
+  background: linear-gradient(
+    110deg,
+    rgb(255 255 255 / 80%),
+    rgb(146 255 40 / 13%)
+  );
+  box-shadow: 0 0.8rem 0.9rem rgb(0 0 0 / 32%);
+}
+
+.product-detail[data-flavor="original"] .original-metal__wet--one {
+  inset: 18% auto auto 42%;
+}
+
+.product-detail[data-flavor="original"] .original-metal__wet--two {
+  inset: 62% 24% auto auto;
+  transform: scale(0.68) rotate(24deg);
+}
+
+.product-detail[data-flavor="original"] .original-metal__etch {
+  inset: 49% -8% auto 6%;
+  block-size: 0.18rem;
+  background: var(--flavor-signal);
+  box-shadow: 0 0 1.4rem var(--flavor-signal);
+  transform: rotate(-11deg);
+}
+
+.product-detail[data-flavor="original"] .original-fracture {
+  inset: -8% auto -8% 43%;
+  inline-size: clamp(0.18rem, 0.42vw, 0.42rem);
+  background: var(--flavor-signal);
+  box-shadow: 1.3rem 0 0 rgb(255 255 255 / 22%);
+  transform: rotate(14deg);
+}
+
+.product-detail[data-flavor="original"] .product-world-impact {
+  inset: 35% auto auto 58%;
+}

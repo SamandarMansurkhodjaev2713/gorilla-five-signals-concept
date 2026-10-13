@@ -40,6 +40,7 @@ interface CompareElementCandidates {
   readonly clearButton: HTMLButtonElement | null;
   readonly copyButton: HTMLButtonElement | null;
   readonly emptyState: HTMLElement | null;
+  readonly field: HTMLElement | null;
   readonly findLink: HTMLAnchorElement | null;
   readonly matrixCells: readonly HTMLTableCellElement[];
   readonly products: readonly HTMLElement[];
@@ -54,6 +55,7 @@ function collectCandidates(root: HTMLElement): CompareElementCandidates {
     clearButton: queryElement(root, "[data-compare-clear]", isButton),
     copyButton: queryElement(root, "[data-compare-copy]", isButton),
     emptyState: queryElement(root, "[data-compare-empty]", isHtmlElement),
+    field: queryElement(root, "[data-compare-field]", isHtmlElement),
     findLink: queryElement(root, "[data-compare-find]", isAnchor),
     matrixCells: queryElements(
       root,
@@ -79,6 +81,7 @@ function isComplete(
     candidates.clearButton !== null &&
     candidates.copyButton !== null &&
     candidates.emptyState !== null &&
+    candidates.field !== null &&
     candidates.findLink !== null &&
     candidates.status !== null &&
     candidates.selects.length === DESKTOP_SLOT_LIMIT &&

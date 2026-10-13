@@ -1,0 +1,69 @@
+.product-detail .adjacent-products {
+  position: relative;
+  display: grid;
+  overflow: clip;
+  border-block-start: var(--size-rule-hairline) solid var(--color-border-subtle);
+}
+
+.product-detail .adjacent-product {
+  position: relative;
+  display: grid;
+  min-block-size: 24rem;
+  grid-template-columns: minmax(0, 1fr) minmax(6.5rem, 0.64fr);
+  align-items: center;
+  overflow: clip;
+  padding: var(--space-6) var(--space-gutter);
+  border-block-end: var(--size-rule-hairline) solid var(--flavor-border);
+  background:
+    linear-gradient(140deg, transparent 45%, rgb(255 255 255 / 5%)),
+    var(--flavor-surface);
+}
+
+.product-detail .adjacent-product > div {
+  position: relative;
+  z-index: var(--z-content);
+  display: grid;
+  min-inline-size: 0;
+  gap: var(--space-4);
+}
+
+.product-detail .adjacent-product h2 {
+  overflow-wrap: anywhere;
+}
+
+.product-detail .adjacent-product .control {
+  justify-self: start;
+}
+
+.product-detail .adjacent-product img {
+  justify-self: center;
+  inline-size: auto;
+  max-inline-size: 100%;
+  block-size: auto;
+  max-block-size: min(42svh, 22rem);
+  filter: drop-shadow(0 1rem 1rem rgb(0 0 0 / 45%));
+  object-fit: contain;
+}
+
+.product-detail .adjacent-product--previous {
+  filter: saturate(0.72);
+}
+
+@media (min-width: 64rem) {
+  .product-detail .adjacent-products {
+    min-block-size: 42rem;
+    grid-template-columns: minmax(16rem, 0.72fr) minmax(0, 1.6fr);
+  }
+
+  .product-detail .adjacent-product {
+    min-block-size: 42rem;
+  }
+
+  .product-detail .adjacent-product--next {
+    grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.8fr);
+  }
+
+  .product-detail .adjacent-product--next img {
+    max-block-size: 31rem;
+  }
+}

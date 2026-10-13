@@ -1,0 +1,22 @@
+---
+import type { ProductSlug } from "../product-world-contract";
+
+import ExtraWorldArt from "./ExtraWorldArt.astro";
+import LycheePearWorldArt from "./LycheePearWorldArt.astro";
+import MangoCoconutWorldArt from "./MangoCoconutWorldArt.astro";
+import OriginalWorldArt from "./OriginalWorldArt.astro";
+import ZeroWorldArt from "./ZeroWorldArt.astro";
+
+interface Props {
+  indexLabel: string;
+  slug: ProductSlug;
+}
+
+const { indexLabel, slug } = Astro.props;
+---
+
+{slug === "original" && <OriginalWorldArt {indexLabel} />}
+{slug === "zero" && <ZeroWorldArt {indexLabel} />}
+{slug === "extra" && <ExtraWorldArt {indexLabel} />}
+{slug === "mango-coconut" && <MangoCoconutWorldArt {indexLabel} />}
+{slug === "lychee-pear" && <LycheePearWorldArt {indexLabel} />}

@@ -1,7 +1,20 @@
 # QA status
 
-- Snapshot date: 2026-08-31
-- Technical verdict: **homepage/global-motion rebuild milestone passed; route art direction remains active**
+## Revalidation — 2026-10-14
+
+The September evidence below is historical. Current source validation passes
+formatting, lint, strict types, 111 unit tests, and the 47-page build. Eleven
+production Chromium regressions pass for default selection, three-channel
+resize persistence, eight arena viewports, and the native no-JavaScript
+packshot. Dependency refresh removes all known advisories; the reviewed SBOM
+now contains 617 components. The combined quality run passes on Node 24.16.0;
+the final release matrix remains open.
+
+Node is now pinned to 24.16.0; Astro ESLint plugin 2.1.1 replaces the vulnerable
+fast-glob/micromatch/braces dependency chain. No audit exception is introduced.
+
+- Snapshot date: 2026-09-09
+- Technical verdict: **Product Atlas, Signal Duel, and five product worlds pass the current source and focused Chromium gates**
 - Deployment verdict: **public GitHub Pages review release is live; rebuild remains on a feature branch**
 - Public sign-off verdict: **review build only; commercial-launch claim held**
 - Evidence rule: code existence and historical reports are not current pass evidence
@@ -10,15 +23,15 @@
 
 | Gate                              | Status                   | Current evidence                                                                                                                      |
 | --------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Format, lint, strict types        | Passed locally           | Prettier; ESLint zero warnings; Astro Check on 182 files with zero errors, warnings, or hints                                         |
-| Unit tests                        | Passed locally           | 100 tests in 15 files                                                                                                                 |
+| Format, lint, strict types        | Passed locally           | Prettier; ESLint zero warnings; Astro Check on 219 files with zero errors, warnings, or hints                                         |
+| Unit tests                        | Passed locally           | 111 tests in 18 files                                                                                                                 |
 | Unit coverage                     | Passed locally           | 100% statements, lines, and functions; 97.31% branches                                                                                |
 | Static build                      | Passed locally           | 47 localized/static pages                                                                                                             |
 | Content, links, budgets           | Passed locally           | Links across all 47 HTML files; 38 validated content records; initial JS/transfer limits pass                                         |
 | Media/font provenance             | Passed locally           | Ten media records; deterministic font subsets and checksums; pinned FFmpeg binary hash                                                |
-| Dependency security               | Passed locally           | `pnpm audit --audit-level high`: no known vulnerabilities                                                                             |
-| Dependency licenses/SBOM          | Passed locally           | Deterministic CycloneDX 1.6 inventory with 640 reviewed components                                                                    |
-| Current rebuild Chromium contract | Passed locally           | 93 of 93 focused homepage, global-motion, lifecycle, media, responsive, touch, keyboard, and no-JS tests                              |
+| Dependency security               | Passed locally           | Astro and Sharp patched; no high or critical advisories; two moderate transitive advisories remain recorded                          |
+| Dependency licenses/SBOM          | Passed locally           | Deterministic CycloneDX 1.6 inventory with 635 reviewed components                                                                    |
+| Current rebuild Chromium contract | Passed locally           | Atlas/Compare legacy and focused run: 40 passed; detail matrix, art, fallback, lifecycle, and post-audit boundary runs passed          |
 | Current authored capture journeys | Passed locally           | Fresh desktop and mobile chapter captures, two of two                                                                                 |
 | Firefox                           | Historical baseline only | Must be rerun after Product Atlas/Compare/detail-world art direction settles                                                          |
 | WebKit                            | Historical baseline only | Must be rerun after Product Atlas/Compare/detail-world art direction settles                                                          |
@@ -28,8 +41,8 @@
 | Sites worker contract             | Passed locally           | Cloudflare-compatible artifact; redirect, headers, caching, and asset binding verified                                                |
 | Public review release             | Passed                   | GitHub Pages baseline release, Quality, Pages, and CodeQL completed successfully before this feature milestone                        |
 
-The current milestone's dated five-pass evidence and corrective actions are in
-`docs/quality/AWWWARDS_REBUILD_REVIEW_2026-08-31.md`.
+The current milestone's dated five-lens evidence and corrective actions are in
+`docs/quality/AWWWARDS_PHASE5_REVIEW_2026-09-09.md`.
 
 ## Performance medians
 

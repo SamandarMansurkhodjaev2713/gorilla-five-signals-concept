@@ -19,7 +19,7 @@ Start with:
 2. [Product and creative direction](product/GORILLA_CONCEPT.md)
 3. [Target architecture](architecture/TARGET_ARCHITECTURE.md)
 4. [Current QA status](quality/QA_STATUS.md)
-5. [Current Awwwards rebuild review](quality/AWWWARDS_REBUILD_REVIEW_2026-08-31.md)
+5. [Current Awwwards Phase 5 review](quality/AWWWARDS_PHASE5_REVIEW_2026-09-09.md)
 6. [Historical five-pass review](quality/RELEASE_REVIEW_2026-08-10.md)
 7. [Release checklist](release/RELEASE_CHECKLIST.md)
 8. [Release and rollback runbook](release/RELEASE_RUNBOOK.md)

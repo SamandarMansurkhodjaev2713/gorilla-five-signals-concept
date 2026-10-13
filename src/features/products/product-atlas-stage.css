@@ -11,17 +11,31 @@
   display: grid;
   block-size: calc(100svh - var(--size-header));
   min-block-size: 38rem;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto minmax(0, 1fr) auto;
   overflow: hidden;
   background:
-    radial-gradient(
-      circle at 50% 48%,
-      color-mix(in srgb, var(--flavor-signal) 16%, transparent),
-      transparent 38%
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--flavor-signal) 7%, transparent),
+      transparent 72%
     ),
     var(--color-surface-sunken);
   transition: background-color var(--motion-duration-standard)
     var(--motion-ease-enter);
+}
+
+.archive-scan__sticky::before {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0 3.75rem,
+    color-mix(in srgb, var(--color-border-subtle) 48%, transparent) 3.75rem
+      calc(3.75rem + var(--size-rule-hairline))
+  );
+  content: "";
+  mask-image: linear-gradient(90deg, black, transparent 86%);
+  pointer-events: none;
 }
 
 .archive-scan__header,
@@ -86,7 +100,8 @@
   position: relative;
   display: grid;
   min-inline-size: 0;
-  grid-template-rows: auto 1fr auto;
+  min-block-size: var(--size-control-min);
+  grid-template-rows: auto minmax(0, 1fr) auto;
   gap: var(--space-2);
   padding: var(--space-3) var(--space-2);
   border-inline-end: var(--size-rule-hairline) solid var(--color-border-subtle);
@@ -145,9 +160,9 @@
   block-size: auto;
   max-block-size: 72%;
   object-fit: contain;
-  filter: saturate(0.7)
+  filter: saturate(0.6)
     drop-shadow(0 var(--space-5) var(--space-5) var(--color-scrim));
-  opacity: 0.62;
+  opacity: 0.5;
   transform: translateY(var(--wall-can-offset)) rotate(var(--wall-can-tilt));
   transition:
     filter var(--motion-duration-standard) var(--motion-ease-enter),
@@ -160,7 +175,7 @@
     drop-shadow(0 var(--space-5) var(--space-5) var(--color-scrim));
   opacity: 1;
   transform: translateY(calc(var(--wall-can-offset) - var(--space-3)))
-    rotate(0deg) scale(1.06);
+    rotate(0deg) scale(1.07);
 }
 
 .archive-wall strong {
