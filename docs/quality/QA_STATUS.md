@@ -89,8 +89,10 @@ WebKit delivers 235 native RAF frames in 4.005 s (mean gap 17.09 ms, maximum
 normal frame cadence after startup. The starvation is application/rendering or
 motion-integration specific; Full must not be accepted on the basis of a harness
 explanation. Ready Reduced runs normally, whereas ready Lite/Full are starved.
-Removing only the two grain surfaces restores natural entrance completion while
-preserving shadows, filters, 3D, and every product-world node. SVG, PNG, baked
+Removing only the two grain surfaces after readiness restores natural entrance
+completion in one sample while preserving shadows, filters, 3D, and every
+product-world node; applying the same removal before mount fails. Therefore
+timing/compositing confounds prevent a texture-only diagnosis. SVG, PNG, baked
 alpha, native-background, negative-z, and whole-article containment probes have
 not established a production fix. See the [isolated rendering investigation](WEBKIT_PRODUCT_WORLD_DIAGNOSIS_2026-10-14.md);
 its samples are diagnostics, not final frame-budget evidence.

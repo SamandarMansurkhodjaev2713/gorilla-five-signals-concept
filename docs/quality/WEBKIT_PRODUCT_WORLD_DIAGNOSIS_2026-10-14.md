@@ -40,7 +40,8 @@ counts below are individual observed samples, not statistical release metrics.
 | Remove only global procedural grain | Five frames | Insufficient |
 | Remove only world-art texture | Three frames | Insufficient |
 | Remove only packshot filter or child shadows/filters | Three frames | Insufficient |
-| Remove both grain surfaces, retain shadows, filters, 3D and all world nodes | 53 frames; entrance finishes naturally | Texture surfaces are a causal contributor; still not a release pass |
+| Remove both grain surfaces after scene readiness, retain shadows, filters, 3D and all world nodes | 53 frames; entrance finishes naturally | Conditional positive; not independently reproduced at early mount |
+| Remove both grain surfaces before scene mount | Four frames; unchanged 15-second entrance deadline expires | Contradicts a texture-only diagnosis; timing/compositing remains a confound |
 | Remove grain and raster effects together | 115 frames; entrance finishes naturally | Diagnostic upper comparison; discarding the art is not the chosen fix |
 | Flatten 3D, or isolate/contain the art alone | Three frames | Insufficient |
 | Replace procedural surfaces with decoded SVG tiles | Six–seven frames for Original | Rejected as a fix |
@@ -50,6 +51,7 @@ counts below are individual observed samples, not statistical release metrics.
 | Move original procedural grain behind content | Three frames | Rejected as a fix |
 | Move baked PNG grain into native surface backgrounds, preserving hero gradients | Six frames; entrance incomplete | Rejected as a fix |
 | Set whole-article content visibility to visible, remove intrinsic placeholder sizing | Three frames; unchanged 15-second entrance deadline expires | Rejected as a fix |
+| Bound original procedural grain to two 128-pixel corner surfaces | 63 frames; median frame gap 15 ms, maximum 531 ms; entrance naturally completes | One positive sample with visibly painted grain; repeat/all-world evidence pending |
 
 PNG experiments verified decoded dimensions, alpha, and actual CSS ownership.
 The native-background experiment also verified visibly painted grain; its failure
@@ -60,14 +62,17 @@ performance measurements.
 ## Current next step
 
 Whole-article `content-visibility:auto` containment was not causal in isolation.
-Measure a bounded-area material treatment against the texture-free diagnostic control.
+Repeat the bounded-area material treatment across worlds and compare identical
+after-readiness mutation timing against texture removal and a no-op mutation.
+The early/late texture-removal contradiction prevents a texture-only conclusion.
 Choose a production change only after natural entrance and actual scroll-response
 evidence, then rebuild and rerun cross-engine, responsive, accessibility, and
 production performance gates.
 
-Unused SVG/PNG candidates are not referenced by production CSS and are not
-release-approved. They must be adopted with evidence or excluded from the final
-public artifact; format conversion alone is not an optimization success.
+Rejected SVG/PNG masters, derivatives, generator, and candidate metadata are
+preserved in ignored local research at `.tmp/rejected-material-textures-2026-10-14/`.
+They are excluded from production content and public assets. Format conversion
+alone is not an optimization success.
 
 ## Five review lenses
 
