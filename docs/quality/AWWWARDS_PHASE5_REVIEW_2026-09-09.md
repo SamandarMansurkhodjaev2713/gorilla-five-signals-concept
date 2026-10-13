@@ -151,6 +151,20 @@ LCP is 2,499.03 ms, TBT 99 ms, CLS zero. LCP has little margin; the exact artifa
 hash is recorded in QA_STATUS.md. Full cross-engine release coverage remains
 open.
 
+The broad browser run exposed `aria-pressed` on the document root. The root
+stores `data-motion-preference` for runtime state, while an overly broad
+control selector matched that same attribute. The selector now explicitly
+matches buttons for preference and pause controls. Correctness removes root
+ARIA writes; architecture separates state carrier from interaction targets;
+UX rechecks the full locale/route Axe matrix; performance adds no work or
+dependency; maintenance retains the existing accessibility test as regression
+evidence. The interrupted broad run is not recorded as a pass; focused
+accessibility revalidation passes 42 locale/route Axe checks and 13 other
+accessibility contracts. The keyboard skip test initially raced the stored
+confirmation dialog closure; it now waits for that observable state before
+pressing Tab. The focused keyboard-only repeat passes without mouse input or
+synthetic focus. A new full-browser run remains required.
+
 These are P2 art-direction refinements, not concealed release blockers. They
 remain explicit work before the final portfolio claim.
 

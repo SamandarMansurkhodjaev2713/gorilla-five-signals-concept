@@ -55,6 +55,7 @@ test.describe("automated accessibility", () => {
       sessionStorage.setItem("gorilla-responsible-entry-confirmed", "true"),
     );
     await expectSemanticPage(page, "uz");
+    await expect(page.locator("[data-responsible-entry]")).toBeHidden();
     await page.keyboard.press("Tab");
 
     const skipLink = page.locator('a[href="#main-content"]');
