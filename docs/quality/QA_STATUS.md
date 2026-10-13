@@ -10,6 +10,13 @@ packshot. Dependency refresh removes all known advisories; the reviewed SBOM
 now contains 617 components. The combined quality run passes on Node 24.16.0;
 the final release matrix remains open.
 
+The post-refinement product matrix passes all five worlds in three locales
+at seven viewports, plus 200% text/WCAG spacing. The shortened 844×390 Atlas
+contract passes; measured localized hero height is 322 px without overflow.
+WebKit 320 px and 844×390 pass after the test uses verified native scrolling.
+Fresh Lighthouse median-of-three is running against a separately built,
+hash-checked public-base artifact; results are pending.
+
 Node is now pinned to 24.16.0; Astro ESLint plugin 2.1.1 replaces the vulnerable
 fast-glob/micromatch/braces dependency chain. No audit exception is introduced.
 

@@ -111,7 +111,7 @@
   }
 }
 
-@media (orientation: landscape) and (max-height: 31.25rem) and (max-width: 63.99rem) {
+@media (orientation: landscape) and (max-height: 31.25rem) and (min-width: 37.5rem) and (max-width: 63.99rem) {
   .archive-index {
     --archive-anchor-offset: 0rem;
     --archive-instrument-block-size: 5.5rem;
@@ -123,9 +123,11 @@
   }
 
   .archive-hero {
-    min-block-size: 34rem;
-    grid-template-columns: minmax(0, 1.5fr) minmax(15rem, 0.7fr);
-    grid-template-rows: auto minmax(0, 1fr) auto;
+    min-block-size: max(20rem, var(--archive-hero-min));
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: var(--space-4) var(--space-6);
+    padding-block: var(--space-3);
   }
 
   .archive-hero__meta,
@@ -143,15 +145,29 @@
   }
 
   .archive-hero h1 {
-    font-size: clamp(4.75rem, 12vw, 6.4rem);
+    gap: var(--space-3);
+    font-size: clamp(3.5rem, 9vw, 4.75rem);
+  }
+
+  .archive-hero__mark {
+    font-size: clamp(12rem, 27vw, 17rem);
+  }
+
+  .archive-hero__stamp {
+    display: none;
   }
 
   .archive-hero__brief {
-    align-self: end;
+    align-self: center;
     grid-column: 2;
     grid-row: 2;
-    padding: var(--space-3) 0 0 var(--space-3);
+    gap: var(--space-2);
+    padding: var(--space-3) 0;
     font-size: var(--font-size-body-sm);
+  }
+
+  .archive-hero__brief .type-body-lg {
+    font-size: var(--font-size-body);
   }
 
   .archive-scan__sticky {
@@ -168,26 +184,56 @@
   }
 
   .archive-chapter {
-    min-block-size: 38rem;
+    min-block-size: max(24rem, calc(100svh - var(--size-header)));
     scroll-margin-block-start: var(--archive-anchor-offset);
-    grid-template-columns: minmax(20rem, 0.9fr) minmax(24rem, 1.1fr);
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
   }
 
   .archive-chapter__visual {
-    min-block-size: 38rem;
+    min-block-size: 0;
     border-block-end: 0;
     border-inline-end: var(--size-rule-strong) solid var(--flavor-border);
   }
 
   .archive-chapter__visual img {
-    block-size: 25rem;
+    block-size: clamp(13rem, 64svh, 17rem);
+  }
+
+  .archive-chapter__number {
+    font-size: clamp(9rem, 22vw, 12rem);
+  }
+
+  .archive-chapter__ghost {
+    font-size: clamp(4rem, 10vw, 6rem);
   }
 
   .archive-chapter__copy {
-    padding-block: var(--space-6);
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-5);
+  }
+
+  .archive-chapter__meta {
+    padding-block: var(--space-2);
   }
 
   .archive-chapter__copy h2 {
-    font-size: clamp(3.5rem, 9vw, 5rem);
+    font-size: clamp(2.75rem, 6vw, 3.5rem);
+    line-height: var(--line-height-display);
+  }
+
+  .archive-chapter__description {
+    font-size: var(--font-size-body-sm);
+  }
+
+  .archive-chapter__actions {
+    gap: var(--space-3);
+  }
+
+  .archive-chapter__actions .control {
+    inline-size: auto;
+  }
+
+  .archive-chapter__warning {
+    padding-block-start: var(--space-2);
   }
 }

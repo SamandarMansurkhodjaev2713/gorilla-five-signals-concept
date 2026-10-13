@@ -44,16 +44,24 @@
     grid-area: 1 / 7 / 13 / 12;
   }
   .product-detail[data-flavor="extra"] .product-heading {
-    grid-area: 2 / 1 / 11 / 7;
+    grid-area: 3 / 7 / 12 / 13;
+    align-content: end;
   }
   .product-detail[data-flavor="extra"] .can-stage {
-    grid-area: 2 / 6 / 13 / 12;
+    grid-area: 1 / 1 / 13 / 7;
+  }
+  .product-detail[data-flavor="extra"] .product-packshot img {
+    rotate: -8deg;
   }
   .product-detail[data-flavor="mango-coconut"] .product-heading {
-    grid-area: 2 / 1 / 11 / 7;
+    grid-area: 4 / 1 / 13 / 7;
+    align-content: end;
   }
   .product-detail[data-flavor="mango-coconut"] .can-stage {
-    grid-area: 1 / 7 / 13 / 13;
+    grid-area: 1 / 7 / 11 / 13;
+  }
+  .product-detail[data-flavor="mango-coconut"] .product-packshot img {
+    rotate: 7deg;
   }
   .product-detail[data-flavor="lychee-pear"] .product-heading {
     grid-area: 2 / 7 / 11 / 13;

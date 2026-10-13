@@ -100,9 +100,35 @@ are not complete.
   from reviewed package licenses for 617 components. Full quality verification
   passes on Node 24.16.0, including the unmodified high-severity audit gate.
 
-- Increase compositional divergence for Extra and Mango detail heroes.
-- Compress the 844×390 Atlas narrative into a more complete first viewport.
-- Give Material Film a stronger Reduced/media-failure keyframe.
+Cross-engine revalidation isolated a Playwright WebKit scrolling defect:
+`scrollIntoViewIfNeeded()` leaves the viewport at zero inside the clipped
+arena, while the native `scrollIntoView()` reaches the image and triggers lazy
+loading. The contract uses native scrolling, verifies viewport entry, and
+requires completion plus nonzero native width. WebKit 320 px and 844×390 both
+pass the focused repeat; Firefox passes its focused repeat.
+A 404 observed while rebuilding `dist` during the first Firefox run is excluded;
+subsequent browser runs use an immutable completed build.
+
+- Extra now uses a left suspended can and lower-right text; Mango uses an
+  elevated can and a lower-left amber typography field. The first Mango frame
+  exposed dark copy over blue; the amber diagonal was expanded. Rotating the
+  stage initially exceeded hero bounds by 19 px; rotation now belongs to the
+  can image only. The complete locale × seven-viewport matrix and 200% text
+  contract pass after correction.
+- Landscape Atlas hero is 322 px at 844×390 in all three locales, with no
+  horizontal overflow; chapters use compact proportional media and natural
+  content growth. Its 844×390 contract passes.
+- Fresh decoded Reduced Material Film capture preserves all five cans and the
+  aluminum/water/light material composition. The earlier weak static state is
+  not reproduced in the current artifact.
+
+Five refinement lenses: correctness caught the rotated-stage overflow;
+architecture keeps material/layout in feature CSS and scoped motion unchanged;
+UX caught Mango contrast and proves seven-view reflow; performance adds no
+asset or runtime dependency; maintainability records actual screenshots,
+regressions, and the isolated Lighthouse CLI server fix. Lighthouse now uses
+documented `--ignore-lock` to start its dedicated artifact server while an
+owner preview is running, retaining entry-hash validation and owned cleanup.
 
 These are P2 art-direction refinements, not concealed release blockers. They
 remain explicit work before the final portfolio claim.

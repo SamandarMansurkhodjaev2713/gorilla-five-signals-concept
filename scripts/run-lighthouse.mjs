@@ -206,6 +206,7 @@ try {
     [
       ASTRO_CLI,
       "preview",
+      "--ignore-lock",
       "--config",
       LIGHTHOUSE_ASTRO_CONFIG,
       "--host",
@@ -213,7 +214,12 @@ try {
       "--port",
       String(PORT),
     ],
-    { env: publicReadinessEnvironment, stdio: "inherit" },
+    {
+      // Astro 7.3 uses this marker for its managed child process. Keep this
+      // harness-owned preview in the foreground so owned teardown can stop it.
+      env: { ...publicReadinessEnvironment, ASTRO_PREVIEW_BACKGROUND: "1" },
+      stdio: "inherit",
+    },
   );
   await waitForEndpoint({
     fetchTimeoutMs: FETCH_TIMEOUT_MS,

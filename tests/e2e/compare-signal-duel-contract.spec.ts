@@ -135,18 +135,25 @@ for (const viewport of VIEWPORTS) {
     await expect(page.locator(SELECTED)).toHaveCount(expectedCount);
     await expect(visuals).toHaveCount(expectedCount);
     await expectNoHorizontalOverflow(page);
-    await arena.scrollIntoViewIfNeeded();
-    await expect
-      .poll(() =>
-        page
-          .locator(`${SELECTED} img`)
-          .evaluateAll((images) =>
-            images.every(
-              (image) => image instanceof HTMLImageElement && image.complete,
-            ),
+    await arena.evaluate((element) =>
+      element.scrollIntoView({ block: "start" }),
+    );
+    for (const image of await page.locator(`${SELECTED} img`).all()) {
+      await image.evaluate((element) =>
+        element.scrollIntoView({ block: "center" }),
+      );
+      await expect(image).toBeInViewport();
+      await expect
+        .poll(() =>
+          image.evaluate(
+            (element) =>
+              element instanceof HTMLImageElement &&
+              element.complete &&
+              element.naturalWidth > 0,
           ),
-      )
-      .toBe(true);
+        )
+        .toBe(true);
+    }
     await expectPresentationReleased(page);
     await expectArenaTextNotToOverlap(page);
 

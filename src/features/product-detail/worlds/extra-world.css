@@ -69,3 +69,13 @@
 .product-detail[data-flavor="extra"] .product-world-impact {
   inset: 31% auto auto 58%;
 }
+
+@media (min-width: 64rem) {
+  .product-detail[data-flavor="extra"] .extra-pressure {
+    inset-inline: -26% 22%;
+  }
+
+  .product-detail[data-flavor="extra"] .product-world-impact {
+    inset-inline-start: 21%;
+  }
+}

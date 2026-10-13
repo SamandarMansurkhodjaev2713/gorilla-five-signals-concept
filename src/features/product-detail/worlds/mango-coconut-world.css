@@ -74,3 +74,19 @@
 .product-detail[data-flavor="mango-coconut"] .product-heading .text-link {
   color: #07172c;
 }
+
+@media (min-width: 64rem) {
+  .product-detail[data-flavor="mango-coconut"] .product-hero {
+    background: linear-gradient(
+      60deg,
+      #ff9a18 0 43%,
+      #f1c873 43.2% 44%,
+      #052143 44.2% 100%
+    );
+  }
+
+  .product-detail[data-flavor="mango-coconut"] .mango-collision__seam {
+    inset-inline-start: 48%;
+    transform: rotate(-30deg);
+  }
+}
