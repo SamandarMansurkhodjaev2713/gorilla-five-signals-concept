@@ -3,7 +3,8 @@
 ## Revalidation — 2026-10-14
 
 The September evidence below is historical. Current source validation passes
-formatting, lint, strict types, 111 unit tests, and the 47-page build. Eleven
+formatting, lint, strict types on 220 files, 115 unit tests, and the 47-page build
+for committed candidate `65a8df6`. Eleven
 production Chromium regressions pass for default selection, three-channel
 resize persistence, eight arena viewports, and the native no-JavaScript
 packshot. Dependency refresh removes all known advisories; the reviewed SBOM
@@ -79,7 +80,7 @@ the entrance. The corrected observer starts browser-frame polling immediately
 after navigation and requires both Full readiness and completed entrance in one
 predicate, with the unchanged 15-second limit. All three Full repetitions still
 time out, while the three Reduced repetitions pass. Frame polling alone is
-therefore insufficient; instrumentation/foreground A/B checks remain open.
+therefore insufficient; subsequent recording/foreground A/B checks also fail.
 No production ticker workaround or forced state exists.
 
 A minimal no-app/no-GSAP control contradicts a blanket environment diagnosis:
@@ -87,8 +88,13 @@ WebKit delivers 235 native RAF frames in 4.005 s (mean gap 17.09 ms, maximum
 31 ms), and its 580 ms CSS animation finishes normally. Chromium also sustains
 normal frame cadence after startup. The starvation is application/rendering or
 motion-integration specific; Full must not be accepted on the basis of a harness
-explanation. Actual product no-JS/Reduced/Lite/Full comparisons are the next
-isolated diagnostic. The new artifact builds all 47 pages and passes links,
+explanation. Ready Reduced runs normally, whereas ready Lite/Full are starved.
+Removing only the two grain surfaces restores natural entrance completion while
+preserving shadows, filters, 3D, and every product-world node. SVG, PNG, baked
+alpha, native-background, negative-z, and whole-article containment probes have
+not established a production fix. See the [isolated rendering investigation](WEBKIT_PRODUCT_WORLD_DIAGNOSIS_2026-10-14.md);
+its samples are diagnostics, not final frame-budget evidence.
+The new artifact builds all 47 pages and passes links,
 content, fonts/media provenance, budgets, 617-component SBOM/licenses, pinned
 film toolchain, and clean dependency audit. Its local Uzbek entry SHA-256 is
 `53b82443beffa8d6ed2e3c456fc9557a9125dda02ef0ea92e3b388e578b4daa8`;
@@ -112,7 +118,7 @@ cases are independently named fixtures, not because acceptance scope was reduced
 - Public sign-off verdict: **review build only; commercial-launch claim held**
 - Evidence rule: code existence and historical reports are not current pass evidence
 
-## Executed evidence
+## Historical executed evidence (preceding candidate)
 
 | Gate                              | Status                   | Current evidence                                                                                                                      |
 | --------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
