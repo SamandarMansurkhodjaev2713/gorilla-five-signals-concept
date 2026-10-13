@@ -1,5 +1,11 @@
+import { createSceneSetupContext } from "./owned-scene-context";
+import {
+  createSceneResources,
+  type SceneResources,
+} from "./owned-scene-resources";
+
+import type { Cleanup } from "./cleanup-stack";
 import type { MotionEngine } from "./motion-engine";
-import { runCleanupStack, type Cleanup } from "./cleanup-stack";
 import type {
   MotionCapability,
   SceneHandle,
@@ -39,119 +45,57 @@ export interface SceneSetupContext {
 
 export type SceneSetup = (context: SceneSetupContext) => void | Cleanup;
 
-export function createOwnedScene(options: {
+interface OwnedSceneOptions {
   readonly id: SceneId;
   readonly root: HTMLElement;
   readonly capability: MotionCapability;
   readonly engine: MotionEngine;
   readonly setup: SceneSetup;
-}): SceneHandle {
-  const windowValue = options.root.ownerDocument.defaultView;
-  if (windowValue === null) {
-    throw new Error(`Scene "${options.id}" has no owning window.`);
-  }
+}
 
-  const abortController = new AbortController();
-  const cleanups = new Set<Cleanup>();
-  const media = options.engine.gsap.matchMedia(options.root);
-  let phase: ScenePhase = "mounting";
-  let context: ReturnType<MotionEngine["gsap"]["context"]> | undefined;
-
-  const runOwned = (callback: () => void): void => {
-    if (!abortController.signal.aborted) {
-      context?.add(callback);
-    }
-  };
-
-  const requestFrame = (callback: FrameRequestCallback): Cleanup => {
-    let frameId = 0;
-    const cancel = (): void => {
-      windowValue.cancelAnimationFrame(frameId);
-      cleanups.delete(cancel);
-    };
-
-    frameId = windowValue.requestAnimationFrame((time): void => {
-      cleanups.delete(cancel);
-      runOwned((): void => callback(time));
-    });
-    cleanups.add(cancel);
-    return cancel;
-  };
-
-  const setupContext: SceneSetupContext = {
-    root: options.root,
-    capability: options.capability,
-    gsap: options.engine.gsap,
-    media,
-    signal: abortController.signal,
-    query: <ElementType extends Element>(
-      selector: string,
-    ): ElementType | null => options.root.querySelector<ElementType>(selector),
-    queryAll: <ElementType extends Element>(
-      selector: string,
-    ): readonly ElementType[] =>
-      Array.from(options.root.querySelectorAll<ElementType>(selector)),
-    listen: (
-      target: EventTarget,
-      type: string,
-      listener: EventListener,
-      listenerOptions: AddEventListenerOptions = {},
-    ): void => {
-      const ownedListener: EventListener = (event): void => {
-        runOwned((): void => listener.call(target, event));
-      };
-      target.addEventListener(type, ownedListener, {
-        ...listenerOptions,
-        signal: abortController.signal,
-      });
-    },
-    onCleanup: (cleanup: Cleanup): void => {
-      cleanups.add(cleanup);
-    },
-    ownObserver: (observer: Disconnectable): void => {
-      cleanups.add((): void => observer.disconnect());
-    },
-    requestFrame,
-    runOwned,
-  };
-
+function rollbackSetup(
+  resources: SceneResources,
+  id: SceneId,
+  setupError: unknown,
+): never {
   try {
-    context = options.engine.gsap.context((): void => {
-      const cleanup = options.setup(setupContext);
-
-      if (cleanup) {
-        cleanups.add(cleanup);
-      }
-    }, options.root);
-    phase = "active";
-  } catch (setupError: unknown) {
-    abortController.abort();
-    const emergencyCleanups: Cleanup[] = [
-      (): void => context?.revert(),
-      (): void => media.revert(),
-      ...cleanups,
-    ];
-    cleanups.clear();
-
-    try {
-      runCleanupStack(
-        emergencyCleanups,
-        "One or more emergency scene resources failed to clean up.",
-      );
-    } catch (cleanupError: unknown) {
-      throw new AggregateError(
-        [setupError, cleanupError],
-        `Scene "${options.id}" failed during setup and cleanup.`,
-        { cause: cleanupError },
-      );
-    }
-
-    throw new Error(
-      `Scene "${options.id}" failed during setup: ${describeError(setupError)}`,
-      { cause: setupError },
+    resources.release(
+      "One or more emergency scene resources failed to clean up.",
+    );
+  } catch (cleanupError: unknown) {
+    throw new AggregateError(
+      [setupError, cleanupError],
+      `Scene "${id}" failed during setup and cleanup.`,
+      { cause: cleanupError },
     );
   }
+  throw new Error(
+    `Scene "${id}" failed during setup: ${describeError(setupError)}`,
+    { cause: setupError },
+  );
+}
 
+function runSceneSetup(
+  options: OwnedSceneOptions,
+  resources: SceneResources,
+): void {
+  const setupContext = createSceneSetupContext({ ...options, resources });
+  try {
+    const context = options.engine.gsap.context((): void => {
+      const cleanup = options.setup(setupContext);
+      if (cleanup) resources.addCleanup(cleanup);
+    }, options.root);
+    resources.assignContext(context);
+  } catch (setupError: unknown) {
+    rollbackSetup(resources, options.id, setupError);
+  }
+}
+
+function createSceneHandle(
+  options: OwnedSceneOptions,
+  resources: SceneResources,
+): SceneHandle {
+  let phase: ScenePhase = "active";
   return {
     id: options.id,
     capability: options.capability,
@@ -162,18 +106,8 @@ export function createOwnedScene(options: {
       }
 
       phase = "destroying";
-      abortController.abort();
-
-      const ownedCleanups: Cleanup[] = [
-        (): void => context?.revert(),
-        (): void => media.revert(),
-        ...cleanups,
-      ];
-      cleanups.clear();
-
       try {
-        runCleanupStack(
-          ownedCleanups,
+        resources.release(
           "One or more owned scene resources failed to clean up.",
         );
       } finally {
@@ -181,4 +115,14 @@ export function createOwnedScene(options: {
       }
     },
   };
+}
+
+export function createOwnedScene(options: OwnedSceneOptions): SceneHandle {
+  const windowValue = options.root.ownerDocument.defaultView;
+  if (windowValue === null) {
+    throw new Error(`Scene "${options.id}" has no owning window.`);
+  }
+  const resources = createSceneResources({ ...options, windowValue });
+  runSceneSetup(options, resources);
+  return createSceneHandle(options, resources);
 }

@@ -317,10 +317,10 @@ test("GIVEN rapid selection and motion-mode intents WHEN the tier leaves Full TH
     .toBe(0);
 });
 
-test("GIVEN explicit Reduced and Lite preferences WHEN the duel opens THEN motion tier and content remain truthful", async ({
-  page,
-}) => {
-  for (const preference of ["reduced", "lite"] as const) {
+for (const preference of ["reduced", "lite"] as const) {
+  test(`GIVEN explicit ${preference} preference WHEN the duel opens THEN motion tier and content remain truthful`, async ({
+    page,
+  }) => {
     await page.addInitScript((value) => {
       sessionStorage.setItem("gorilla-responsible-entry-confirmed", "true");
       localStorage.setItem("gorilla:motion-preference:v1", value);
@@ -355,8 +355,8 @@ test("GIVEN explicit Reduced and Lite preferences WHEN the duel opens THEN motio
           ),
       )
       .toBe(0);
-  }
-});
+  });
+}
 
 test("GIVEN all supported locales WHEN Signal Duel opens THEN the authored lead and native selector stay localized", async ({
   page,

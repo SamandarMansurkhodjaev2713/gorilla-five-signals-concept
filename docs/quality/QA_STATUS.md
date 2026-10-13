@@ -57,7 +57,56 @@ The pre-push `pnpm quality` run completed successfully: formatting, lint,
 audit with no known vulnerabilities. GitHub private vulnerability reporting is
 enabled; repository secret scanning and push protection are also enabled.
 
-- Snapshot date: 2026-09-09
+### Broad beebfd7 run and next corrections
+
+The completed 786-case attempt records 372 passed, 407 intentional engine skips,
+and seven failed. All 262 Chromium cases, including normal visual regression,
+pass. Firefox/WebKit failures remain visible, not converted into a pass.
+Two comparison failures are traced to the repeated URL returning HTTP 304;
+Reduced/Lite cases are now independent fixtures, retaining the 2xx and content
+assertions and removing accumulated init-script ordering. Capture batches are
+split into per-viewport/product cases without increasing the timeout, and
+browser-specific filenames prevent evidence overwriting. Homepage section
+capture now scrolls natively, awaits paint/image readiness, and rejects uniform
+placeholder images. Screenshot generation still does not equal visual approval.
+
+WebKit Full entrance is traced to headless rendering starvation: the visible
+hero's intersection ratio is 0.78846, with no runtime diagnostic. In 15.029 s,
+the ticker advances four ticks (0.093 to 0.225 s); the active, unpaused entrance
+advances only 0.132 of its 0.58 s. GSAP's default lag smoothing clamps each long
+gap to 33 ms, matching four ticks exactly. The scroll timeline is not cancelling
+the entrance. The corrected observer starts browser-frame polling immediately
+after navigation and requires both Full readiness and completed entrance in one
+predicate, with the unchanged 15-second limit. All three Full repetitions still
+time out, while the three Reduced repetitions pass. Frame polling alone is
+therefore insufficient; instrumentation/foreground A/B checks remain open.
+No production ticker workaround or forced state exists.
+
+A minimal no-app/no-GSAP control contradicts a blanket environment diagnosis:
+WebKit delivers 235 native RAF frames in 4.005 s (mean gap 17.09 ms, maximum
+31 ms), and its 580 ms CSS animation finishes normally. Chromium also sustains
+normal frame cadence after startup. The starvation is application/rendering or
+motion-integration specific; Full must not be accepted on the basis of a harness
+explanation. Actual product no-JS/Reduced/Lite/Full comparisons are the next
+isolated diagnostic. The new artifact builds all 47 pages and passes links,
+content, fonts/media provenance, budgets, 617-component SBOM/licenses, pinned
+film toolchain, and clean dependency audit. Its local Uzbek entry SHA-256 is
+`53b82443beffa8d6ed2e3c456fc9557a9125dda02ef0ea92e3b388e578b4daa8`;
+this is not the public-mode Lighthouse artifact hash.
+
+Architecture review removes the proven unreachable legacy product component
+subtree (2,445 source lines, recoverable from Git). Active routes, feature art,
+styles, and hooks remain intact. Scene resource ownership is decomposed without
+changing its API or cleanup ordering. Thirteen scoped ownership/registry/contract
+tests and the strict type check pass; four new failure/idempotency cases are
+included. The next rebuilt artifact must revalidate these source changes.
+
+The changed source passes 115 unit tests, a strict check of 220 files with zero
+errors/warnings/hints, formatting, and lint. The refined browser inventory now
+contains 861 cases in 31 files because previously aggregated capture and mode
+cases are independently named fixtures, not because acceptance scope was reduced.
+
+- Snapshot date: 2026-10-14
 - Technical verdict: **Product Atlas, Signal Duel, and five product worlds pass the current source and focused Chromium gates**
 - Deployment verdict: **public GitHub Pages review release is live; rebuild remains on a feature branch**
 - Public sign-off verdict: **review build only; commercial-launch claim held**
@@ -73,15 +122,15 @@ enabled; repository secret scanning and push protection are also enabled.
 | Static build                      | Passed locally           | 47 localized/static pages                                                                                                             |
 | Content, links, budgets           | Passed locally           | Links across all 47 HTML files; 38 validated content records; initial JS/transfer limits pass                                         |
 | Media/font provenance             | Passed locally           | Ten media records; deterministic font subsets and checksums; pinned FFmpeg binary hash                                                |
-| Dependency security               | Passed locally           | Astro and Sharp patched; no high or critical advisories; two moderate transitive advisories remain recorded                          |
-| Dependency licenses/SBOM          | Passed locally           | Deterministic CycloneDX 1.6 inventory with 635 reviewed components                                                                    |
+| Dependency security               | Passed locally           | Current beebfd7 dependency audit reports no known vulnerabilities                                                                    |
+| Dependency licenses/SBOM          | Passed locally           | Deterministic CycloneDX 1.6 inventory with 617 reviewed components                                                                    |
 | Current rebuild Chromium contract | Passed locally           | Atlas/Compare legacy and focused run: 40 passed; detail matrix, art, fallback, lifecycle, and post-audit boundary runs passed          |
 | Current authored capture journeys | Passed locally           | Fresh desktop and mobile chapter captures, two of two                                                                                 |
 | Firefox                           | Historical baseline only | Must be rerun after Product Atlas/Compare/detail-world art direction settles                                                          |
 | WebKit                            | Historical baseline only | Must be rerun after Product Atlas/Compare/detail-world art direction settles                                                          |
 | Accessibility and reflow          | Passed locally           | Axe WCAG 2.2 AA route matrix, keyboard, focus, 200% text, forced colors, 320 px, and reduced motion                                   |
-| Motion performance                | Passed locally           | Three independent CPU ×4 product journeys; long task ≤50 ms, application frame work ≤16 ms, LoAF blocking ≤16 ms, interaction ≤200 ms |
-| Lighthouse median of three        | Historical baseline only | Last recorded medians were 96–100; rerun is required after the complete Awwwards rebuild                                              |
+| Motion performance                | Historical baseline only | Final candidate requires three independent CPU ×4 journeys with unchanged frame, long-task, and interaction gates                   |
+| Lighthouse median of three        | Prior candidate only     | Recorded October medians 96–99 pass; rerun against the final candidate and record its artifact hash                                   |
 | Sites worker contract             | Passed locally           | Cloudflare-compatible artifact; redirect, headers, caching, and asset binding verified                                                |
 | Public review release             | Passed                   | GitHub Pages baseline release, Quality, Pages, and CodeQL completed successfully before this feature milestone                        |
 

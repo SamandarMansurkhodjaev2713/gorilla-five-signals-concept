@@ -3,6 +3,7 @@ import path from "node:path";
 
 import { expect, test } from "@playwright/test";
 
+import { expectCaptureContent, prepareSectionCapture } from "./support/capture";
 import { localizedPath, PRODUCT_SLUGS } from "./support/site";
 
 const OUTPUT_DIRECTORY = path.resolve(".tmp/product-world-review");
@@ -11,23 +12,30 @@ const VIEWPORTS = [
   { height: 844, name: "mobile", width: 390 },
 ] as const;
 
-test("capture product worlds for visual review", async ({ page }) => {
-  await mkdir(OUTPUT_DIRECTORY, { recursive: true });
-  await page.addInitScript(() =>
-    sessionStorage.setItem("gorilla-responsible-entry-confirmed", "true"),
-  );
-  await page.emulateMedia({ reducedMotion: "reduce" });
-
-  for (const viewport of VIEWPORTS) {
-    await page.setViewportSize(viewport);
-    for (const slug of PRODUCT_SLUGS) {
+for (const viewport of VIEWPORTS) {
+  for (const slug of PRODUCT_SLUGS) {
+    test(`capture ${slug} world on ${viewport.name}`, async ({
+      page,
+      browserName,
+    }) => {
+      await mkdir(OUTPUT_DIRECTORY, { recursive: true });
+      await page.addInitScript(() =>
+        sessionStorage.setItem("gorilla-responsible-entry-confirmed", "true"),
+      );
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.setViewportSize(viewport);
       await page.goto(localizedPath("uz", `/products/${slug}`));
       const hero = page.locator(".product-hero");
       await expect(hero).toBeVisible();
-      await hero.screenshot({
+      await prepareSectionCapture(hero);
+      const capture = await hero.screenshot({
         animations: "disabled",
-        path: path.join(OUTPUT_DIRECTORY, `${viewport.name}-${slug}.png`),
+        path: path.join(
+          OUTPUT_DIRECTORY,
+          `${browserName}-${viewport.name}-${slug}.png`,
+        ),
       });
-    }
+      await expectCaptureContent(capture);
+    });
   }
-});
+}

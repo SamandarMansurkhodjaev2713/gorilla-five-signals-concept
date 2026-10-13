@@ -167,7 +167,7 @@
   transition:
     filter var(--motion-duration-standard) var(--motion-ease-enter),
     opacity var(--motion-duration-quick) var(--motion-ease-enter),
-    transform var(--motion-duration-standard) var(--motion-ease-settle);
+    transform var(--motion-duration-standard) var(--motion-ease-snap);
 }
 
 .archive-wall a[aria-current] .archive-wall__can img {

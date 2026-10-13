@@ -26,15 +26,15 @@ const PRODUCT_SLUGS = [
   "lychee-pear",
 ] as const;
 
-test("capture the authored Product Atlas across the required viewport matrix", async ({
-  page,
-}) => {
-  await mkdir(CAPTURE_DIRECTORY, { recursive: true });
-  await page.addInitScript(({ key }) => sessionStorage.setItem(key, "true"), {
-    key: CONFIRMATION_KEY,
-  });
-
-  for (const viewport of CAPTURE_VIEWPORTS) {
+for (const viewport of CAPTURE_VIEWPORTS) {
+  test(`capture Product Atlas on ${viewport.label}`, async ({
+    page,
+    browserName,
+  }) => {
+    await mkdir(CAPTURE_DIRECTORY, { recursive: true });
+    await page.addInitScript(({ key }) => sessionStorage.setItem(key, "true"), {
+      key: CONFIRMATION_KEY,
+    });
     await page.setViewportSize(viewport);
     await page.goto("/uz/products/");
     await expect(page.locator("[data-atlas-root]")).toHaveAttribute(
@@ -42,7 +42,10 @@ test("capture the authored Product Atlas across the required viewport matrix", a
       "true",
     );
     await page.screenshot({
-      path: resolve(CAPTURE_DIRECTORY, `${viewport.label}-hero.png`),
+      path: resolve(
+        CAPTURE_DIRECTORY,
+        `${browserName}-${viewport.label}-hero.png`,
+      ),
     });
 
     const chapter = page.locator(
@@ -64,22 +67,28 @@ test("capture the authored Product Atlas across the required viewport matrix", a
       )
       .toBe(true);
     await page.screenshot({
-      path: resolve(CAPTURE_DIRECTORY, `${viewport.label}-chapter.png`),
+      path: resolve(
+        CAPTURE_DIRECTORY,
+        `${browserName}-${viewport.label}-chapter.png`,
+      ),
     });
-  }
-});
-
-test("capture all five authored frequency worlds on desktop and mobile", async ({
-  page,
-}) => {
-  await mkdir(CAPTURE_DIRECTORY, { recursive: true });
-  await page.addInitScript(({ key }) => sessionStorage.setItem(key, "true"), {
-    key: CONFIRMATION_KEY,
   });
+}
 
-  for (const viewport of SHOWCASE_VIEWPORTS) {
-    await page.setViewportSize(viewport);
-    for (const slug of PRODUCT_SLUGS) {
+for (const viewport of SHOWCASE_VIEWPORTS) {
+  for (const slug of PRODUCT_SLUGS) {
+    test(`capture Atlas ${slug} on ${viewport.label}`, async ({
+      page,
+      browserName,
+    }) => {
+      await mkdir(CAPTURE_DIRECTORY, { recursive: true });
+      await page.addInitScript(
+        ({ key }) => sessionStorage.setItem(key, "true"),
+        {
+          key: CONFIRMATION_KEY,
+        },
+      );
+      await page.setViewportSize(viewport);
       await page.goto(`/uz/products/#signal-${slug}`);
       const panel = page.locator(
         `[data-atlas-panel][data-product-slug="${slug}"]`,
@@ -98,8 +107,11 @@ test("capture all five authored frequency worlds on desktop and mobile", async (
         )
         .toBe(true);
       await page.screenshot({
-        path: resolve(CAPTURE_DIRECTORY, `${viewport.label}-${slug}.png`),
+        path: resolve(
+          CAPTURE_DIRECTORY,
+          `${browserName}-${viewport.label}-${slug}.png`,
+        ),
       });
-    }
+    });
   }
-});
+}

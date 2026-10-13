@@ -1,5 +1,6 @@
 import { expect, type Locator, type Page, test } from "@playwright/test";
 
+import { expectCaptureContent, prepareSectionCapture } from "./support/capture";
 import { localizedPath } from "./support/site";
 
 const CHAPTERS = [
@@ -26,6 +27,7 @@ const CAPTURE_ISOLATION_STYLE = `
 `;
 
 const captureSection = async (locator: Locator, page: Page, path: string) => {
+  await prepareSectionCapture(locator);
   await page.evaluate(() => {
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
@@ -41,7 +43,7 @@ const captureSection = async (locator: Locator, page: Page, path: string) => {
       })),
     )
     .toEqual({ activeTag: "BODY", skipFocusVisible: false });
-  await locator.screenshot({
+  const capture = await locator.screenshot({
     animations: "disabled",
     path,
     // Chromium can composite fixed page chrome into locator screenshots at the
@@ -49,13 +51,14 @@ const captureSection = async (locator: Locator, page: Page, path: string) => {
     // faithful after the unfocused-state assertion above.
     style: CAPTURE_ISOLATION_STYLE,
   });
+  await expectCaptureContent(capture);
 };
 
 for (const viewport of [
   { height: 900, name: "desktop", width: 1_440 },
   { height: 844, name: "mobile", width: 390 },
 ] as const) {
-  test(`capture ${viewport.name}`, async ({ page }) => {
+  test(`capture ${viewport.name}`, async ({ page, browserName }) => {
     await page.addInitScript(() =>
       sessionStorage.setItem("gorilla-responsible-entry-confirmed", "true"),
     );
@@ -69,7 +72,7 @@ for (const viewport of [
       await captureSection(
         page.locator(`.${chapter}`),
         page,
-        `.tmp/home-awards-v3/${viewport.name}-${chapter}.png`,
+        `.tmp/home-awards-v3/${browserName}-${viewport.name}-${chapter}.png`,
       );
     }
     for (const flavor of FLAVORS) {
@@ -77,14 +80,14 @@ for (const viewport of [
       await captureSection(
         page.locator(".flavor-reactor"),
         page,
-        `.tmp/home-awards-v3/${viewport.name}-reactor-${flavor}.png`,
+        `.tmp/home-awards-v3/${browserName}-${viewport.name}-reactor-${flavor}.png`,
       );
     }
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.screenshot({
       animations: "disabled",
       fullPage: true,
-      path: `.tmp/home-awards-v3/${viewport.name}-full.png`,
+      path: `.tmp/home-awards-v3/${browserName}-${viewport.name}-full.png`,
     });
   });
 }
