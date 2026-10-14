@@ -2,6 +2,29 @@
 
 ## Revalidation — 2026-10-14
 
+### Painted-target coverage correction — `8d0117d`
+
+The previous broad Chromium pass did not prove two editorial-boundary cases:
+they requested a 404 URL and queried obsolete selector families. The corrected
+tests require a canonical 2xx page, each actual family, native scrolling/paint,
+and finite positive geometry before checking the original clipping tolerance.
+Other responsive contracts now reject absent Compare images/labels, Atlas text,
+Lite decorations, and locator targets while preserving intentionally hidden
+compact content.
+
+Focused verification against the unchanged feature preview: 39/39 Chromium
+cases across Compare, Atlas, homepage, and locator; separately 2/2 real editorial
+boundary cases. Scoped formatting/lint passed and strict types checked 222 files
+without errors, warnings, or hints. This is not a fresh full quality run or a
+cross-engine pass; production build and 115-unit evidence below remain tied to
+their stated earlier source candidate.
+
+Five review lenses: positive-target contracts prevent vacuous correctness
+passes; shared painted-target helpers avoid duplicated measurement logic;
+native paint and intentional hidden states preserve responsive UX; no runtime
+dependency, source media, performance budget, or production artifact changed;
+dated scope and historical evidence remain explicit for release maintenance.
+
 The September evidence below is historical. Current source validation passes
 formatting, lint, strict types on 220 files, 115 unit tests, and the 47-page build
 for committed candidate `65a8df6`. Eleven
