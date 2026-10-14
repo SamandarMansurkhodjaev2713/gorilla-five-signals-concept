@@ -17,13 +17,16 @@ overrides:
   source-map-js: 1.2.2
   svgo: 4.1.0
 
+patchedDependencies:
+  astro@7.3.1: 10d9fba95e33f9149aa1b4020aee86f199da90e6a20adb8ebfe2d5ce197efc81
+
 importers:
 
   .:
     dependencies:
       astro:
         specifier: 7.3.1
-        version: 7.3.1(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@24.13.3)(yaml@2.9.0)
+        version: 7.3.1(patch_hash=10d9fba95e33f9149aa1b4020aee86f199da90e6a20adb8ebfe2d5ce197efc81)(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@24.13.3)(yaml@2.9.0)
       gsap:
         specifier: 3.15.0
         version: 3.15.0
@@ -3965,7 +3968,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  astro@7.3.1(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@24.13.3)(yaml@2.9.0):
+  astro@7.3.1(patch_hash=10d9fba95e33f9149aa1b4020aee86f199da90e6a20adb8ebfe2d5ce197efc81)(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@24.13.3)(yaml@2.9.0):
     dependencies:
       '@astrojs/compiler-rs': 0.4.0(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)
       '@astrojs/internal-helpers': 0.11.0

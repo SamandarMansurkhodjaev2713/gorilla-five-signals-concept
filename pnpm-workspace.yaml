@@ -20,6 +20,8 @@ overrides:
   smol-toml: 1.9.1
   source-map-js: 1.2.2
   svgo: 4.1.0
+patchedDependencies:
+  astro@7.3.1: patches/astro@7.3.1.patch
 preferFrozenLockfile: true
 saveExact: true
 strictPeerDependencies: true
