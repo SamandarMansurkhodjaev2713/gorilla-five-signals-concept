@@ -110,6 +110,70 @@ does not supersede outstanding Lighthouse, font-metric, WebKit motion, visual, o
 complete release-matrix failures. No public merge or deployment follows from these
 scoped checks.
 
+### Permanent navigation regression: phase-aware, not a timing promise
+
+The permanent Chromium entry test triggers a second real Contact intent at first
+native creation without modifying either native DOM callback. This boundary does
+not guarantee rejected readiness: a warm renderer can fulfill readiness before the
+second preparation reaches supersession. The initial exact-one-event test passed
+three isolated runs but correctly failed once in the full entry suite with fulfilled
+readiness and no cancellation event. That valid after-ready path must not be treated
+as a framework defect or hidden by retries, longer timeouts, or forced callbacks.
+
+The revised test records actual native readiness and successful skip ownership.
+Rejected owned native AbortError requires exactly one document cancellation outcome;
+fulfilled readiness requires exactly zero. Unexpected rejection, pending readiness,
+absent transitions, unowned skip, malformed/duplicate outcomes, or unhandled promises
+fail independently. Latest Contact URL/focus/idle and native history round trip are
+required in either phase.
+
+Heading focus is strict for the newer real anchor navigation. The history round trip
+requires the correct Contact URL, visible heading and idle signal; it does not invent
+a heading-focus requirement on browser history traversal. The existing route lifecycle
+focuses headings only for recorded anchor intents and separately restores history scroll.
+
+The test-only readiness observer handles the native promise to record its rejection.
+It can suppress the original unhandled rejection if the production owner is removed;
+therefore the structured cancellation assertion is essential, not optional. Pure
+counter-fixtures prove that rejected readiness without that production event fails,
+and that a bogus event after fulfilled readiness fails. Unexpected readiness failures
+also fail the validator even if the test observer consumed the rejection. The dated
+three passive before-ready browser results above and the 14 installed-helper unit
+contracts remain separate critical-path evidence. The earlier exact-one full entry
+suite was 9 passed / 1 timing-assumption failure, not a passing release milestone.
+
+The revised test and counter-fixtures were verified on 2026-10-14 without rebuilding
+the stable maintenance artifact listed above: scoped formatting/lint passed, strict
+typecheck examined 174 files with no errors/warnings/hints, and all 125 unit tests
+passed (including 12 phase-aware counter-fixtures and the 14 installed-helper
+contracts). The new browser case passed three repetitions in 9.3 seconds; the full
+Chromium entry spec passed 10/10 in 12.2 seconds with one worker and unchanged
+timeouts/profile. JSON evidence attachments recorded rejected owned native AbortError
+and exactly one cancellation in all four actual case executions; final Contact
+readiness fulfilled. These runs do not claim actual fulfilled-first branch coverage:
+that branch and invalid/missing ownership cases are covered by the pure fixtures.
+Initial false failures from a new post-history heading-focus expectation were
+corrected to the existing anchor-focus/history-scroll policy, not by forcing focus
+or changing the application. The complete prior 119-case batch and broader browser,
+visual, performance and release matrices have not been rerun by this test-only change.
+
+The phase-aware navigation test does **not** guarantee that a real AbortError branch
+is exercised on every run. If every observed first readiness fulfills, removing the
+production readiness owner could still leave this navigation test passing. The pure
+missing-event counter-fixture proves the validator's rejected-phase behavior, not
+that the browser entered that phase. A phase-aware pass alone is therefore not
+acceptance evidence for this framework patch. Retain the dated passive before-ready
+reproduction and patched cancellation results, installed-helper contracts, and
+actual-patched-router negative controls as separately scoped evidence. Revalidate
+that critical path when the patch or framework version changes; do not manufacture
+branch coverage with delays, native callback substitution, or required flaky timing.
+
+The recorded negative router controls used explicitly synthetic native faults.
+They prove that the patched readiness owner reports an unowned native abort once
+and adds no callback-error report while preserving existing callback diagnostics.
+They do not prove that every application failure path or route is covered, and do
+not resolve the discarded-finally diagnostic duplication described above.
+
 Release requires a clean frozen-lockfile install, source checks, full unit suite,
 production build, coherent regenerated SBOM, and real lifecycle-boundary browser
 repetitions. Browser negative controls must retain callback-error reporting; merely
