@@ -358,3 +358,20 @@ were cleaned after completion. The parent preview on 4321, isolated preview on
 focused cross-engine checks above pass, but the homepage Lighthouse and matched
 high-DPI WebKit Full entrance gates remain open. Main and Pages remain unchanged;
 this draft must not be represented as a completed release.
+
+## Final corrected Chromium batch
+
+The final corrected 119-case Chromium batch (session 15051, one worker, isolated
+preview 4333) completed with 118 passes and one failure, exit 1. All 42 route Axe
+checks, all 15 normal visual comparisons without snapshot updates, eleven
+semantic phase/sensitivity cases, corrected real 768/1024 editorial measurements
+and four engine-neutral behavior cases pass.
+
+The remaining route-race test reaches the expected contact URL, focused heading,
+CONTACT signal and final idle state, but fails its unchanged runtime-error gate
+with `pageerror: Transition was skipped`. Its trace, screenshot and video are
+retained. The same case passed in the earlier 114-case batch; neither an
+intermittent/preexisting explanation nor a dependency regression is established
+by that historical pass. No retry, error filter, timeout change or source repair
+is used to conceal the failure. This additional runtime gate remains open for
+controlled diagnosis before promotion.
