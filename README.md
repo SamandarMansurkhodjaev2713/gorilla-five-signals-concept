@@ -101,6 +101,12 @@ Every push to `main` builds a fresh public artifact and deploys it with the
 official GitHub Pages actions. The public build sets an explicit origin and
 repository base path; source code never hardcodes the hosting subdirectory.
 
+`main` requires a pull request, an up-to-date branch, successful source-quality
+and CodeQL checks, and resolved review conversations. Force pushes and branch
+deletion are disabled, including for administrators. These automated checks do
+not replace browser, visual, performance, or legal release approval. See the
+[GitHub configuration record](docs/release/GITHUB_CONFIGURATION.md).
+
 GitHub Pages does not apply the repository's Cloudflare-style `_headers` file.
 Document-level CSP and referrer fallbacks remain active, while HSTS and other
 response headers depend on GitHub's hosting edge and are not claimed as
