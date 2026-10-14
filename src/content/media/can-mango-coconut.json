@@ -8,6 +8,10 @@
   "decorative": false,
   "derivatives": [
     {
+      "checksumSha256": "0b1c67a4fefe8ac7e332283fce0b519deb7ffdb08713d8776c581c955bc22635",
+      "path": "/media/generated/products/can-mango-coconut-160.webp"
+    },
+    {
       "checksumSha256": "d84723c1984066862b0b313c067ad9fc601f504014fbf61bff79ef37cf99893f",
       "path": "/media/generated/products/can-mango-coconut-320.webp"
     },

@@ -375,3 +375,66 @@ intermittent/preexisting explanation nor a dependency regression is established
 by that historical pass. No retry, error filter, timeout change or source repair
 is used to conceal the failure. This additional runtime gate remains open for
 controlled diagnosis before promotion.
+
+## Bounded responsive-image performance port (verification pending)
+
+The approved port takes only the coherent responsive media changes from
+`223e0ba` / `fb1d0d4`: primary and decorative image `sizes`, generator/catalog
+160px variants, five existing-art WebP derivatives and their checksum manifests,
+plus provenance wording. Actual copied bytes match every committed SHA-256;
+the five added files total 100750 bytes. No CSS, source art, palette, choreography
+or unrelated `assetsInlineLimit` setting changes.
+
+Five review lenses refined this scoped solution:
+
+1. Correctness: the original proposed primary formula missed the existing
+   short-landscape CSS height of 28rem. The first `sizes` condition now declares
+   its corresponding 10.76rem intrinsic width before viewport-height branches.
+2. Completeness: source candidates, generated files, checksum manifests and
+   regeneration widths move together, avoiding nonexistent srcset resources.
+3. Visual/accessibility risk: native dimensions, alpha, existing asset rights,
+   alt semantics, eager/high-priority primary loading and CSS stay unchanged.
+   Derivative decoding and DPR/source-selection quality still need real checks.
+4. Performance: Lighthouse previously measured excessive image delivery on the
+   real hero, so this addresses an observed payload problem. Lower LCP or a
+   passing score is not claimed until the isolated median-three rerun.
+5. Release integrity: new unit contracts bind actual compact derivative bytes,
+   dimensions and manifests, plus landscape declaration priority. Full quality,
+   browser comparisons and measured source selection are pending; existing
+   font CLS, route-race error and DPR2 WebKit gates are not silently resolved.
+
+The font-shift report already identifies both preloaded Latin font faces; no
+duplicate preload or unmeasured font-display/fallback change is included. The
+route-race trace records native AbortError with an empty browser stack. Astro's
+transition promise handling is a hypothesis needing a matched control, not a
+reason to filter errors or change unrelated routing code in this port.
+
+### Image-port measured result
+
+Full quality session 67265 passes: 170 strict-check files without diagnostics,
+99 unit tests in fourteen files, 47 pages and all unchanged provenance, font,
+budget, 617-component SBOM, FFmpeg and audit gates. The six added tests bind
+actual 160px derivative integrity and landscape declaration priority.
+
+Twelve isolated source-selection contexts cover portrait 390x844, tablet
+768x1024, short landscape 844x390 and desktop 1440x900 at DPR 1 / 1.75 / 2.
+All sixty hero images decode, every selected source width meets or exceeds its
+actual computed CSS width times DPR, and no page error occurs. Primary portrait
+sources are 160 / 320 / 320px; desktop sources are 320 / 480 / 480px. All fifteen
+normal Chromium visual comparisons pass (session 61152), with no golden update.
+
+The isolated nine-audit Lighthouse rerun (37048) completes and exits 1, retaining
+the unchanged LCP gate: homepage medians are 97 / 100 / 100 / 100 with LCP
+2564.382 ms, CLS 0 and TBT 0. This improves the preceding median 3615.335 ms but
+still exceeds 2500 ms. Detail and Find remain passing at 99 / 100 / 100 / 100,
+LCP 2107.933 / 1886.220 ms. Homepage run one again has CLS
+0.2454311948390134, TBT 84.41425 ms and LCP 2575.75725 ms;
+median zero is not an all-run stability claim. Font metrics, native route-race
+promise ownership and high-DPI WebKit still require their separate causal work.
+
+The normal isolated artifact and served entry match SHA-256
+`4dfe5d9be9416e1a2a5341d556acd7cbeb32ecad7bcc008d2d9cf5f05fe68ecf`;
+the separately audited public-base artifact is
+`e6731569a213bb40b2bb95e707d948bb64c28dc90f38b81fa5afec9f520939ad`.
+Owned audit ports/profiles/build are cleaned; parent 4321 and isolated 4333 remain
+untouched. No passing release or closed default-branch advisory claim is made.

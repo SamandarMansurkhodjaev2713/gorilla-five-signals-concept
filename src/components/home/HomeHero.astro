@@ -86,7 +86,7 @@ const ghostProducts = products.slice(1);
         <img
           src={primaryProduct.imagePath}
           srcset={primaryProduct.imageSrcSet}
-          sizes="(min-width: 64rem) 31rem, (min-width: 48rem) 24rem, 17rem"
+          sizes="(max-height: 45rem) and (orientation: landscape) 10.76rem, (min-width: 64rem) min(24.2svh, 16.14rem), (min-width: 48rem) min(23.44svh, 14.6rem), min(18.44svh, 9.61rem)"
           width={primaryProduct.width}
           height={primaryProduct.height}
           alt=""
@@ -105,7 +105,7 @@ const ghostProducts = products.slice(1);
             <img
               src={product.imagePath}
               srcset={product.imageSrcSet}
-              sizes="(min-width: 64rem) 12rem, 7rem"
+              sizes="(min-width: 48rem) min(11.28svh, 7.39rem), min(8.95svh, 4.28rem)"
               width={product.width}
               height={product.height}
               alt=""

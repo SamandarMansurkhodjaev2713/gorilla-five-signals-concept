@@ -8,6 +8,10 @@
   "decorative": false,
   "derivatives": [
     {
+      "checksumSha256": "07056c5424cf7c123f8ca5db37301965ec6b47caf1bc0959dd6dd23eeb1c38b5",
+      "path": "/media/generated/products/can-extra-160.webp"
+    },
+    {
       "checksumSha256": "e464059f1455abbdd74672ccd8fed48f8cc245f315d3d22dc9100c6314c1db9b",
       "path": "/media/generated/products/can-extra-320.webp"
     },
