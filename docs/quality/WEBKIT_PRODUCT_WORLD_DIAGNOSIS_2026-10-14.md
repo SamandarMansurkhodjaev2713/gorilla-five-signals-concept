@@ -75,6 +75,83 @@ GSAP can legitimately sleep once only paused timelines remain; final ticker
 counts are not a standalone rendering metric. The next probe must separate
 active-entrance frame gaps from post-entry idle gaps and record the actual
 completion wall time. A healthy idle median does not prove smooth choreography.
+
+### Clean active-phase counterfactual — 2026-10-14
+
+A separate six-case run began at `00:11:30.344Z` and closed its final browser at
+`00:12:23.754Z`, after the competing quality process was confirmed terminal.
+Each case used a fresh WebKit browser, the bounded-grain prototype, and the
+original 0.20 + 0.38-second completion timing. The served-bundle override required
+one exact source match; no ticker, timeline clock, readiness attribute, or callback
+was advanced manually. “Baseline” below means both original activation pairs in
+that private prototype, not a modified production release.
+
+| World / entry activation | Median active frame gap |
+| --- | ---: |
+| Original Lite / both targets | 524 ms |
+| Original Lite / media only | 476 ms |
+| Original Lite / field only | 516 ms |
+| Mango Full / both targets | 526 ms |
+| Mango Full / media only | 487 ms |
+| Mango Full / field only | 533 ms |
+
+All six naturally completed within the unchanged 15-second gate; none proved
+smooth active choreography. Animated targets retained `force3D:true` through
+settlement, with a valid parsed cache. Consequently, neither a force-3D reset
+fix nor media-only entrance is supported as an adequate production solution.
+The 500-ms GSAP lag-smoothing threshold explains why similar large frame gaps
+can produce markedly different completion wall times.
+
+The next private experiment tests a cached rendering of the original decorative
+field, not a replacement of semantic content or the native product packshot.
+The static hero gradient must remain separate from the moving field. Any benefit
+requires actual active-phase measurements and pixel/fallback evidence before a
+new asset pipeline or production architecture is introduced.
+
+### Separate public-baseline instrumentation control
+
+The security-maintenance branch initially gained a global semantic-visibility
+MutationObserver. Five WebKit Full tests exceeded 15 seconds; repeated
+computed-style reads on decorative mutations were a suspected contributor.
+Passive Original controls
+without that observer completed naturally on both actual published main and the
+maintenance candidate: 984/973 ms in confirmed sessions and 978/895 ms after native
+Continue. No runtime errors were recorded. A subsequent audit found that these
+passive pages used DPR 1, while the Desktop Safari test profile uses DPR 2.
+The matched DPR 2 passive control (session 55350), with no semantic observer,
+tracing, or video, exceeded the unchanged 15-second entrance gate on both actual
+live main (15010 ms) and the maintenance candidate (15017 ms). Both pages were
+visible and focused, with zero runtime errors and matching 1440×2369 hero bounds.
+This establishes a pre-existing high-DPI WebKit limitation, not a maintenance
+regression or proof that test instrumentation causes it. The observer
+was narrowed to relevant semantic inputs, retaining old-value sensitivity and the
+original completion gate; the Full failures persist and are not marked resolved.
+
+These controls cover Original in the public baseline, not the rebuilt feature's
+five distinct new art surfaces. Before adopting a rendering change, run a passive
+current-feature control and exclude measurement-induced style/layout work. Do
+not generalize either branch's result to the other artifact.
+
+### Current-feature coverage corrections and verification
+
+A source audit found five additional negative assertions that could pass with
+missing targets or non-finite measurements. The draft harness repairs require
+per-family cardinality and finite positive bounds for Compare images/labels,
+Atlas labels/copy, Lite decorations, and locator cleanup hooks. Intended compact
+labels and hidden locator alternatives remain supported.
+
+Two editorial-boundary cases also navigated to a 404 URL and measured obsolete,
+empty selector families. They now require a canonical 2xx semantic page and four
+actual editorial families, native paint, positive widths, and a visible measured
+subject before the unchanged one-pixel clipping tolerance.
+
+Against the preserved current-feature preview on port 4321, the four focused
+Chromium specifications passed 39/39 in session 44226, one worker. The two
+corrected editorial-boundary cases separately passed 2/2. Scoped formatting and
+lint passed; Astro checked 222 files with zero errors, warnings, or hints. This
+verifies the repaired Chromium coverage, not the full suite, other engines, or
+the outstanding motion/performance gates. No production source or preview build
+changed during these checks.
 Choose a production change only after natural entrance and actual scroll-response
 evidence, then rebuild and rerun cross-engine, responsive, accessibility, and
 production performance gates.

@@ -1,9 +1,15 @@
 import { expect, test } from "@playwright/test";
 
 import {
+  EDITORIAL_COLUMN_SELECTORS,
+  verifyEditorialColumnFamily,
+} from "./support/editorial-columns";
+
+import {
   acceptResponsibleEntry,
   collectRuntimeErrors,
   expectNoHorizontalOverflow,
+  expectSemanticPage,
 } from "./support/site";
 
 const IDLE_OBSERVATION_TIMEOUT_MS = 2_000;
@@ -267,29 +273,12 @@ test.describe("responsible product journey", () => {
       page,
     }) => {
       await page.setViewportSize(viewport);
-      await page.goto("/uz?motion=static");
+      await expectSemanticPage(page, "uz", "?motion=static");
       await acceptResponsibleEntry(page);
-      const violations = await page
-        .locator(
-          ".manifesto li, [data-product-card] .product-copy, .compare-rail article",
-        )
-        .evaluateAll((elements) =>
-          elements
-            .filter((element) => {
-              const style = getComputedStyle(element);
-              return (
-                style.display !== "none" &&
-                element.scrollWidth > element.clientWidth + 1
-              );
-            })
-            .map((element) => ({
-              clientWidth: element.clientWidth,
-              sample: element.textContent?.trim().slice(0, 80),
-              scrollWidth: element.scrollWidth,
-            })),
-        );
-
-      expect(violations).toEqual([]);
+      await page.evaluate(() => document.fonts.ready);
+      for (const selector of EDITORIAL_COLUMN_SELECTORS) {
+        await verifyEditorialColumnFamily(page, selector);
+      }
       await expectNoHorizontalOverflow(page);
     });
   }

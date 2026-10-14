@@ -1,7 +1,8 @@
 import process from "node:process";
 
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
+import { expectPaintedTargets } from "./support/painted-targets";
 import {
   acceptResponsibleEntry,
   collectRuntimeErrors,
@@ -22,6 +23,9 @@ const VIEWPORTS = [
 
 const ROOT = "[data-compare-root]";
 const SELECTED = "[data-compare-product]:not([hidden])";
+const SELECTED_PRODUCTS = ["original", "zero", "extra"] as const;
+const COMPACT_ARENA_QUERY = "(max-width: 48rem)";
+const CHANNEL_TEXT_COUNTS = { topline: 2, meter: 2 } as const;
 const PRESENTATION_PROPERTIES = [
   "clip-path",
   "opacity",
@@ -76,6 +80,7 @@ async function expectPresentationReleased(page: Page): Promise<void> {
 }
 
 async function expectArenaTextNotToOverlap(page: Page): Promise<void> {
+  await expectArenaTextFamilies(page);
   const overlaps = await page
     .locator(".selected-products")
     .evaluate((arena) => {
@@ -120,15 +125,55 @@ async function expectArenaTextNotToOverlap(page: Page): Promise<void> {
   expect(overlaps).toEqual([]);
 }
 
+async function expectArenaTextFamilies(page: Page): Promise<void> {
+  const selected = page.locator(SELECTED);
+  await expect(selected).toHaveCount(SELECTED_PRODUCTS.length);
+  await expectPaintedTargets(page.locator(".selected-products__frequency"), 1);
+  const compact = await page.evaluate(
+    (query) => matchMedia(query).matches,
+    COMPACT_ARENA_QUERY,
+  );
+  for (const card of await selected.all()) {
+    await expectChannelText(card, compact ? "compact" : "expanded");
+  }
+  await expect(page.locator(".selected-products__versus")).toHaveCount(1);
+  await expect(page.locator(".selected-products__versus")).toBeHidden();
+}
+
+async function expectChannelText(
+  card: Locator,
+  presentation: "compact" | "expanded",
+): Promise<void> {
+  await expect(card.locator(".signal-channel__topline > span")).toHaveCount(
+    CHANNEL_TEXT_COUNTS.topline,
+  );
+  const meter = card.locator(".signal-channel__meter > span");
+  await expect(meter).toHaveCount(CHANNEL_TEXT_COUNTS.meter);
+  await expectPaintedTargets(
+    card.locator(".signal-channel__topline .type-data"),
+    1,
+  );
+  const name = card.locator(".signal-channel__topline .type-label");
+  await expect(name).toHaveCount(1);
+  await expect(card.locator(".signal-channel__meter")).toHaveCount(1);
+  if (presentation === "compact") {
+    await expect(name).toBeHidden();
+    await expect(card.locator(".signal-channel__meter")).toBeHidden();
+    return;
+  }
+  await expectPaintedTargets(name, 1);
+  await expectPaintedTargets(meter, CHANNEL_TEXT_COUNTS.meter);
+}
+
 for (const viewport of VIEWPORTS) {
   test(`GIVEN ${viewport.name} WHEN Signal Duel renders THEN its single arena remains bounded and usable`, async ({
     page,
   }) => {
     const errors = await collectRuntimeErrors(page);
     await page.setViewportSize(viewport);
-    await openDuel(page, "/compare/?products=original,zero,extra");
+    await openDuel(page, `/compare/?products=${SELECTED_PRODUCTS.join(",")}`);
 
-    const expectedCount = 3;
+    const expectedCount = SELECTED_PRODUCTS.length;
     const arena = page.locator(".selected-products");
     const visuals = page.locator(`${SELECTED} .signal-channel__visual`);
     await expect(page.locator(".selected-products__field")).toHaveCount(1);
@@ -138,7 +183,12 @@ for (const viewport of VIEWPORTS) {
     await arena.evaluate((element) =>
       element.scrollIntoView({ block: "start" }),
     );
-    for (const image of await page.locator(`${SELECTED} img`).all()) {
+    const images = page.locator(`${SELECTED} img`);
+    await expectPaintedTargets(images, expectedCount);
+    for (const card of await page.locator(SELECTED).all()) {
+      await expect(card.locator("img")).toHaveCount(1);
+    }
+    for (const image of await images.all()) {
       await image.evaluate((element) =>
         element.scrollIntoView({ block: "center" }),
       );

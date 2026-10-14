@@ -1,5 +1,9 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Locator } from "@playwright/test";
 
+import {
+  expectPaintedTargets,
+  prepareTargetPaint,
+} from "./support/painted-targets";
 import {
   collectRuntimeErrors,
   expectNoHorizontalOverflow,
@@ -7,6 +11,39 @@ import {
 } from "./support/site";
 
 const CONFIRMATION_KEY = "gorilla-responsible-entry-confirmed";
+const TEXT_CLIPPING_TOLERANCE_PX = 1;
+const CLIPPED_TEXT_SAMPLE_LENGTH = 64;
+const MINIMUM_NAV_FONT_SIZE_PX = 12;
+const ATLAS_TEXT_FAMILIES = [
+  ".archive-wall strong",
+  ".archive-chapter__copy h2",
+  ".archive-chapter__description",
+  ".archive-chapter__warning",
+] as const;
+
+async function expectAtlasTextFits(root: Locator): Promise<void> {
+  const clippedText: string[] = [];
+  for (const selector of ATLAS_TEXT_FAMILIES) {
+    const family = root.locator(selector);
+    await expect(family).toHaveCount(PRODUCT_SLUGS.length);
+    for (const target of await family.all()) {
+      await prepareTargetPaint(target);
+      await expectPaintedTargets(target, 1);
+      const clipping = await target.evaluate(
+        (element, { tolerance, sampleLength }) =>
+          element.scrollWidth > element.clientWidth + tolerance
+            ? [element.textContent?.trim().slice(0, sampleLength) ?? ""]
+            : [],
+        {
+          tolerance: TEXT_CLIPPING_TOLERANCE_PX,
+          sampleLength: CLIPPED_TEXT_SAMPLE_LENGTH,
+        },
+      );
+      clippedText.push(...clipping);
+    }
+  }
+  expect(clippedText).toEqual([]);
+}
 const VIEWPORTS = [
   { height: 800, width: 360 },
   { height: 844, width: 390 },
@@ -64,23 +101,7 @@ test.describe("authored product signal atlas", () => {
         )
         .toBe(true);
 
-      const clippedText = await root
-        .locator(
-          ".archive-wall strong, .archive-chapter__copy h2, .archive-chapter__description, .archive-chapter__warning",
-        )
-        .evaluateAll((elements) =>
-          elements
-            .filter((element) => {
-              const style = getComputedStyle(element);
-              return (
-                style.display !== "none" &&
-                element.scrollWidth > element.clientWidth + 1
-              );
-            })
-            .map((element) => element.textContent?.trim().slice(0, 64)),
-        );
-
-      expect(clippedText).toEqual([]);
+      await expectAtlasTextFits(root);
       expect(errors).toEqual([]);
 
       const extra = root.locator(
@@ -132,16 +153,21 @@ test.describe("authored product signal atlas", () => {
       ).toBeLessThanOrEqual(2);
 
       if (viewport.width <= 390) {
-        const minimumNavFontSize = await root
-          .locator(".archive-wall strong")
-          .evaluateAll((labels) =>
-            Math.min(
-              ...labels.map((label) =>
-                Number.parseFloat(getComputedStyle(label).fontSize),
-              ),
-            ),
-          );
-        expect(minimumNavFontSize).toBeGreaterThanOrEqual(12);
+        const labels = root.locator(".archive-wall strong");
+        await expect(labels).toHaveCount(PRODUCT_SLUGS.length);
+        const fontSizes = await labels.evaluateAll((elements) =>
+          elements.map((element) =>
+            Number.parseFloat(getComputedStyle(element).fontSize),
+          ),
+        );
+        expect(fontSizes).toHaveLength(PRODUCT_SLUGS.length);
+        expect(
+          fontSizes.every((size) => Number.isFinite(size) && size > 0),
+        ).toBe(true);
+        const minimumNavFontSize = Math.min(...fontSizes);
+        expect(minimumNavFontSize).toBeGreaterThanOrEqual(
+          MINIMUM_NAV_FONT_SIZE_PX,
+        );
       }
       if (viewport.width === 844 && viewport.height === 390) {
         await expect(root.locator(".archive-scan")).toHaveCSS(

@@ -1,5 +1,6 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
+import { expectPaintedTargets } from "./support/painted-targets";
 import { expectNoHorizontalOverflow, localizedPath } from "./support/site";
 
 const DESKTOP_VIEWPORT = { height: 900, width: 1_440 } as const;
@@ -13,6 +14,11 @@ const HOME_CHAPTER_SELECTORS = [
   ".home-service-dock",
 ] as const;
 const MOBILE_HEIGHT_RANGE = { maximum: 10_800, minimum: 7_400 } as const;
+const REACTOR_MATERIAL_FAMILIES = [
+  ["[data-reactor-material]", 1],
+  ["[data-reactor-orbit]", 2],
+  ["[data-reactor-shard]", 3],
+] as const;
 
 async function openHome(page: Page, motion = "static"): Promise<void> {
   await page.addInitScript(() =>
@@ -155,6 +161,10 @@ test.describe("homepage resilient baselines", () => {
           .evaluate((element) => element.getAttribute("style") ?? ""),
       )
       .not.toBe("");
+    const extra = reactor.locator('[data-product-card="extra"]');
+    for (const [selector, count] of REACTOR_MATERIAL_FAMILIES) {
+      await expectPaintedTargets(extra.locator(selector), count);
+    }
     const materialResidue = await reactor
       .locator(
         '[data-product-card="extra"] :is([data-reactor-material], [data-reactor-orbit], [data-reactor-shard])',
