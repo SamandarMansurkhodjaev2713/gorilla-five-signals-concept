@@ -2,6 +2,25 @@
 
 ## Revalidation — 2026-10-14
 
+### Shared font-loading and small-screen investigation
+
+A paired cold-font experiment on the separate maintenance artifact ran 24
+cases across UZ/RU/EN and four viewport shapes. Replacing `32/38ch` with the exact
+browser-loaded Onest-derived `em` measure preserved the final paragraph width,
+but did not reliably preserve layout: UZ desktop removed a 29.39 px copydeck
+shift while EN desktop introduced one of the same size. Phone paragraph height
+was unchanged; heading, plate, navigation, and controls still contributed shifts.
+The proposed width-only fix is rejected. Artificially gated font delivery is
+causal research, not Lighthouse or field-performance evidence.
+
+At 320 px the existing responsive CSS hides the description in every tested
+variant. This is a known content-parity defect, tracked in
+[issue #17](https://github.com/SamandarMansurkhodjaev2713/gorilla-five-signals-concept/issues/17),
+not a successful readability result. Restore an intentional small-screen
+composition and verify the product, description, and controls together before
+closing it. Targeted font/hero styling is shared with the feature branch; the
+maintenance image `sizes` correction is an explicit artifact difference.
+
 ### Painted-target coverage correction — `8d0117d`
 
 The previous broad Chromium pass did not prove two editorial-boundary cases:
