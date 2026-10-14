@@ -40,7 +40,8 @@ counts below are individual observed samples, not statistical release metrics.
 | Remove only global procedural grain | Five frames | Insufficient |
 | Remove only world-art texture | Three frames | Insufficient |
 | Remove only packshot filter or child shadows/filters | Three frames | Insufficient |
-| Remove both grain surfaces after scene readiness, retain shadows, filters, 3D and all world nodes | 53 frames; entrance finishes naturally | Conditional positive; not independently reproduced at early mount |
+| Remove both grain surfaces after scene readiness, retain shadows, filters, 3D and all world nodes | 53 frames initially; separate timed A/B gives 59 frames, median gap 15 ms and natural entrance completion | Positive after readiness; early-mount behavior differs |
+| Inject a no-op stylesheet at the same after-readiness point | Two frames, median gap 1331 ms; entrance deadline expires | Empty stylesheet mutation alone does not explain the improvement |
 | Remove both grain surfaces before scene mount | Four frames; unchanged 15-second entrance deadline expires | Contradicts a texture-only diagnosis; timing/compositing remains a confound |
 | Remove grain and raster effects together | 115 frames; entrance finishes naturally | Diagnostic upper comparison; discarding the art is not the chosen fix |
 | Flatten 3D, or isolate/contain the art alone | Three frames | Insufficient |
@@ -51,7 +52,8 @@ counts below are individual observed samples, not statistical release metrics.
 | Move original procedural grain behind content | Three frames | Rejected as a fix |
 | Move baked PNG grain into native surface backgrounds, preserving hero gradients | Six frames; entrance incomplete | Rejected as a fix |
 | Set whole-article content visibility to visible, remove intrinsic placeholder sizing | Three frames; unchanged 15-second entrance deadline expires | Rejected as a fix |
-| Bound original procedural grain to two 128-pixel corner surfaces | 63 frames; median frame gap 15 ms, maximum 531 ms; entrance naturally completes | One positive sample with visibly painted grain; repeat/all-world evidence pending |
+| Bound original procedural grain to two 128-pixel corner surfaces | Original Full repeats give 60/62/61 frames, median gap 15 ms each, maxima 536–555 ms; natural entrance and real scroll response pass | Repeatable partial improvement, not a production-ready fix |
+| Same bounded treatment, other paths | Original Lite remains slow (eight frames, median gap 532 ms); Zero/Extra Full and Lite finish; Mango Full exceeds 15 seconds | Candidate rejected for production; Mango Lite and Lychee were not reached |
 
 PNG experiments verified decoded dimensions, alpha, and actual CSS ownership.
 The native-background experiment also verified visibly painted grain; its failure
@@ -62,9 +64,17 @@ performance measurements.
 ## Current next step
 
 Whole-article `content-visibility:auto` containment was not causal in isolation.
-Repeat the bounded-area material treatment across worlds and compare identical
-after-readiness mutation timing against texture removal and a no-op mutation.
-The early/late texture-removal contradiction prevents a texture-only conclusion.
+The repeated bounded-area treatment does not solve Lite or Mango Full. Inspect
+actual GSAP transform caches and compositor state in those failed paths before
+choosing the next rendering change. The early/late texture-removal contradiction
+prevents a texture-only conclusion; large startup gaps also prevent calling the
+Original Full samples an uninterrupted 60-fps experience.
+
+The mixed four-second samples include idle frames after entrance completion.
+GSAP can legitimately sleep once only paused timelines remain; final ticker
+counts are not a standalone rendering metric. The next probe must separate
+active-entrance frame gaps from post-entry idle gaps and record the actual
+completion wall time. A healthy idle median does not prove smooth choreography.
 Choose a production change only after natural entrance and actual scroll-response
 evidence, then rebuild and rerun cross-engine, responsive, accessibility, and
 production performance gates.
@@ -89,3 +99,17 @@ alone is not an optimization success.
 5. **Maintenance and release:** keep the rebuild in a draft feature branch. The
    live Pages baseline is not proof that this newer artifact passes its gates.
    Publish measured limitations rather than claiming Awwwards readiness.
+
+## Isolated browser-fixture review
+
+The clipboard journey now grants permission to `new URL(baseURL).origin`, not
+the owner's fixed preview port. An absent fixture URL throws explicitly; invalid
+URL syntax is rejected by the native URL parser. The actual copy action, status,
+clipboard read, and canonical product-selection assertions remain unchanged.
+
+Five lenses: the permission matches the served application (correctness); no
+production resource owner changes (architecture); the real user journey remains
+asserted (UX); permission is limited to one origin (security); and another isolated
+preview port no longer produces a false failure (maintenance). Formatting and
+diff checks pass; focused browser revalidation is still required. No snapshot,
+timeout, clipboard, or accessibility assertion is weakened.

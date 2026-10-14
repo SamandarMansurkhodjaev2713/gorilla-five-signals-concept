@@ -165,11 +165,17 @@ test.describe("compare progressive enhancement", () => {
   });
 
   test("GIVEN clipboard permission WHEN copy is activated THEN the canonical comparison URL is copied", async ({
+    baseURL,
     context,
     page,
   }) => {
+    if (baseURL === undefined) {
+      throw new Error(
+        "Clipboard journey requires a configured application baseURL.",
+      );
+    }
     await context.grantPermissions(["clipboard-read", "clipboard-write"], {
-      origin: "http://127.0.0.1:4321",
+      origin: new URL(baseURL).origin,
     });
     await openConfirmedCompare(page, "en", "/compare/?products=original,extra");
     await page.locator("[data-compare-copy]").click();
