@@ -71,7 +71,14 @@ function animateFullHero(
   animateFrom(context, timeline, AURA_SELECTOR, spec.aura, 0.08);
   animateFrom(context, timeline, MEDIA_SELECTOR, spec.media, 0.1);
   animateFrom(context, timeline, REFLECTION_SELECTOR, spec.reflection, 0.14);
-  animateFrom(context, timeline, COPY_SELECTOR, spec.copy, 0.16);
+  // The real heading and actions must stay exposed throughout the entrance.
+  animateFrom(
+    context,
+    timeline,
+    COPY_SELECTOR,
+    { ...spec.copy, autoAlpha: 1 },
+    0.16,
+  );
   timeline.call((): void => {
     context.root.dataset.worldEntranceReady = "animated";
   });
@@ -85,7 +92,8 @@ function animateLiteHero(context: SceneSetupContext): void {
     return;
   }
   context.gsap.from(targets, {
-    autoAlpha: 0,
+    // Preserve semantic copy while retaining the existing vertical choreography.
+    autoAlpha: 1,
     duration: MOTION_DURATION_SECONDS.standard,
     ease: MOTION_EASE.enter,
     stagger: MOTION_STAGGER_SECONDS.standard,

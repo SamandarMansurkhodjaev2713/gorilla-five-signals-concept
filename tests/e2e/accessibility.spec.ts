@@ -27,6 +27,7 @@ test.describe("automated accessibility", () => {
       }) => {
         await expectSemanticPage(page, locale, suffix);
         await acceptResponsibleEntry(page);
+        await expect(page.locator("html")).not.toHaveAttribute("aria-pressed");
         const result = await new AxeBuilder({ page })
           .withTags([
             "wcag2a",

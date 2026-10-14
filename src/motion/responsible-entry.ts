@@ -156,9 +156,7 @@ export function createResponsibleEntry(
       windowValue,
     );
     openModalDialog(dialog);
-    if (!dialog.contains(documentValue.activeElement)) {
-      continueButton.focus({ preventScroll: true });
-    }
+    continueButton.focus({ preventScroll: true });
   }
 
   documentValue.addEventListener(

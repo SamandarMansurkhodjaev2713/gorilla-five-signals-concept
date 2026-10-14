@@ -1,5 +1,10 @@
 import { expect, test } from "@playwright/test";
 
+import { nativeBoundaryFailures } from "./support/native-boundary-contract";
+import {
+  installNativeBoundaryNavigation,
+  readNativeBoundaryEvidence,
+} from "./support/native-transition-boundary";
 import { collectRuntimeErrors, expectSemanticPage } from "./support/site";
 
 const ENTRY_CONTENT_SELECTOR = [
@@ -254,6 +259,51 @@ test.describe("responsible entry and route signal continuity", () => {
         page.locator("[data-route-signal]").getAttribute("data-route-phase"),
       )
       .toBe("idle");
+    expect(errors).toEqual([]);
+  });
+
+  test("GIVEN a native transition starts WHEN a newer real route intent arrives THEN Contact wins with phase-correct cancellation and no runtime error", async ({
+    page,
+  }, testInfo) => {
+    test.skip(
+      !(await page.evaluate(
+        () => typeof document.startViewTransition === "function",
+      )),
+      "This regression requires the real native View Transition API.",
+    );
+    const errors = await collectRuntimeErrors(page);
+    await installNativeBoundaryNavigation(page);
+    await expectSemanticPage(page, "uz");
+    await page
+      .locator('.desktop-navigation a[href="/uz/compare/"]')
+      .dispatchEvent("click");
+
+    await expect(page).toHaveURL(/\/uz\/contact\/$/u);
+    await expect(page.locator("main h1")).toBeFocused();
+    await expect(page.locator("[data-route-signal-code]")).toHaveText(
+      "CONTACT",
+    );
+    await expect(page.locator("[data-route-signal]")).toHaveAttribute(
+      "data-route-phase",
+      "idle",
+    );
+    const evidence = await readNativeBoundaryEvidence(page);
+    await testInfo.attach("native-boundary-evidence", {
+      body: JSON.stringify(evidence, null, 2),
+      contentType: "application/json",
+    });
+    expect(nativeBoundaryFailures(evidence), JSON.stringify(evidence)).toEqual(
+      [],
+    );
+    await page.goBack();
+    expect(["/uz/", "/uz/compare/"]).toContain(new URL(page.url()).pathname);
+    await page.goForward();
+    await expect(page).toHaveURL(/\/uz\/contact\/$/u);
+    await expect(page.locator("main h1")).toBeVisible();
+    await expect(page.locator("[data-route-signal]")).toHaveAttribute(
+      "data-route-phase",
+      "idle",
+    );
     expect(errors).toEqual([]);
   });
 

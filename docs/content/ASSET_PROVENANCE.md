@@ -48,7 +48,7 @@ as the initial mobile payload.
 ## Release-registered generated derivatives
 
 The deployable tree does not serve the source PNGs above as product media.
-`scripts/build-brand-assets.mjs` emits WebP masters plus 320/480 product
+`scripts/build-brand-assets.mjs` emits WebP masters plus 160/320/480 product
 variants and 96/192 logo variants under `public/media/generated/`. Eight
 machine-readable records in `src/content/media/` bind every shipped path to its
 SHA-256 checksum, localized alternative text, owner, license, permission
