@@ -222,20 +222,20 @@ protection documentation is reproduced from verified configuration revision
 
 All filenames below are in `tests/e2e/visual.spec.ts-snapshots/`.
 
-| Filename | SHA-256 |
-| --- | --- |
+| Filename                                             | SHA-256                                                            |
+| ---------------------------------------------------- | ------------------------------------------------------------------ |
 | contact-uz-page-lead-desktop-1440-chromium-win32.png | `6870bbdfe9e0ff0db87cf296e2393d944fe91d4ac2595cd74b4af72d1c25c8cd` |
-| home-uz-compact-320-chromium-win32.png | `e32c23da89d2290cf7470413c14ce6316d945b45becb9adba8e62b7b08639a55` |
-| home-uz-compact-360-chromium-win32.png | `04878c5e3a060c2fa10b6e2f4c0aa9def9588685c9e16e798949c4f2750969fe` |
-| home-uz-desktop-1366-chromium-win32.png | `403ea24f43272ca86923a2ed38bc55b042a541d10174e055dbd8789200120b74` |
-| home-uz-desktop-1440-chromium-win32.png | `8ba66cc76f621703ad3ba88d270a81d096cd1f5dc0a9fd1a20909ec40dffc2b0` |
-| home-uz-landscape-1024-chromium-win32.png | `98960fa8b93c573b467218e8444bc8c2426e6758958a2d47980f1d068b173f92` |
-| home-uz-mobile-390-chromium-win32.png | `627dadd0a890f848adeefab60c592f451bd561dfe5234df853bcda18e19f4e32` |
-| home-uz-mobile-412-chromium-win32.png | `a04e67a797d05cc346cd0b88239018ea0139d43d37c65dc7ec41aaa76a24b57d` |
-| home-uz-mobile-430-chromium-win32.png | `e2dff7c41bb0306b6545627e9208b983c91bc6b8d27770bdf3c4f3c7af45d4f0` |
-| home-uz-phone-landscape-844-chromium-win32.png | `19cecd7835288b37599877248664d97977a03a00b29e2b25c945aea4f6541cf2` |
-| home-uz-tablet-768-chromium-win32.png | `d6d8195923d8114ca74a69da1628a660926ef1d34b6ac900da0483e07d94c5e6` |
-| home-uz-wide-1920-chromium-win32.png | `ace8989d2542a3fb2a9df19d25b78901dac5c0efc8c8ceb461279d28e6f2c53d` |
+| home-uz-compact-320-chromium-win32.png               | `e32c23da89d2290cf7470413c14ce6316d945b45becb9adba8e62b7b08639a55` |
+| home-uz-compact-360-chromium-win32.png               | `04878c5e3a060c2fa10b6e2f4c0aa9def9588685c9e16e798949c4f2750969fe` |
+| home-uz-desktop-1366-chromium-win32.png              | `403ea24f43272ca86923a2ed38bc55b042a541d10174e055dbd8789200120b74` |
+| home-uz-desktop-1440-chromium-win32.png              | `8ba66cc76f621703ad3ba88d270a81d096cd1f5dc0a9fd1a20909ec40dffc2b0` |
+| home-uz-landscape-1024-chromium-win32.png            | `98960fa8b93c573b467218e8444bc8c2426e6758958a2d47980f1d068b173f92` |
+| home-uz-mobile-390-chromium-win32.png                | `627dadd0a890f848adeefab60c592f451bd561dfe5234df853bcda18e19f4e32` |
+| home-uz-mobile-412-chromium-win32.png                | `a04e67a797d05cc346cd0b88239018ea0139d43d37c65dc7ec41aaa76a24b57d` |
+| home-uz-mobile-430-chromium-win32.png                | `e2dff7c41bb0306b6545627e9208b983c91bc6b8d27770bdf3c4f3c7af45d4f0` |
+| home-uz-phone-landscape-844-chromium-win32.png       | `19cecd7835288b37599877248664d97977a03a00b29e2b25c945aea4f6541cf2` |
+| home-uz-tablet-768-chromium-win32.png                | `d6d8195923d8114ca74a69da1628a660926ef1d34b6ac900da0483e07d94c5e6` |
+| home-uz-wide-1920-chromium-win32.png                 | `ace8989d2542a3fb2a9df19d25b78901dac5c0efc8c8ceb461279d28e6f2c53d` |
 
 ## Trace findings and non-vacuous coverage correction
 
@@ -331,5 +331,30 @@ production global or a duplicated application implementation. Its original
 visibility defect remains detectable, while the matched DPR 2 Full callback
 failures remain documented separately.
 
-Lighthouse median-three verification is the next independent gate and is not
-run concurrently with these browser tests. Main and Pages remain unchanged.
+## Median-three Lighthouse result
+
+The isolated pinned Lighthouse runner completed all nine audits (session 63807)
+without concurrent browser tests, then exited 1 because homepage gates failed.
+It built the public-readiness artifact separately, verified its served entry
+SHA-256 `b0a38feebcde4f0a4f018e4dd802006f8f1ae5dfb8ff175935905892b3dea6a5`,
+and used the real GitHub Pages base path. The existing score and timing budgets
+were not changed.
+
+| Route            | Median performance / accessibility / best practices / SEO | Median LCP | Median CLS / TBT | Result                                   |
+| ---------------- | --------------------------------------------------------- | ---------- | ---------------- | ---------------------------------------- |
+| Homepage         | 90 / 100 / 100 / 100                                      | 3615 ms    | 0 / 0 ms         | Fails performance >=95 and LCP <=2500 ms |
+| Original product | 99 / 100 / 100 / 100                                      | 2107 ms    | 0 / 0 ms         | Pass                                     |
+| Find             | 99 / 100 / 100 / 100                                      | 1884 ms    | 0 / 0 ms         | Pass                                     |
+
+Homepage runs scored 77, 94 and 90, with LCP 3689, 3086 and 3615 ms respectively.
+The first run also recorded CLS 0.245431 and TBT 22 ms; a median CLS of zero does
+not erase this unstable-run evidence. These measurements alone do not identify
+the cause or prove whether the dependency update changed homepage performance.
+No new application performance changes are made without a matched control.
+
+The owned Lighthouse preview/debug ports, Chrome profiles and temporary build
+were cleaned after completion. The parent preview on 4321, isolated preview on
+4333 and its unchanged `42a2de83...` entry artifact remained intact. Source and
+focused cross-engine checks above pass, but the homepage Lighthouse and matched
+high-DPI WebKit Full entrance gates remain open. Main and Pages remain unchanged;
+this draft must not be represented as a completed release.
