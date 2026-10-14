@@ -1,6 +1,9 @@
 import { expect, test } from "@playwright/test";
-import { z } from "zod";
 
+import {
+  SEMANTIC_COPY_PROBE_SCHEMA,
+  observeSemanticCopy,
+} from "./support/semantic-copy-probe";
 import { PRODUCT_SLUGS, localizedPath } from "./support/site";
 
 const COPY_SELECTOR = "[data-world-copy]";
@@ -10,58 +13,6 @@ const MOTION_PREFERENCE_KEY = "gorilla:motion-preference:v1";
 const MOTION_READY_TIMEOUT_MS = 15_000;
 const MAX_PROBE_STATES = 256;
 const MOTION_PREFERENCES = ["full", "lite"] as const;
-const VISIBILITY_STATE_SCHEMA = z.object({
-  actionVisibility: z.array(z.string()).min(1),
-  copyOpacity: z.string(),
-  copyVisibility: z.string(),
-  headingVisibility: z.string(),
-  phase: z.string(),
-});
-const PROBE_SCHEMA = z.array(VISIBILITY_STATE_SCHEMA).min(2);
-
-function observeSemanticCopy(options: {
-  readonly copySelector: string;
-  readonly maximumStates: number;
-  readonly probeAttribute: string;
-  readonly worldSelector: string;
-}): void {
-  const states: unknown[] = [];
-  let previousState = "";
-  const record = (): void => {
-    const copy = document.querySelector(options.copySelector);
-    const heading = copy?.querySelector("h1");
-    const world = document.querySelector<HTMLElement>(options.worldSelector);
-    if (copy === null || heading === undefined || heading === null) return;
-    const state = {
-      actionVisibility: [...copy.querySelectorAll("a[href], button")].map(
-        (action) => getComputedStyle(action).visibility,
-      ),
-      copyOpacity: getComputedStyle(copy).opacity,
-      copyVisibility: getComputedStyle(copy).visibility,
-      headingVisibility: getComputedStyle(heading).visibility,
-      phase: world?.dataset.worldEntranceReady ?? "mounted",
-    };
-    const signature = JSON.stringify(state);
-    if (signature === previousState || states.length >= options.maximumStates)
-      return;
-    states.push(state);
-    previousState = signature;
-    document.documentElement.setAttribute(
-      options.probeAttribute,
-      JSON.stringify(states),
-    );
-  };
-  const observer = new MutationObserver(record);
-  observer.observe(document, {
-    attributeFilter: ["style", "class", "data-world-entrance-ready"],
-    attributes: true,
-    childList: true,
-    subtree: true,
-  });
-  window.addEventListener("pagehide", () => observer.disconnect(), {
-    once: true,
-  });
-}
 
 for (const preference of MOTION_PREFERENCES) {
   for (const slug of PRODUCT_SLUGS) {
@@ -96,10 +47,17 @@ for (const preference of MOTION_PREFERENCES) {
       );
       const source = await page.locator("html").getAttribute(PROBE_ATTRIBUTE);
       expect(source).not.toBeNull();
-      const states = PROBE_SCHEMA.parse(JSON.parse(source ?? "null"));
+      const states = SEMANTIC_COPY_PROBE_SCHEMA.parse(
+        JSON.parse(source ?? "null"),
+      );
       expect(states.map((state) => state.phase)).toContain("mounted");
       expect(states.map((state) => state.phase)).toContain("animated");
       for (const state of states) {
+        if (state.source === "previous-inline") {
+          expect(["hidden", "collapse"]).not.toContain(state.oldVisibility);
+          if (state.oldOpacity !== "") expect(state.oldOpacity).toBe("1");
+          continue;
+        }
         expect(state.headingVisibility).toBe("visible");
         expect(state.copyVisibility).toBe("visible");
         expect(state.copyOpacity).toBe("1");
@@ -111,3 +69,54 @@ for (const preference of MOTION_PREFERENCES) {
     });
   }
 }
+
+test("GIVEN a hidden-to-visible inline mutation within one batch WHEN the semantic probe records history THEN the original autoAlpha-zero defect is detected", async ({
+  page,
+}) => {
+  await page.addInitScript(observeSemanticCopy, {
+    copySelector: COPY_SELECTOR,
+    maximumStates: MAX_PROBE_STATES,
+    probeAttribute: PROBE_ATTRIBUTE,
+    worldSelector: WORLD_SELECTOR,
+  });
+  await page.goto("about:blank");
+  await page.setContent(
+    '<article data-product-world><div data-world-copy><h1>Probe heading</h1><a href="#probe">Probe action</a></div></article>',
+  );
+  await expect(page.locator("html")).toHaveAttribute(
+    PROBE_ATTRIBUTE,
+    /"mounted"/,
+  );
+  await page.evaluate(() => {
+    const copy = document.querySelector("[data-world-copy]");
+    const world = document.querySelector("[data-product-world]");
+    if (!(copy instanceof HTMLElement) || !(world instanceof HTMLElement))
+      throw new Error("Missing controlled probe fixture.");
+    copy.style.opacity = "0";
+    copy.style.visibility = "hidden";
+    copy.style.opacity = "1";
+    copy.style.visibility = "inherit";
+    world.dataset.worldEntranceReady = "animated";
+  });
+  await expect(page.locator("html")).toHaveAttribute(
+    PROBE_ATTRIBUTE,
+    /"previous-inline"/,
+  );
+  const source = await page.locator("html").getAttribute(PROBE_ATTRIBUTE);
+  const states = SEMANTIC_COPY_PROBE_SCHEMA.parse(JSON.parse(source ?? "null"));
+  expect(
+    states.some(
+      (state) =>
+        state.source === "previous-inline" &&
+        (state.oldOpacity === "0" || state.oldVisibility === "hidden"),
+    ),
+  ).toBe(true);
+  expect(
+    states.some(
+      (state) =>
+        state.source === "computed" &&
+        state.phase === "animated" &&
+        state.headingVisibility === "visible",
+    ),
+  ).toBe(true);
+});

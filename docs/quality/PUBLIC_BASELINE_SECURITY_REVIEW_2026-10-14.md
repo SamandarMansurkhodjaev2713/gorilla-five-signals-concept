@@ -206,10 +206,11 @@ Only after the direct control and phase contracts passed, the maintainer approve
 refreshing exactly the eleven stale homepage goldens and contact desktop 1440.
 The targeted twelve-case refresh passed. The other three already-passing goldens
 are unchanged. A normal 114-case Chromium run (original 104 plus ten phase
-contracts), without snapshot updates, is currently pending completion; it includes
-all fifteen visual cases. Firefox/WebKit focused compatibility and median-three
-Lighthouse verification are also pending. No all-green browser or release claim
-is made before those results.
+contracts), without snapshot updates, returned 114 passed including all fifteen
+visual cases. Trace inspection subsequently found two cases did not exercise
+their intended page, so this is not complete valid coverage. Firefox/WebKit
+focused compatibility and median-three Lighthouse verification remain pending.
+No all-green browser or release claim is made before those results.
 
 The maintenance branch may be published as a draft PR for CI review. It must not
 merge or trigger Pages promotion before the pending checks and parent review.
@@ -235,3 +236,100 @@ All filenames below are in `tests/e2e/visual.spec.ts-snapshots/`.
 | home-uz-phone-landscape-844-chromium-win32.png | `19cecd7835288b37599877248664d97977a03a00b29e2b25c945aea4f6541cf2` |
 | home-uz-tablet-768-chromium-win32.png | `d6d8195923d8114ca74a69da1628a660926ef1d34b6ac900da0483e07d94c5e6` |
 | home-uz-wide-1920-chromium-win32.png | `ace8989d2542a3fb2a9df19d25b78901dac5c0efc8c8ceb461279d28e6f2c53d` |
+
+## Trace findings and non-vacuous coverage correction
+
+All 114 retained browser traces were inspected for console errors and page errors.
+There are zero page errors. Seven console errors were retained: four expected
+network failures from the deliberate media-abort test, one expected unknown-route
+404, and two unexpected 404s from the typography boundary fixtures.
+
+The 768/1024 fixtures navigated to `/uz?motion=static` without the required slash
+and never asserted HTTP success or a nonempty target set. They incorrectly passed
+on an empty collection from a 404 page. Those two cases in the previous 114 count
+are invalid intended-page coverage, not proof of successful responsive typography.
+
+The approved correction uses the canonical `expectSemanticPage` boundary (HTTP
+success, localized main, one H1 and title) and requires actual column matches
+before checking clipping. It preserves both viewport cases and overflow limits.
+If the genuine homepage geometry fails, the issue must be reported, not hidden by
+an empty query or a weaker threshold. Fresh source and focused browser checks
+are required after this correction.
+
+The first nonempty check exposed a second fixture defect: all three former
+selector families are obsolete even on the genuine homepage. The approved
+fixture now names the four actual editorial families (`.manifesto-intro`,
+`[data-product-card] .reactor-copy`, `.home-truth__heading`, `.home-duel__action`).
+Every family must exist, paint after its own native scroll, and have a positive
+client width and an actual viewport-visible measurement. Measurements are made
+before scrolling away from that family, avoiding content-visibility placeholders.
+The original one-pixel overflow tolerance remains unchanged. Both corrected
+768/1024 Chromium cases pass on real homepage content; no application CSS changed.
+
+The Lighthouse runner additionally adopts the isolated preview lifecycle fix
+from `2c9c6b2`: `--ignore-lock` and the child-only `ASTRO_PREVIEW_BACKGROUND` marker.
+It does not set a global environment flag, stop the owner preview, alter its dist,
+change benchmark routes, lower scores or extend budget thresholds. The runner's
+existing report tests and owned profile/Chrome/server teardown remain intact.
+
+## Cross-engine evidence and high-DPI gate
+
+The first focused Firefox/WebKit batch returned 39 passed, 42 explicit existing
+Chromium-only skips, and five failures. All five failures are WebKit Full product
+entrance callbacks not reached within the unchanged fifteen-second boundary.
+Firefox's 22 meaningful cases passed; WebKit's five Lite phase cases and actual
+768/1024 geometry passed. Skipped motion/entry tests are not cross-engine proof.
+
+A new engine-neutral suite covers system/user Reduced navigation, native entry
+ownership and compact-menu behavior. Its initial explicit `main[inert]` check
+was an incorrect representation assumption: native `showModal()` automatically
+inerts background content without reflecting that attribute. The corrected
+contract checks `:modal`, attempts focus on a positively measured, normally
+focusable visible brand anchor, verifies focus remains inside the modal, and
+proves the same target accepts focus after Continue. No app inert attributes are
+added to satisfy a test.
+
+The semantic phase observer is now scoped/cached so decorative transform updates
+do not trigger computed-style measurements. Attribute old values retain inline
+opacity/visibility transitions even when restored within a single mutation batch.
+Its controlled counterfixture detects the original `autoAlpha: 0` defect in all
+three engines without forcing a production timeline. The editorial measurement
+helper is split into focused paint, measurement and assertion responsibilities.
+
+However, the reduced instrumentation did not resolve WebKit Full failures. An
+initial passive control at default DPR 1 completed in about one second, but that
+was not profile-equivalent: `Desktop Safari` uses DPR 2. The matched DPR 2 passive
+control—same viewport, screen, UA, locale, color scheme and preference—fails the
+natural fifteen-second entrance boundary on BOTH the actual live main and this
+candidate (15010/15017 ms), with no observer, recording, page error or console
+error. Their world geometry is identical. Therefore this is a preexisting
+high-DPI WebKit entrance/performance gate, not proven instrumentation or dependency
+regression. DPR is not lowered, callbacks are not forced and timeouts are not
+extended to claim a pass. Promotion remains pending parent review and resolution.
+
+## Latest maintenance verification
+
+After the focused helper/fixture corrections, full `pnpm quality` passes with 169
+strict-check files, zero diagnostics, 93 unit tests, 47 pages and all artifact,
+617-component SBOM/license, FFmpeg and audit gates. Application sources are still
+limited to the four approved accessibility corrections; no shadow, grain, raster,
+layout, palette or production media modifications are introduced by these tests.
+
+The corrected engine-neutral suite plus historical-opacity counterfixture and
+real editorial geometry now passes all 21 cases across Chromium, Firefox and
+WebKit. This includes system/user Reduced navigation, actual native-modal focus
+blocking with a same-target nonmodal countercontrol, compact menu focus ownership,
+three single-batch hidden-opacity sensitivity checks and six non-vacuous geometry
+cases. No engine skip applies to these 21 cases. The earlier three incorrect
+native-attribute assertions are not counted as application defects or passes.
+
+The serialized semantic observer's outer closure retains nested helpers because
+browser init scripts serialize the function without module imports. Its separate
+publish, ancestor, historical-style and computed-state responsibilities remain
+bounded; this is an explicit decomposition/serialization exception, not a new
+production global or a duplicated application implementation. Its original
+visibility defect remains detectable, while the matched DPR 2 Full callback
+failures remain documented separately.
+
+Lighthouse median-three verification is the next independent gate and is not
+run concurrently with these browser tests. Main and Pages remain unchanged.
