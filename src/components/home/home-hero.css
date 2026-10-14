@@ -18,6 +18,10 @@
   padding: var(--space-5) var(--space-gutter) var(--space-5);
 }
 
+.hero-artstage {
+  display: contents;
+}
+
 .hero-frame::before {
   position: absolute;
   z-index: -2;

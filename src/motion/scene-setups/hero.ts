@@ -1,4 +1,5 @@
 import type { SceneSetup } from "../create-scene";
+import { HERO_CAN_ENTRY_SPEC } from "../hero-can-spec";
 import { MOTION_DURATION_SECONDS, MOTION_EASE } from "../tokens";
 import { markSceneReady } from "./shared";
 
@@ -10,9 +11,6 @@ const SIGNAL_PLATE_SELECTOR = "[data-motion-hero-band]";
 const SUPPORT_SELECTOR = "[data-motion-hero-support]";
 const TITLE_SELECTOR = "[data-motion-hero-title]";
 const FINE_POINTER_QUERY = "(hover: hover) and (pointer: fine)";
-const CAN_ENTRY_ROTATION_DEGREES = -7;
-const CAN_ENTRY_SCALE = 0.76;
-const CAN_ENTRY_Y_PX = 112;
 const FREQUENCY_STAGGER_SECONDS = 0.045;
 const GHOST_ENTRY_SCALE = 0.82;
 const GHOST_ENTRY_X_PX = 44;
@@ -55,9 +53,9 @@ function animateSignalBoot(context: Parameters<SceneSetup>[0]): void {
       {
         duration: MOTION_DURATION_SECONDS.entranceMax,
         ease: MOTION_EASE.settle,
-        rotate: CAN_ENTRY_ROTATION_DEGREES,
-        scale: CAN_ENTRY_SCALE,
-        y: CAN_ENTRY_Y_PX,
+        rotate: HERO_CAN_ENTRY_SPEC.rotationDegrees,
+        scale: HERO_CAN_ENTRY_SPEC.scale,
+        y: HERO_CAN_ENTRY_SPEC.travelY,
       },
       "-=0.58",
     );
