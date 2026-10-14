@@ -104,7 +104,6 @@ Source: `src/motion/tokens.ts` and mirrored CSS custom properties.
 - `exit` / `power3.in` — shorter departure;
 - `material` / `expo.out` — light/crop movement;
 - `snap` / `power3.out` — selected state alignment;
-- `settle` / constrained back easing — tiny non-spatial feedback only.
 
 Linear easing is allowed only for a real progress indicator. Repeating animation is not used for decoration.
 

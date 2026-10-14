@@ -5,8 +5,9 @@ import type { SiteCopy } from "@/features/site/copy";
 import { localePath } from "@/features/site/localization";
 
 import "@/features/flavor-reactor/flavor-reactor.css";
-import "@/features/flavor-reactor/flavor-reactor-responsive.css";
 import "@/features/flavor-reactor/flavor-reactor-worlds.css";
+// Responsive constraints must win over equal-specificity world typography.
+import "@/features/flavor-reactor/flavor-reactor-responsive.css";
 
 interface Props {
   copy: SiteCopy;
@@ -38,9 +39,6 @@ const nativeHint = {
         {signalTitleLead !== "" && <span>{signalTitleLead}</span>}
         <span>{signalTitleTail}</span>
       </h2>
-      <p class="reactor-intro__code" aria-hidden="true">
-        FREQ / 01—{productCount}
-      </p>
     </header>
 
     <div class="reactor-console" aria-label={copy.chooseSignal}>
@@ -149,14 +147,6 @@ const nativeHint = {
                 <span class="reactor-scan" data-reactor-scan />
               </div>
 
-              <div class="reactor-identity">
-                <p class="reactor-identity__index">
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                  <span aria-hidden="true">/ {productCount}</span>
-                </p>
-                <p class="type-label">{product.flavorNotes.join(" · ")}</p>
-              </div>
-
               <div class="reactor-can-trajectory">
                 <div class="reactor-can" data-motion-product>
                   <span class="reactor-can__halo" aria-hidden="true" />
@@ -175,8 +165,11 @@ const nativeHint = {
               </div>
 
               <div class="reactor-copy" data-motion-copy>
-                <p class="reactor-copy__signal" aria-hidden="true">
-                  SIGNAL—{String(index + 1).padStart(2, "0")}
+                <p class="reactor-copy__eyebrow">
+                  <span aria-hidden="true">
+                    {String(index + 1).padStart(2, "0")} / {productCount}
+                  </span>
+                  <span>{product.flavorNotes.join(" · ")}</span>
                 </p>
                 <h3 data-reactor-word>{product.name}</h3>
                 <p class="reactor-copy__description">{product.description}</p>

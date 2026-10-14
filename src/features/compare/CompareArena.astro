@@ -1,0 +1,117 @@
+---
+import type { SupportedLocale } from "@/config/site";
+import type { ProductView } from "@/features/site/catalog";
+import type { SiteCopy } from "@/features/site/copy";
+import { localePath } from "@/features/site/localization";
+
+import type { CompareUi } from "./compare-ui";
+
+interface Props {
+  copy: SiteCopy;
+  locale: SupportedLocale;
+  products: readonly ProductView[];
+  ui: CompareUi;
+}
+
+const { copy, locale, products, ui } = Astro.props;
+---
+
+<div
+  class="selected-products"
+  id="compare-selected-products"
+  role="region"
+  aria-label={copy.navigation.compare}
+>
+  <div class="selected-products__field" data-compare-field aria-hidden="true">
+    <span class="selected-products__pulse"></span>
+    <span class="selected-products__orbit selected-products__orbit--outer"
+    ></span>
+    <span class="selected-products__orbit selected-products__orbit--inner"
+    ></span>
+    <span class="selected-products__crosshair"></span>
+    <span class="selected-products__frequency type-data">{ui.signalLock}</span>
+  </div>
+  <p class="selected-products__versus" aria-hidden="true">{ui.versus}</p>
+  {
+    products.map((product, index) => (
+      <article
+        class="signal-channel"
+        data-compare-product
+        data-product-slug={product.slug}
+        data-flavor={product.slug}
+        hidden
+      >
+        <div class="signal-channel__topline">
+          <span class="type-data">CH/{String(index + 1).padStart(2, "0")}</span>
+          <span class="type-label">
+            {ui.channel} / {product.name}
+          </span>
+        </div>
+
+        <div class="signal-channel__visual" data-motion-product>
+          <div class="signal-channel__rings" aria-hidden="true">
+            <>
+              <>
+                <span />
+                <span />
+                <span />
+              </>
+            </>
+          </div>
+          <p class="signal-channel__ghost" aria-hidden="true">
+            {product.name}
+          </p>
+          <img
+            src={product.imagePath}
+            srcset={product.imageSrcSet}
+            sizes="(min-width: 80rem) 17rem, (min-width: 48rem) 14rem, 11rem"
+            width={product.width}
+            height={product.height}
+            alt={product.alt}
+            loading="lazy"
+            decoding="async"
+          />
+          <div class="signal-channel__meter" aria-hidden="true">
+            <>
+              <>
+                <span>00</span>
+                <i />
+                <i />
+                <i />
+                <i />
+                <span>05</span>
+              </>
+            </>
+          </div>
+        </div>
+
+        <div class="signal-channel__copy">
+          <p class="type-label">{ui.signal}</p>
+          <h2>{product.name}</h2>
+          <p class="signal-channel__notes">{product.flavorNotes.join(" · ")}</p>
+          <p class="signal-channel__description">{product.description}</p>
+          <dl class="signal-channel__facts">
+            <div>
+              <dt>{ui.sugar}</dt>
+              <dd>{copy.verifiedPending}</dd>
+            </div>
+            <div>
+              <dt>{ui.composition}</dt>
+              <dd>{copy.verifiedPending}</dd>
+            </div>
+          </dl>
+          <a
+            class="text-link"
+            href={localePath(locale, `/products/${product.slug}`)}
+          >
+            {copy.openDetails}
+          </a>
+        </div>
+      </article>
+    ))
+  }
+  <p class="empty-state" data-compare-empty>
+    <span class="type-data" aria-hidden="true">NO SIGNAL / 000</span>
+    <span>{ui.empty}</span>
+  </p>
+</div>

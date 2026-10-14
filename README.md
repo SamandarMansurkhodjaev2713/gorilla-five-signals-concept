@@ -16,16 +16,17 @@ and finite motion.
 
 ## Current status
 
-The public site is an active art-direction rebuild. Its architecture, localized
-routes, product detail worlds, accessibility modes, and deployment pipeline are
-implemented; the home-page scroll film and final motion polish are still being
-iterated. The current Pages build is published for review, not presented as a
-finished commercial release.
+The public Pages build is a stable review baseline. The active feature branch
+adds the authored Product Atlas, Signal Duel, and five distinct product-detail
+worlds; final cross-engine, Lighthouse, physical-device, and legal screenshot
+sign-off remain open. The concept is not presented as a finished commercial
+release.
 
 ## Experience
 
-- Five localized product worlds: Original, Zero Sugar, Extra, Mango Coconut,
-  and Lychee Pear.
+- Five localized product worlds plus an authored frequency-based Product Atlas.
+- A responsive Signal Duel that preserves up to three selected products on
+  every viewport.
 - Uzbek, Russian, and English routes with canonical, alternate, and sitemap
   metadata.
 - Full, lite, paused, reduced-motion, and no-script experience paths.
@@ -49,6 +50,8 @@ corepack enable
 pnpm install --frozen-lockfile
 pnpm dev
 ```
+
+Use Node.js 24.16.0 from `.node-version`/`.nvmrc` before running these commands.
 
 The local site opens at `http://localhost:4321/` and redirects to the Uzbek
 route by default.
@@ -97,6 +100,12 @@ Start with the [concept direction](docs/product/GORILLA_CONCEPT.md),
 Every push to `main` builds a fresh public artifact and deploys it with the
 official GitHub Pages actions. The public build sets an explicit origin and
 repository base path; source code never hardcodes the hosting subdirectory.
+
+`main` requires a pull request, an up-to-date branch, successful source-quality
+and CodeQL checks, and resolved review conversations. Force pushes and branch
+deletion are disabled, including for administrators. These automated checks do
+not replace browser, visual, performance, or legal release approval. See the
+[GitHub configuration record](docs/release/GITHUB_CONFIGURATION.md).
 
 GitHub Pages does not apply the repository's Cloudflare-style `_headers` file.
 Document-level CSP and referrer fallbacks remain active, while HSTS and other

@@ -1,28 +1,36 @@
 import {
+  DEFAULT_SELECTION_COUNT,
   DESKTOP_QUERY,
   type CompareController,
   type CompareElements,
-  type CompareViewport,
 } from "./compare-contract";
-import { copyCompareSelection, recordCopyFailure } from "./compare-clipboard";
 import { bindCompareEvents } from "./compare-events";
 import {
-  createShareUrl,
+  createCompareFieldCue,
+  type CompareFieldCue,
+} from "./compare-field-cue";
+import {
+  createCompareShareIntent,
+  type CompareShareIntent,
+} from "./compare-share-intent";
+import {
+  createCompareLocationStore,
+  type CompareLocationStore,
+} from "./compare-location-store";
+import {
   isPresent,
-  selectionFromUrl,
   slotLimitForViewport,
   uniqueValidSlugs,
 } from "./compare-state";
 import { renderCompareView, resetCompareView } from "./compare-view";
 
-function isHistoryRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
 class CompareSession implements CompareController {
   readonly #abortController = new AbortController();
   readonly #defaults: readonly string[];
   readonly #desktopQuery: MediaQueryList;
+  readonly #fieldCue: CompareFieldCue;
+  readonly #locationStore: CompareLocationStore;
+  readonly #shareIntent: CompareShareIntent;
   readonly #validSlugs: ReadonlySet<string>;
   #selection: readonly string[] = [];
   #slotLimit: number;
@@ -37,20 +45,33 @@ class CompareSession implements CompareController {
         .map((product) => product.dataset.productSlug)
         .filter(isPresent),
     );
-    this.#defaults = [...this.#validSlugs].slice(
-      0,
-      slotLimitForViewport("compact"),
+    this.#defaults = [...this.#validSlugs].slice(0, DEFAULT_SELECTION_COUNT);
+    this.#slotLimit = slotLimitForViewport(
+      this.#desktopQuery.matches ? "desktop" : "compact",
     );
-    this.#slotLimit = this.#readSlotLimit();
+    this.#locationStore = createCompareLocationStore({
+      defaults: this.#defaults,
+      validSlugs: this.#validSlugs,
+      windowValue,
+    });
+    this.#fieldCue = createCompareFieldCue({
+      elements,
+      signal: this.#abortController.signal,
+      windowValue,
+    });
+    this.#shareIntent = createCompareShareIntent({
+      announceCopied: (): void => {
+        this.#announce(this.elements.root.dataset.copiedLabel);
+      },
+      announceFailed: (): void => {
+        this.#announce(this.elements.root.dataset.copyFailedLabel);
+      },
+      clipboard: windowValue.navigator.clipboard,
+      locationHref: (): string => windowValue.location.href,
+      root: elements.root,
+      signal: this.#abortController.signal,
+    });
     this.#start();
-  }
-
-  #readViewport(): CompareViewport {
-    return this.#desktopQuery.matches ? "desktop" : "compact";
-  }
-
-  #readSlotLimit(): number {
-    return slotLimitForViewport(this.#readViewport());
   }
 
   #announce(message: string | undefined): void {
@@ -66,23 +87,14 @@ class CompareSession implements CompareController {
   }
 
   #writeUrl(): void {
-    const url = createShareUrl(this.windowValue.location.href, this.#selection);
-    const currentState: unknown = this.windowValue.history.state;
-    const state = {
-      ...(isHistoryRecord(currentState) ? currentState : {}),
-      products: this.#selection,
-    };
-
-    // Compare selection is an in-page state, not a document navigation. Using
-    // replaceState preserves Astro's router index and scroll coordinates while
-    // keeping the current composition shareable and reload-safe.
-    this.windowValue.history.replaceState(state, "", url);
+    this.#locationStore.write(this.#selection);
   }
 
   #publishSelection(): void {
     this.#render();
     this.#writeUrl();
     this.#announce(this.elements.root.dataset.updatedLabel);
+    this.#fieldCue.trigger();
     this.elements.root.dispatchEvent(
       new CustomEvent("gorilla:selection-change", {
         bubbles: true,
@@ -92,26 +104,8 @@ class CompareSession implements CompareController {
   }
 
   #readLocation(canonicalize: "canonicalize" | "preserve"): void {
-    const url = new URL(this.windowValue.location.href);
-    this.#selection = selectionFromUrl(
-      url,
-      this.#defaults,
-      this.#validSlugs,
-      this.#slotLimit,
-    );
+    this.#selection = this.#locationStore.read(this.#slotLimit, canonicalize);
     this.#render();
-    const canonical = createShareUrl(url, this.#selection);
-    if (canonicalize === "canonicalize" && canonical.href !== url.href) {
-      const currentState: unknown = this.windowValue.history.state;
-      this.windowValue.history.replaceState(
-        {
-          ...(isHistoryRecord(currentState) ? currentState : {}),
-          products: this.#selection,
-        },
-        "",
-        canonical,
-      );
-    }
   }
 
   readonly #handleSelection = (event: Event): void => {
@@ -141,24 +135,13 @@ class CompareSession implements CompareController {
   };
 
   readonly #handleCopy = (): void => {
-    void copyCompareSelection({
-      clipboard: this.windowValue.navigator.clipboard,
-      locationHref: this.windowValue.location.href,
-      root: this.elements.root,
-      selection: this.#selection,
-    })
-      .then((): void => {
-        delete this.elements.root.dataset.compareCopyError;
-        this.#announce(this.elements.root.dataset.copiedLabel);
-      })
-      .catch((error: unknown): void => {
-        recordCopyFailure(this.elements.root, error);
-        this.#announce(this.elements.root.dataset.copyFailedLabel);
-      });
+    void this.#shareIntent.copy(this.#selection);
   };
 
   readonly #handleViewportChange = (): void => {
-    const nextLimit = this.#readSlotLimit();
+    const nextLimit = slotLimitForViewport(
+      this.#desktopQuery.matches ? "desktop" : "compact",
+    );
     if (nextLimit === this.#slotLimit) {
       return;
     }
@@ -187,6 +170,7 @@ class CompareSession implements CompareController {
       windowValue: this.windowValue,
     });
     this.#readLocation("canonicalize");
+    this.#fieldCue.trigger();
     this.elements.root.dataset.compareEnhanced = "true";
     this.elements.root
       .querySelector("[data-compare-enhanced]")
@@ -199,6 +183,7 @@ class CompareSession implements CompareController {
 
   destroy(): void {
     this.#abortController.abort();
+    this.#fieldCue.destroy();
     resetCompareView(this.elements);
   }
 }

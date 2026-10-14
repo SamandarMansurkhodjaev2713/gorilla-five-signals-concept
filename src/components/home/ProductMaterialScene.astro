@@ -55,14 +55,6 @@ if (film === undefined || film.data.alt === null) {
   data-motion-scene="material-film"
   data-media-error-label={mediaCopy.error}
 >
-  <header class="home-material-film__copy">
-    <div class="home-material-film__copy-inner">
-      <p class="type-label">05 / {label}</p>
-      <h2>{title}</h2>
-      <p class="type-body-lg">{intro}</p>
-    </div>
-  </header>
-
   <figure class="home-material-film__figure" data-motion-media-frame>
     <div class="home-material-film__stage">
       <picture class="home-material-film__poster" data-motion-media-poster>
@@ -139,6 +131,14 @@ if (film === undefined || film.data.alt === null) {
         {mediaCopy.fallback}
       </video>
 
+      <header class="home-material-film__copy">
+        <div class="home-material-film__copy-inner">
+          <p class="type-label">05 / {label}</p>
+          <h2>{title}</h2>
+          <p class="type-body-lg">{intro}</p>
+        </div>
+      </header>
+
       <div class="home-material-film__calibration" aria-hidden="true">
         <span>AL / 01</span><span>ICE / 02</span><span>H₂O / 03</span><span
           >LIGHT / 04</span
@@ -151,16 +151,20 @@ if (film === undefined || film.data.alt === null) {
       </div>
       <span class="home-material-film__scan" aria-hidden="true"></span>
       <span class="home-material-film__aperture" aria-hidden="true"></span>
-    </div>
 
-    <div class="home-material-film__controls" data-motion-media-controls hidden>
-      <button class="control" type="button" data-motion-media-play>
-        {mediaCopy.play}
-      </button>
-      <button class="control" type="button" data-motion-media-pause>
-        {mediaCopy.pause}
-      </button>
-      <p class="type-legal" role="status" data-motion-media-status></p>
+      <div
+        class="home-material-film__controls"
+        data-motion-media-controls
+        hidden
+      >
+        <button class="control" type="button" data-motion-media-play>
+          {mediaCopy.play}
+        </button>
+        <button class="control" type="button" data-motion-media-pause>
+          {mediaCopy.pause}
+        </button>
+        <p class="type-legal" role="status" data-motion-media-status></p>
+      </div>
     </div>
   </figure>
 </section>

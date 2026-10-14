@@ -94,9 +94,10 @@ test("GIVEN reviewed security overrides WHEN generated THEN their installed lice
   const sbom = createSbomFromSources({
     lockSource: createLock([
       { integrity: INTEGRITY_A, key: "brace-expansion@5.0.9" },
-      { integrity: INTEGRITY_A, key: "fast-uri@3.1.5" },
-      { integrity: INTEGRITY_A, key: "js-yaml@4.3.1" },
+      { integrity: INTEGRITY_A, key: "fast-uri@3.1.6" },
+      { integrity: INTEGRITY_A, key: "js-yaml@4.3.2" },
       { integrity: INTEGRITY_A, key: "nanoid@3.3.18" },
+      { integrity: INTEGRITY_A, key: "svgo@4.1.0" },
     ]),
     reviewedSbom: createReviewedSbom([]),
     rootPackage: ROOT_PACKAGE,
@@ -112,6 +113,7 @@ test("GIVEN reviewed security overrides WHEN generated THEN their installed lice
       },
       { licenses: [{ license: { id: "MIT" } }], name: "js-yaml" },
       { licenses: [{ license: { id: "MIT" } }], name: "nanoid" },
+      { licenses: [{ license: { id: "MIT" } }], name: "svgo" },
     ],
   );
 });

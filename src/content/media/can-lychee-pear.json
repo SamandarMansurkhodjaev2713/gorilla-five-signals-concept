@@ -8,6 +8,10 @@
   "decorative": false,
   "derivatives": [
     {
+      "checksumSha256": "9c379710c950e12ae116a9bd1322f3667a6a4200073d2151eba673b449ba2550",
+      "path": "/media/generated/products/can-lychee-pear-160.webp"
+    },
+    {
       "checksumSha256": "e6e3ddefb968488622e0a1892352d299b8969bffa4934febb117910fc210506a",
       "path": "/media/generated/products/can-lychee-pear-320.webp"
     },

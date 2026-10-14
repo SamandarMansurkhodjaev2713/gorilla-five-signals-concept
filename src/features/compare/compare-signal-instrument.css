@@ -1,0 +1,186 @@
+.selector-panel {
+  display: grid;
+  grid-template-columns: minmax(14rem, 0.65fr) minmax(0, 1.85fr);
+  gap: var(--space-7);
+  padding: var(--space-5) 0;
+  border: 0;
+  border-block: var(--size-rule-hairline) solid var(--color-border-strong);
+}
+
+.selector-panel__heading {
+  display: grid;
+  align-content: space-between;
+  gap: var(--space-4);
+}
+
+.selector-panel legend {
+  padding: 0;
+}
+
+.selector-panel__heading p {
+  max-inline-size: 32ch;
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.slot-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.slot-grid label {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+}
+
+.slot-grid__label {
+  display: flex;
+  min-block-size: 1.5rem;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--font-size-label);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.slot-grid__label .type-data {
+  color: var(--color-signal-brand);
+}
+
+.compare-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding-block-start: var(--space-5);
+  border-block-start: var(--size-rule-hairline) solid var(--color-border-strong);
+}
+
+.compare-status {
+  min-block-size: 1.65em;
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.comparison-table {
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-color: var(--color-signal-brand) var(--color-surface-raised);
+}
+
+.comparison-table:focus-visible {
+  outline: var(--size-rule-strong) solid var(--color-focus-on-dark);
+  outline-offset: var(--space-1);
+}
+
+.comparison-table table {
+  min-inline-size: 62rem;
+  inline-size: 100%;
+  border-collapse: collapse;
+}
+
+.signal-duel[data-compare-enhanced="true"][data-selection-count="0"]
+  .comparison-table {
+  display: none;
+}
+
+.signal-duel[data-compare-enhanced="true"] .comparison-table {
+  overflow-x: clip;
+}
+
+.signal-duel[data-compare-enhanced="true"] table {
+  min-inline-size: 0;
+  table-layout: fixed;
+}
+
+.signal-duel[data-compare-enhanced="true"] :is(th, td) {
+  min-inline-size: 0;
+  padding: clamp(var(--space-2), 2.2vw, var(--space-4));
+  overflow-wrap: break-word;
+}
+
+.signal-duel[data-compare-enhanced="true"] :is(th, td):first-child {
+  inline-size: clamp(7rem, 21vw, 14rem);
+}
+
+.comparison-table caption {
+  padding-block-end: var(--space-5);
+  color: var(--color-text-secondary);
+  text-align: start;
+}
+
+.comparison-table caption :is(strong, span) {
+  display: block;
+}
+
+.comparison-table caption strong {
+  margin-block-end: var(--space-2);
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  font-size: var(--font-size-title-sm);
+  text-transform: uppercase;
+}
+
+.comparison-table :is(th, td) {
+  min-inline-size: 9rem;
+  padding: var(--space-4);
+  border-block: var(--size-rule-hairline) solid var(--color-border-subtle);
+  text-align: start;
+  vertical-align: top;
+}
+
+.comparison-table thead th {
+  font-family: var(--font-display);
+  font-size: var(--font-size-caption);
+  text-transform: uppercase;
+}
+
+.comparison-table thead th span {
+  display: block;
+  block-size: 0.3rem;
+  margin-block-end: var(--space-3);
+  background: var(--flavor-signal);
+}
+
+.comparison-table tbody th {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 1;
+  background: var(--color-surface-page);
+}
+
+.comparison-table a {
+  display: inline-flex;
+  min-inline-size: var(--size-control-min);
+  min-block-size: var(--size-control-min);
+  align-items: center;
+  color: var(--color-text-primary);
+  text-decoration-color: var(--color-signal-brand);
+  text-underline-offset: 0.3em;
+}
+
+.verification-note {
+  display: grid;
+  grid-template-columns: auto minmax(10rem, 0.6fr) minmax(0, 1.4fr);
+  align-items: start;
+  gap: var(--space-5);
+  padding: var(--space-5) 0;
+  border-block: var(--size-rule-hairline) solid var(--color-border-strong);
+}
+
+.verification-note p {
+  margin: 0;
+}
+
+.verification-note p:last-child {
+  color: var(--color-text-secondary);
+}
+
+.verification-note__mark {
+  inline-size: 0.75rem;
+  aspect-ratio: 1;
+  border: var(--size-rule-strong) solid var(--color-signal-brand);
+  border-radius: 50%;
+}

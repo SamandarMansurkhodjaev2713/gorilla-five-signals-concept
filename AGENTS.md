@@ -4,7 +4,7 @@ This is the canonical instruction file for every human or automated contributor.
 
 ## Mission
 
-Create a private, independent Gorilla Energy Uzbekistan product-experience concept with exceptional typography, motion, mobile behavior, accessibility, product clarity, and runtime performance. The result must be recognizably original and culturally grounded in contemporary Uzbekistan without falling into souvenir aesthetics or decorative folklore.
+Create an independent Gorilla Energy Uzbekistan product-experience concept with exceptional typography, motion, mobile behavior, accessibility, product clarity, and runtime performance. The public repository and GitHub Pages review build are user-authorized; unpublished research, legal records, and local diagnostics remain private. The result must be recognizably original and culturally grounded in contemporary Uzbekistan without falling into souvenir aesthetics or decorative folklore.
 
 The user confirmed on 2026-07-26 that the required brand and publishing permissions have been obtained and that their legal team owns the legal approval process. The implementation may use the Gorilla identity and approved official assets. Product facts, advertising claims, people, and warning placement still require traceable sources and the documented quality gates.
 

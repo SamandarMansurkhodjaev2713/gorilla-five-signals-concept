@@ -7,7 +7,16 @@ const SCROLL_RESTORE_TOLERANCE_PX = 12;
 
 async function navigateFromSignalMenu(page: Page, href: string): Promise<void> {
   const menu = page.locator("[data-motion-menu]");
-  await menu.locator("summary").click();
+  const summary = menu.locator("summary");
+  await expect(summary).toBeInViewport();
+  const bounds = await summary.boundingBox();
+  if (bounds === null) {
+    throw new Error("The visible navigation summary has no bounds.");
+  }
+  await page.mouse.click(
+    bounds.x + bounds.width / 2,
+    bounds.y + bounds.height / 2,
+  );
   await expect(menu).toHaveAttribute("open", "");
   await menu.locator(`a[href="${href}"]`).click();
 }

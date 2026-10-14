@@ -1,6 +1,5 @@
 .home-material-film {
   position: relative;
-  display: grid;
   overflow: clip;
   color: var(--color-text-primary);
   background: var(--color-ink-950);
@@ -9,9 +8,9 @@
 
 .home-material-film::before {
   position: absolute;
-  z-index: 7;
+  z-index: 8;
   inset: 0 0 auto;
-  block-size: 0.38rem;
+  block-size: var(--size-rule-strong);
   background: linear-gradient(
     90deg,
     var(--color-marker-original) 0 20%,
@@ -23,49 +22,35 @@
   content: "";
 }
 
-.home-material-film__copy {
-  position: relative;
-  z-index: 6;
-  padding: var(--space-8) var(--space-gutter) var(--space-6);
-  background: var(--color-ink-950);
-}
-
-.home-material-film__copy-inner {
-  display: grid;
-  gap: var(--space-4);
-}
-
-.home-material-film__copy h2 {
-  max-inline-size: 10ch;
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(3.4rem, 9vw, 6.5rem);
-  font-weight: 700;
-  letter-spacing: -0.055em;
-  line-height: 0.84;
-  text-transform: uppercase;
-  text-wrap: balance;
-}
-
-.home-material-film__copy p {
-  max-inline-size: 38ch;
-}
-
 .home-material-film__figure {
   position: relative;
-  display: grid;
   min-inline-size: 0;
-  gap: var(--space-3);
   margin: 0;
 }
 
 .home-material-film__stage {
   position: relative;
   min-inline-size: 0;
+  block-size: clamp(44rem, 100svh, 58rem);
   overflow: hidden;
-  aspect-ratio: 9 / 16;
   background: var(--color-ink-950);
   isolation: isolate;
+}
+
+.home-material-film__stage::before {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  background:
+    linear-gradient(
+      180deg,
+      rgb(5 6 5 / 58%) 0,
+      transparent 24% 58%,
+      rgb(5 6 5 / 82%) 100%
+    ),
+    linear-gradient(90deg, rgb(5 6 5 / 72%) 0, transparent 72%);
+  content: "";
+  pointer-events: none;
 }
 
 .home-material-film__poster,
@@ -74,7 +59,6 @@
   display: block;
   inline-size: 100%;
   block-size: 100%;
-  aspect-ratio: 9 / 16;
   object-fit: cover;
 }
 
@@ -110,17 +94,45 @@
   opacity: 1;
 }
 
+.home-material-film__copy {
+  position: absolute;
+  z-index: 6;
+  inset: clamp(4.5rem, 11vw, 6.5rem) var(--space-gutter) auto;
+}
+
+.home-material-film__copy-inner {
+  display: grid;
+  max-inline-size: 33rem;
+  gap: var(--space-3);
+  text-shadow: 0 0.15rem 0.65rem rgb(0 0 0 / 96%);
+}
+
+.home-material-film__copy h2 {
+  max-inline-size: 8.5ch;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 15vw, 5.8rem);
+  font-weight: 700;
+  letter-spacing: -0.06em;
+  line-height: 0.78;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.home-material-film__copy p {
+  max-inline-size: 31ch;
+}
+
 .home-material-film__calibration {
   position: absolute;
-  z-index: 4;
-  inset: var(--space-3);
+  z-index: 5;
+  inset: var(--space-3) var(--space-3) auto;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  align-items: start;
-  border: var(--size-rule-hairline) solid rgb(244 244 237 / 28%);
-  color: rgb(244 244 237 / 80%);
+  border-block: var(--size-rule-hairline) solid rgb(244 244 237 / 38%);
+  color: rgb(244 244 237 / 84%);
   font-family: var(--font-data);
-  font-size: clamp(0.58rem, 1.8vw, var(--font-size-label));
+  font-size: clamp(0.52rem, 1.65vw, var(--font-size-label));
   pointer-events: none;
 }
 
@@ -128,7 +140,7 @@
   min-inline-size: 0;
   padding: var(--space-2);
   overflow: hidden;
-  border-inline-end: var(--size-rule-hairline) solid rgb(244 244 237 / 20%);
+  border-inline-end: var(--size-rule-hairline) solid rgb(244 244 237 / 24%);
   text-overflow: clip;
   white-space: nowrap;
 }
@@ -140,7 +152,7 @@
 .home-material-film__crosshair {
   position: absolute;
   z-index: 5;
-  inset: auto var(--space-4) var(--space-5);
+  inset: auto var(--space-4) 7.5rem;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--space-2);
@@ -148,17 +160,17 @@
   font-family: var(--font-data);
   font-size: var(--font-size-label);
   pointer-events: none;
-  text-shadow: 0 0.12rem 0.5rem rgb(0 0 0 / 90%);
+  text-shadow: 0 0.12rem 0.5rem rgb(0 0 0 / 96%);
 }
 
 .home-material-film__crosshair strong {
   justify-self: start;
-  padding: 0.24em 0.4em;
-  color: var(--color-ink-950);
-  background: var(--color-brand-lime);
+  color: var(--color-paper-50);
   font-family: var(--font-display);
-  font-size: clamp(1.8rem, 6vw, 4.5rem);
-  line-height: 0.8;
+  font-size: clamp(2rem, 8vw, 4.5rem);
+  font-weight: 700;
+  line-height: 0.78;
+  text-transform: uppercase;
 }
 
 .home-material-film__crosshair span:last-child {
@@ -167,13 +179,13 @@
 
 .home-material-film__scan {
   position: absolute;
-  z-index: 3;
+  z-index: 4;
   inset: 0;
   background: linear-gradient(
     180deg,
-    transparent 0 44%,
-    rgb(145 212 1 / 18%) 49%,
-    rgb(244 244 237 / 30%) 50%,
+    transparent 0 45%,
+    rgb(145 212 1 / 16%) 49%,
+    rgb(244 244 237 / 28%) 50%,
     transparent 55% 100%
   );
   mix-blend-mode: screen;
@@ -182,19 +194,22 @@
 
 .home-material-film__aperture {
   position: absolute;
-  z-index: 3;
+  z-index: 4;
   inset: 0;
-  border: clamp(0.75rem, 2vw, 2rem) solid rgb(5 6 5 / 76%);
+  border: clamp(0.65rem, 2vw, 1.6rem) solid rgb(5 6 5 / 64%);
   pointer-events: none;
   transform-origin: center;
 }
 
 .home-material-film__controls {
-  display: flex;
-  flex-wrap: wrap;
+  position: absolute;
+  z-index: 7;
+  inset: auto var(--space-4) var(--space-4);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, auto));
   align-items: center;
-  gap: var(--space-3);
-  padding-inline: var(--space-gutter);
+  justify-content: start;
+  gap: var(--space-2);
 }
 
 .home-material-film__controls[hidden] {
@@ -206,8 +221,18 @@
   display: none;
 }
 
+.home-material-film__controls .control {
+  min-block-size: var(--size-control-min);
+  border-color: var(--color-paper-50);
+  color: var(--color-paper-50);
+  background: rgb(5 6 5 / 84%);
+  backdrop-filter: blur(0.45rem);
+}
+
 .home-material-film__controls p {
-  flex-basis: 100%;
   min-block-size: 1.5em;
-  color: var(--color-text-secondary);
+  grid-column: 1 / -1;
+  padding: var(--space-2);
+  color: var(--color-paper-50);
+  background: rgb(5 6 5 / 78%);
 }

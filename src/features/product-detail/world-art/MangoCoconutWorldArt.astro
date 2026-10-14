@@ -1,0 +1,23 @@
+---
+interface Props {
+  indexLabel: string;
+}
+
+const { indexLabel } = Astro.props;
+---
+
+<div
+  class="product-world-art product-world-art--mango-coconut"
+  data-detail-art="mango-coconut"
+  data-world-geometry="diagonal-collision"
+  aria-hidden="true"
+>
+  <div class="mango-collision" data-world-material-primary>
+    <span class="mango-collision__plane mango-collision__plane--fiber"></span>
+    <span class="mango-collision__plane mango-collision__plane--vapor"></span>
+    <span class="mango-collision__seam"></span>
+    <span class="mango-collision__step mango-collision__step--one"></span>
+    <span class="mango-collision__step mango-collision__step--two"></span>
+  </div>
+  <span class="world-art-index">{indexLabel}</span>
+</div>

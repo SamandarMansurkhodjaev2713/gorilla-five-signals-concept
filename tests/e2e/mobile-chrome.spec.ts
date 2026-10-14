@@ -60,10 +60,11 @@ test.describe("mobile chrome art direction and resilience", () => {
       await expectNoHorizontalOverflow(page);
 
       await footer.scrollIntoViewIfNeeded();
-      const footerHeight = await footer.evaluate(
-        (element) => element.getBoundingClientRect().height,
-      );
-      expect(footerHeight).toBeLessThanOrEqual(800);
+      await expect
+        .poll(() =>
+          footer.evaluate((element) => element.getBoundingClientRect().height),
+        )
+        .toBeLessThanOrEqual(800);
       await expect(
         footer.locator(".motion-console > summary strong"),
       ).toHaveText("To‘liq");

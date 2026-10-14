@@ -141,6 +141,114 @@ test.describe("motion capability and lifecycle", () => {
     ).toBe(true);
   });
 
+  test("GIVEN Full lower-home choreography WHEN Reduced is selected THEN truth, duel, film, and media ownership are fully released", async ({
+    page,
+  }) => {
+    await page.addInitScript(() =>
+      localStorage.setItem("gorilla:motion-preference:v1", "full"),
+    );
+    await expectSemanticPage(page, "uz");
+    const truth = page.locator('[data-motion-scene="product-lab"]');
+    const duel = page.locator('[data-motion-scene="product-compare"]');
+    const film = page.locator('[data-motion-scene="material-film"]');
+    for (const scene of [truth, duel, film]) {
+      await scene.scrollIntoViewIfNeeded();
+      await expect(scene).toHaveAttribute("data-motion-ready", "full");
+    }
+
+    await page.locator(".site-header > [data-motion-toggle]").click();
+    await expect(page.locator("html")).toHaveAttribute(
+      "data-motion-tier",
+      "reduced",
+    );
+    for (const scene of [truth, duel, film]) {
+      await expect(scene).toHaveAttribute("data-motion-ready", "reduced");
+    }
+    await expect
+      .poll(() =>
+        page.evaluate(() => {
+          const properties = [
+            "clip-path",
+            "opacity",
+            "rotate",
+            "scale",
+            "transform",
+            "translate",
+            "visibility",
+          ] as const;
+          const selector = [
+            ".home-truth__handoff",
+            ".home-truth__heading",
+            ".home-truth__register li",
+            ".home-truth__responsibility",
+            ".home-duel__product",
+            ".home-duel__beam",
+            ".home-duel__frequency",
+            ".home-duel__action",
+            ".home-material-film__copy-inner",
+            ".home-material-film__stage",
+            ".home-material-film__calibration span",
+            ".home-material-film__crosshair > *",
+          ].join(", ");
+          return Array.from(
+            document.querySelectorAll<HTMLElement>(selector),
+          ).flatMap((element) =>
+            properties.filter(
+              (property) => element.style.getPropertyValue(property) !== "",
+            ),
+          );
+        }),
+      )
+      .toEqual([]);
+    await expect(film.locator("video source[src]")).toHaveCount(0);
+  });
+
+  test("GIVEN rapid compare changes WHEN the final finite lock settles THEN GSAP releases CSS hover ownership", async ({
+    page,
+  }) => {
+    await page.addInitScript(() =>
+      localStorage.setItem("gorilla:motion-preference:v1", "full"),
+    );
+    await expectSemanticPage(page, "uz", "/compare/?products=original,zero");
+    const root = page.locator("[data-compare-root]");
+    const slots = root.locator("[data-compare-slot]");
+    await root.scrollIntoViewIfNeeded();
+    await expect(root).toHaveAttribute("data-motion-ready", "full");
+    for (const slug of ["extra", "mango-coconut", "lychee-pear", "zero"]) {
+      await slots.first().selectOption(slug);
+    }
+
+    await expect
+      .poll(() =>
+        root
+          .locator(
+            [
+              "[data-motion-product]",
+              ".signal-channel__rings",
+              ".signal-channel__copy > *",
+              ".selected-products__versus",
+            ].join(", "),
+          )
+          .evaluateAll((elements) =>
+            elements.flatMap((element) => {
+              if (!(element instanceof HTMLElement)) return [];
+              return [
+                "clip-path",
+                "opacity",
+                "rotate",
+                "scale",
+                "transform",
+                "translate",
+                "visibility",
+              ].filter(
+                (property) => element.style.getPropertyValue(property) !== "",
+              );
+            }),
+          ),
+      )
+      .toEqual([]);
+  });
+
   test("GIVEN repeated navigation and resize WHEN scenes remount THEN scene identity stays unique and no runtime error is emitted", async ({
     page,
   }) => {

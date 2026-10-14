@@ -93,7 +93,6 @@ const motionCopy = getMotionChromeCopy(locale);
           class="control control--primary"
           type="button"
           data-responsible-continue
-          autofocus
         >
           {copy.responsibleContinue}
         </button>
@@ -165,7 +164,7 @@ const motionCopy = getMotionChromeCopy(locale);
     background: var(--color-ink-950);
   }
 
-  :global(body:has(.responsible-entry[open])) {
+  :global(body:has(.responsible-entry:modal)) {
     overflow: hidden;
   }
 
@@ -497,6 +496,18 @@ const motionCopy = getMotionChromeCopy(locale);
     align-items: center;
     color: inherit;
     font-weight: 700;
+  }
+
+  @media (max-width: 22rem) {
+    .responsible-marker {
+      flex-wrap: wrap;
+    }
+
+    .responsible-marker > * {
+      min-inline-size: 0;
+      max-inline-size: 100%;
+      overflow-wrap: anywhere;
+    }
   }
 
   @media (max-width: 64rem) {

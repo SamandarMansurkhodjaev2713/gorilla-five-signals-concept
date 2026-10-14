@@ -1,42 +1,97 @@
 @media (max-width: 47.99rem) {
   .flavor-reactor {
-    --reactor-stage-min: 39rem;
+    --reactor-stage-min: clamp(48rem, 112svh, 56rem);
+    --reactor-can-size: min(61svh, 32rem);
   }
 
   .reactor-shell {
-    padding-block-end: var(--space-7);
+    gap: var(--space-4);
+    padding-block: var(--space-6) var(--space-5);
   }
 
   .reactor-intro {
-    row-gap: var(--space-3);
+    align-items: flex-start;
   }
 
   .reactor-intro h2 {
-    max-inline-size: 100%;
-    font-size: clamp(2.45rem, 10vw, 3.35rem);
-    letter-spacing: -0.045em;
-    line-height: 0.9;
-    overflow-wrap: normal;
-    text-wrap: balance;
+    display: grid;
+    gap: 0;
+    max-inline-size: 11ch;
+    font-size: clamp(1.15rem, 5vw, 1.55rem);
   }
 
-  .reactor-intro h2 span {
-    display: block;
-    white-space: nowrap;
+  .selector-list {
+    max-inline-size: none;
   }
 
   .signal-selector {
     place-items: center;
-    text-align: center;
+    padding-inline: var(--space-2);
   }
 
-  .signal-selector__name {
-    position: absolute;
-    inline-size: 1px;
-    block-size: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
+  .signal-selector__meter {
+    inset-inline: var(--space-2);
+  }
+
+  .step-controls {
+    gap: var(--space-2);
+    border-block-end: var(--size-rule-hairline) solid var(--reactor-border);
+  }
+
+  .reactor-step {
+    font-size: var(--font-size-caption);
+  }
+
+  .reactor-world {
+    grid-template-rows: minmax(31rem, 1fr) auto;
+  }
+
+  .reactor-copy {
+    align-content: end;
+    min-block-size: 15rem;
+    padding-block: var(--space-4) var(--space-5);
+  }
+
+  .reactor-copy h3 {
+    font-size: clamp(4.25rem, 19vw, 6rem);
+  }
+
+  .reactor-copy__description {
+    font-size: var(--font-size-body);
+  }
+
+  .reactor-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .comparison-tray {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .comparison-tray p {
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .comparison-tray .control {
+    min-inline-size: 0;
+    max-inline-size: 13rem;
+    padding-inline: var(--space-3);
+  }
+}
+
+@media (max-width: 22.5rem) {
+  .flavor-reactor {
+    --reactor-can-size: min(57svh, 28rem);
+  }
+
+  .reactor-shell {
+    padding-inline: var(--space-4);
+  }
+
+  .reactor-intro .type-label {
+    max-inline-size: 10ch;
   }
 
   .reactor-step span {
@@ -48,72 +103,115 @@
     white-space: nowrap;
   }
 
-  .reactor-copy__description {
-    font-size: var(--font-size-body);
+  .reactor-copy h3 {
+    font-size: clamp(3.7rem, 18.5vw, 4.7rem);
+  }
+
+  .reactor-actions {
+    grid-template-columns: 1fr;
+    justify-items: start;
   }
 
   .comparison-tray {
-    inset-block-end: var(--space-3);
+    grid-template-columns: 1fr;
   }
 
   .comparison-tray .control {
-    min-inline-size: 0;
-    padding-inline: var(--space-3);
+    inline-size: 100%;
+    max-inline-size: none;
   }
 }
 
 @media (min-width: 48rem) {
   .flavor-reactor {
     --reactor-stage-min: 47rem;
+    --reactor-can-size: min(61svh, 37rem);
   }
 
   .reactor-shell {
-    padding-block: var(--space-6);
-  }
-
-  .reactor-intro h2 {
-    font-size: clamp(5.5rem, 9vw, 9rem);
+    padding-block: var(--space-6) var(--space-5);
   }
 
   .reactor-console {
-    grid-template-columns: minmax(0, 4fr) minmax(20rem, 2fr);
-    align-items: stretch;
-  }
-
-  .reactor-stage {
-    border-block: var(--size-rule-hairline) solid var(--reactor-border);
+    grid-template-columns: minmax(18rem, 24rem) minmax(20rem, 28rem);
+    align-items: end;
+    justify-content: space-between;
   }
 
   .reactor-world {
-    grid-template-columns: minmax(12rem, 3fr) minmax(18rem, 4fr);
-    grid-template-rows: minmax(24rem, 1fr);
+    grid-template-columns: minmax(0, 7fr) minmax(20rem, 5fr);
+    grid-template-rows: minmax(35rem, 1fr);
   }
 
   .reactor-can-trajectory {
-    min-block-size: 34rem;
-  }
-
-  .reactor-can img {
-    block-size: min(57svh, 37rem);
+    grid-column: 1;
+    grid-row: 1;
   }
 
   .reactor-copy {
+    grid-column: 2;
+    grid-row: 1;
+    min-inline-size: 0;
     align-content: center;
-    padding: var(--space-6);
-    background: linear-gradient(90deg, transparent, var(--reactor-surface) 20%);
+    padding: var(--space-6) var(--space-5);
   }
 
   .reactor-copy h3 {
-    font-size: clamp(5.5rem, 10vw, 10rem);
+    max-inline-size: 100%;
+    font-size: clamp(3.25rem, 6.4vw, 5.75rem);
   }
 
-  .reactor-identity {
-    inset-inline-start: var(--space-4);
+  .comparison-tray {
+    justify-self: end;
+    inline-size: min(100%, 38rem);
+  }
+}
+
+@media (min-width: 48rem) and (max-height: 32rem) {
+  .flavor-reactor {
+    --reactor-stage-min: 19rem;
+    --reactor-can-size: min(74svh, 18rem);
+  }
+
+  .reactor-shell {
+    min-block-size: 100svh;
+    gap: var(--space-2);
+    padding-block: var(--space-3);
+  }
+
+  .reactor-intro {
+    padding-block-start: var(--space-2);
+  }
+
+  .reactor-world {
+    grid-template-columns: minmax(0, 6fr) minmax(18rem, 6fr);
+    grid-template-rows: minmax(19rem, 1fr);
+  }
+
+  .reactor-copy {
+    padding-block: var(--space-3);
+  }
+
+  .reactor-copy h3 {
+    font-size: clamp(3rem, 6vw, 4.25rem);
+  }
+
+  .reactor-copy__description {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .reactor-actions {
+    margin-block-start: 0;
   }
 }
 
 @media (min-width: 80rem) {
   .flavor-reactor {
+    --reactor-stage-min: 35rem;
+    --reactor-can-size: min(72svh, 44rem);
     min-block-size: 100svh;
   }
 
@@ -123,153 +221,109 @@
 
   .reactor-shell {
     position: relative;
-    inset-block-start: var(--size-header);
     min-block-size: calc(100svh - var(--size-header));
-    max-block-size: calc(100svh - var(--size-header));
-    grid-template-rows: auto minmax(0, 1fr) auto;
-    padding-block: var(--space-5);
+    grid-template-rows: auto minmax(var(--reactor-stage-min), 1fr) auto auto;
+    padding-block: var(--space-5) var(--space-4);
   }
 
   html[data-motion-tier="full"]:not([data-motion-static])
     .flavor-reactor
     .reactor-shell {
     position: sticky;
+    inset-block-start: var(--size-header);
   }
 
   .reactor-intro {
     position: absolute;
-    inset-block-start: var(--space-5);
+    inset-block-start: calc(var(--size-header) + var(--space-3));
     inset-inline: var(--space-gutter);
   }
 
+  html[data-motion-tier="full"]:not([data-motion-static])
+    .flavor-reactor
+    .reactor-intro {
+    inset-block-start: var(--space-3);
+  }
+
   .reactor-intro h2 {
-    max-inline-size: 10ch;
-    color: var(--color-text-primary);
-    font-size: clamp(3rem, 4vw, 4.5rem);
-    line-height: 0.84;
-    white-space: normal;
+    font-size: clamp(1.5rem, 2vw, 2.25rem);
   }
 
   .reactor-console {
-    z-index: var(--z-sticky);
-    grid-row: 3;
-    grid-template-columns: minmax(0, 5fr) minmax(22rem, 2fr);
-    padding-block: 0;
+    grid-template-columns: minmax(18rem, 24rem) minmax(22rem, 28rem);
+    padding-block-start: var(--space-2);
+    border-block-start: var(--size-rule-hairline) solid var(--reactor-border);
   }
 
-  .reactor-stage {
-    grid-row: 1 / 3;
-    min-block-size: 0;
+  .selector-list {
     border-block: 0;
   }
 
   .reactor-world {
     grid-template-columns: repeat(12, minmax(0, 1fr));
     grid-template-rows: 1fr;
-    padding-block: clamp(7rem, 13svh, 9rem) calc(var(--space-8) + 2.5rem);
+    padding-block: clamp(4rem, 8svh, 6rem) var(--space-4);
   }
 
   .reactor-can-trajectory {
-    grid-column: 4 / 9;
+    grid-column: 2 / 8;
     grid-row: 1;
-    min-block-size: 0;
-  }
-
-  .reactor-can img {
-    block-size: min(61svh, 40rem);
   }
 
   .reactor-copy {
     grid-column: 8 / 13;
     grid-row: 1;
     align-content: center;
-    padding: var(--space-7) var(--space-5) var(--space-7) var(--space-8);
-    background: linear-gradient(90deg, transparent, var(--reactor-surface) 26%);
+    padding: var(--space-6) 0 var(--space-6) var(--space-5);
   }
 
   .reactor-copy h3 {
-    font-size: clamp(5.5rem, 7.2vw, 8.75rem);
+    max-inline-size: 7.5ch;
+    font-size: clamp(6.5rem, 9.3vw, 10.875rem);
   }
 
-  .reactor-identity {
-    inset-block: auto 18%;
-    inset-inline: var(--space-5) auto;
-    max-inline-size: min(22rem, 24vw);
-  }
-
-  .reactor-identity__index span:first-child {
-    font-size: clamp(4rem, 7vw, 8rem);
-  }
-
-  .comparison-tray {
-    inset-inline: auto var(--space-gutter);
-    inset-block: var(--space-5) auto;
-    max-inline-size: min(28rem, 32vw);
-  }
-
-  [data-flavor="original"] .reactor-can-trajectory {
-    grid-column: 3 / 8;
-    transform: translate(-7%, 2%) rotate(-2deg);
-  }
-
-  [data-flavor="original"] .reactor-copy {
-    grid-column: 8 / 13;
+  .reactor-copy__description {
+    font-size: var(--font-size-body-lg);
   }
 
   [data-flavor="zero"] .reactor-can-trajectory {
-    grid-column: 5 / 10;
-    transform: translate(1%, -3%) scale(0.96);
+    grid-column: 7 / 12;
   }
 
   [data-flavor="zero"] .reactor-copy {
-    grid-column: 2 / 6;
-    padding-inline: var(--space-5) var(--space-8);
-    background: linear-gradient(
-      270deg,
-      transparent,
-      var(--reactor-surface) 26%
-    );
+    grid-column: 1 / 7;
+    padding-inline: 0 var(--space-7);
   }
 
   [data-flavor="extra"] .reactor-can-trajectory {
-    grid-column: 7 / 12;
-    transform: translate(8%, 1%) rotate(2deg);
+    grid-column: 7 / 13;
   }
 
   [data-flavor="extra"] .reactor-copy {
     grid-column: 1 / 7;
-    padding-inline: var(--space-5) var(--space-8);
-    background: linear-gradient(
-      270deg,
-      transparent,
-      var(--reactor-surface) 26%
-    );
+    padding-inline: 0 var(--space-7);
   }
 
   [data-flavor="mango-coconut"] .reactor-can-trajectory {
-    grid-column: 4 / 9;
-    transform: translate(-3%, -2%) rotate(-1deg);
+    grid-column: 2 / 8;
   }
 
   [data-flavor="mango-coconut"] .reactor-copy {
     grid-column: 8 / 13;
   }
 
-  [data-flavor="mango-coconut"] .reactor-copy h3 {
-    font-size: clamp(4.8rem, 6.1vw, 7.25rem);
-  }
-
   [data-flavor="lychee-pear"] .reactor-can-trajectory {
-    grid-column: 3 / 8;
-    transform: translate(6%, 2%) rotate(3deg);
-  }
-
-  [data-flavor="lychee-pear"] .reactor-copy {
     grid-column: 7 / 12;
   }
 
+  [data-flavor="lychee-pear"] .reactor-copy {
+    grid-column: 1 / 7;
+    padding-inline: 0 var(--space-7);
+  }
+
+  [data-flavor="mango-coconut"] .reactor-copy h3,
   [data-flavor="lychee-pear"] .reactor-copy h3 {
-    font-size: clamp(5rem, 6.5vw, 7.75rem);
+    font-size: clamp(5.5rem, 7.5vw, 8.75rem);
   }
 }
 

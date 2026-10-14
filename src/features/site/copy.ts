@@ -150,9 +150,9 @@ const values = {
     uz: "Mahsulot ma’lumoti",
   },
   productInfoUnavailable: {
-    en: "Numeric nutrition details are intentionally omitted until they can be verified against current packaging.",
-    ru: "Числовые данные о пищевой ценности намеренно не публикуются до сверки с актуальной упаковкой.",
-    uz: "Raqamli ozuqaviy ma’lumotlar joriy qadoq bilan tekshirilmaguncha ataylab ko‘rsatilmaydi.",
+    en: "Check the current can label for complete product information.",
+    ru: "Полную информацию о продукте смотрите на актуальной этикетке банки.",
+    uz: "Mahsulot haqidagi to‘liq ma’lumotni bankaning joriy yorlig‘idan tekshiring.",
   },
   productSystem: {
     en: "Product system",
@@ -160,9 +160,9 @@ const values = {
     uz: "Mahsulot tizimi",
   },
   productTruth: {
-    en: "Product truth",
-    ru: "Достоверность продукта",
-    uz: "Mahsulot haqiqati",
+    en: "Before you choose",
+    ru: "Перед выбором",
+    uz: "Tanlashdan oldin",
   },
   previous: {
     en: "Previous signal",

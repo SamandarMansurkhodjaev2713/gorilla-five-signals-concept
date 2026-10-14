@@ -156,8 +156,4 @@
   .hero-copydeck {
     padding: var(--space-3);
   }
-
-  .hero-copydeck > p {
-    display: none;
-  }
 }

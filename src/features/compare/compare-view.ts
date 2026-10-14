@@ -30,6 +30,12 @@ function renderProducts(
     const isSelected = slug !== undefined && selection.includes(slug);
     product.toggleAttribute("hidden", !isSelected);
     product.toggleAttribute("data-motion-selected", isSelected);
+    const position = slug === undefined ? -1 : selection.indexOf(slug);
+    if (position < 0) {
+      delete product.dataset.comparePosition;
+    } else {
+      product.dataset.comparePosition = String(position);
+    }
   }
 }
 function renderMatrix(
@@ -102,8 +108,10 @@ export function renderCompareView(
 }
 
 export function resetCompareView(elements: CompareElements): void {
+  delete elements.field.dataset.fieldCue;
   for (const product of elements.products) {
     product.removeAttribute("data-motion-selected");
+    delete product.dataset.comparePosition;
     elements.emptyState.before(product);
   }
   for (const cell of elements.matrixCells) {

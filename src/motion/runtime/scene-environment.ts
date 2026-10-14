@@ -9,6 +9,7 @@ import {
 import { createSceneRegistry, type SceneRegistry } from "../scene-registry";
 import { SCENE_SETUPS } from "../scene-setups";
 import { mountMaterialFilmController } from "../scene-setups/media";
+import { resetProductWorldPresentation } from "../scene-setups/product-world-presentation";
 
 const PROXIMITY_MARGIN = "320px 0px";
 const PRODUCT_WORLD_SCENE = "product-world";
@@ -43,6 +44,7 @@ export function createReducedEnvironment(
       root.dataset.motionScene === PRODUCT_WORLD_SCENE &&
       root.dataset.productWorld !== undefined
     ) {
+      resetProductWorldPresentation(root);
       root.dataset.worldEntranceReady = STATIC_WORLD_ENTRANCE;
     }
     if (root.dataset.motionScene === "material-film") {

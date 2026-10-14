@@ -5,7 +5,11 @@
   }
 
   .home-duel__arena:hover .home-duel__product img {
-    scale: 1.045;
+    scale: 1.04;
+  }
+
+  .home-duel__arena:hover .home-duel__action {
+    box-shadow: 1.1rem 1.1rem 0 rgb(244 244 237 / 22%);
   }
 }
 
@@ -13,8 +17,8 @@
   .home-duel__product--left img,
   .home-duel__product--right img {
     animation: home-duel-lock linear both;
-    animation-timeline: view(block);
     animation-range: entry 10% cover 46%;
+    animation-timeline: view(block);
   }
 
   .home-duel__product--right img {
@@ -23,49 +27,182 @@
 
   .home-truth__register i {
     animation: home-truth-register linear both;
-    animation-timeline: view(block);
     animation-range: entry 0% cover 40%;
+    animation-timeline: view(block);
   }
 }
 
-@media (min-width: 64rem) {
-  .home-truth-duel {
-    grid-template-columns: minmax(23rem, 4fr) minmax(0, 8fr);
-    align-items: stretch;
-  }
-
+@media (min-width: 48rem) {
   .home-truth {
-    grid-template-rows: auto auto minmax(15rem, 1fr);
-    padding-block: clamp(4rem, 8svh, 7rem);
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--space-8) var(--grid-gap);
+    padding-block: clamp(5rem, 9vw, 8rem);
   }
 
-  .home-duel__arena {
-    min-block-size: min(64rem, 100svh);
+  .home-truth__heading {
+    grid-column: 1 / 8;
+    grid-row: 1;
+  }
+
+  .home-truth__heading h2 {
+    font-size: clamp(6rem, 11vw, 10rem);
+  }
+
+  .home-truth__register {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .home-truth__register li {
+    min-block-size: 7rem;
+    grid-template-columns: 1fr;
+    align-content: space-between;
+    padding: var(--space-3);
+    border-inline-end: var(--size-rule-hairline) solid var(--truth-rule);
+    border-block-end: 0;
+  }
+
+  .home-truth__register li:last-child {
+    border-inline-end: 0;
+  }
+
+  .home-truth__register i {
+    inline-size: 100%;
+  }
+
+  .home-truth__responsibility {
+    grid-column: 8 / -1;
+    grid-row: 1;
+    align-self: end;
+  }
+}
+
+@media (min-width: 80rem) {
+  .home-truth {
+    min-block-size: min(58rem, 92svh);
+    grid-template-rows: minmax(0, 1fr) auto;
+    align-items: start;
+  }
+
+  .home-truth__heading,
+  .home-truth__responsibility {
+    align-self: center;
+  }
+
+  .home-truth__register {
+    align-self: end;
+  }
+
+  .home-duel__action {
+    inset-inline: max(var(--space-gutter), calc(50% - 35rem));
+  }
+}
+
+@media (min-width: 48rem) and (max-width: 79.99rem) {
+  .home-truth__responsibility {
+    grid-template-columns: 1fr;
+  }
+
+  .home-truth__age {
+    font-size: 5rem;
   }
 }
 
 @media (max-width: 47.99rem) {
   .home-truth {
-    gap: var(--space-5);
+    gap: var(--space-6);
+    padding-block: var(--space-8);
+    background: var(--color-surface-paper);
   }
 
   .home-truth__heading h2 {
-    max-inline-size: 10ch;
+    max-inline-size: 8.75ch;
     overflow-wrap: normal;
-    font-size: clamp(3.15rem, 13vw, 4.8rem);
+    font-size: clamp(3.65rem, 16vw, 5.5rem);
+  }
+
+  .home-truth__responsibility {
+    grid-template-columns: 1fr;
+  }
+
+  .home-truth__age {
+    font-size: 5rem;
   }
 
   .home-duel__arena {
-    min-block-size: 39rem;
+    min-block-size: 43rem;
+  }
+
+  .home-duel__product {
+    padding-block: 5rem 10rem;
   }
 
   .home-duel__product img {
-    block-size: clamp(17rem, 46svh, 24rem);
+    block-size: clamp(19rem, 52svh, 27rem);
+  }
+
+  .home-duel__product--left img {
+    transform: translateX(23%) rotate(-8deg);
+  }
+
+  .home-duel__product--right img {
+    transform: translateX(-23%) rotate(8deg);
+  }
+
+  .home-duel__frequency {
+    inset-block-start: var(--space-4);
+    font-size: 3.3rem;
   }
 
   .home-duel__action {
     inset-inline: var(--space-3);
     inset-block-end: var(--space-3);
+    padding: var(--space-4);
+  }
+
+  .home-duel__action b {
+    font-size: clamp(2.9rem, 12.6vw, 4.4rem);
+  }
+}
+
+@media (min-width: 48rem) and (max-height: 32rem) {
+  .home-truth {
+    min-block-size: 34rem;
+    padding-block: var(--space-7);
+  }
+
+  .home-truth__heading h2 {
+    font-size: clamp(4.8rem, 9vw, 6.5rem);
+  }
+
+  .home-truth__register li {
+    min-block-size: 5rem;
+  }
+
+  .home-duel__arena {
+    min-block-size: 30rem;
+  }
+
+  .home-duel__product {
+    padding-block: var(--space-5) 7rem;
+  }
+
+  .home-duel__product img {
+    block-size: 22rem;
+  }
+
+  .home-duel__frequency {
+    font-size: 3.5rem;
+  }
+
+  .home-duel__action {
+    inset-block-end: var(--space-3);
+    padding-block: var(--space-3);
+  }
+
+  .home-duel__action b {
+    font-size: 4.25rem;
   }
 }
 
@@ -78,23 +215,31 @@
   }
 }
 
+@media (forced-colors: active) {
+  .home-duel__action,
+  .home-truth__register i,
+  .home-truth__handoff {
+    forced-color-adjust: none;
+  }
+}
+
 @keyframes home-duel-lock {
   from {
-    transform: translateX(-28%) rotate(-13deg) scale(0.84);
+    transform: translateX(-24%) rotate(-16deg) scale(0.82);
   }
 
   to {
-    transform: translateX(7%) rotate(-7deg) scale(1);
+    transform: translateX(23%) rotate(-8deg) scale(1);
   }
 }
 
 @keyframes home-duel-lock-right {
   from {
-    transform: translateX(28%) rotate(13deg) scale(0.84);
+    transform: translateX(24%) rotate(16deg) scale(0.82);
   }
 
   to {
-    transform: translateX(-7%) rotate(7deg) scale(1);
+    transform: translateX(-23%) rotate(8deg) scale(1);
   }
 }
 

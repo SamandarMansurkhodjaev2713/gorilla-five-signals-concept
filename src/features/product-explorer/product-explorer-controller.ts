@@ -136,6 +136,9 @@ class ProductExplorerSession implements ProductExplorerController {
   };
 
   private select(slug: string): void {
+    if (slug === this.selectedSlug) {
+      return;
+    }
     updateProductUrl(this.windowValue, slug, "push");
     this.render(slug, true);
   }

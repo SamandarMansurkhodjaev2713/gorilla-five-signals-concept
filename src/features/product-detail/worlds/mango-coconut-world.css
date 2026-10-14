@@ -1,0 +1,92 @@
+.product-detail[data-flavor="mango-coconut"] .product-hero {
+  background: linear-gradient(
+    121deg,
+    #ff9a18 0 37%,
+    #f1c873 37.2% 38%,
+    #052143 38.2% 100%
+  );
+}
+
+.product-detail[data-flavor="mango-coconut"] .mango-collision {
+  inset: -10%;
+}
+
+.product-detail[data-flavor="mango-coconut"] .mango-collision__plane {
+  inset-block: -10%;
+  inline-size: 64%;
+}
+
+.product-detail[data-flavor="mango-coconut"] .mango-collision__plane--fiber {
+  inset-inline-start: -9%;
+  background:
+    repeating-linear-gradient(
+      17deg,
+      transparent 0 1rem,
+      rgb(104 50 0 / 18%) 1rem 1.08rem
+    ),
+    linear-gradient(120deg, rgb(255 255 255 / 12%), transparent 58%);
+  clip-path: polygon(0 0, 100% 0, 72% 100%, 0 100%);
+}
+
+.product-detail[data-flavor="mango-coconut"] .mango-collision__plane--vapor {
+  inset-inline-end: -8%;
+  background:
+    radial-gradient(circle at 45% 38%, rgb(255 255 255 / 20%), transparent 14%),
+    repeating-radial-gradient(
+      circle at 48% 48%,
+      transparent 0 2.5rem,
+      rgb(101 191 255 / 10%) 2.5rem 2.64rem
+    );
+  clip-path: polygon(30% 0, 100% 0, 100% 100%, 0 100%);
+  filter: blur(0.06rem);
+}
+
+.product-detail[data-flavor="mango-coconut"] .mango-collision__seam {
+  inset: -18% auto -18% 44%;
+  inline-size: clamp(0.22rem, 0.72cqi, 0.68rem);
+  background: #fff0bd;
+  box-shadow:
+    0 0 2rem #ffb31b,
+    0 0 5rem rgb(255 255 255 / 28%);
+  transform: rotate(13deg);
+}
+
+.product-detail[data-flavor="mango-coconut"] .mango-collision__step {
+  block-size: 14%;
+  border-block: 1px solid rgb(255 255 255 / 45%);
+  background: rgb(255 255 255 / 8%);
+  transform: skewX(-16deg);
+}
+
+.product-detail[data-flavor="mango-coconut"] .mango-collision__step--one {
+  inset: 19% 8% auto 50%;
+}
+.product-detail[data-flavor="mango-coconut"] .mango-collision__step--two {
+  inset: 67% 32% auto 18%;
+}
+
+.product-detail[data-flavor="mango-coconut"] .product-heading {
+  color: #07172c;
+}
+
+.product-detail[data-flavor="mango-coconut"] .product-heading__index,
+.product-detail[data-flavor="mango-coconut"] .product-heading__description,
+.product-detail[data-flavor="mango-coconut"] .product-heading .text-link {
+  color: #07172c;
+}
+
+@media (min-width: 64rem) {
+  .product-detail[data-flavor="mango-coconut"] .product-hero {
+    background: linear-gradient(
+      60deg,
+      #ff9a18 0 43%,
+      #f1c873 43.2% 44%,
+      #052143 44.2% 100%
+    );
+  }
+
+  .product-detail[data-flavor="mango-coconut"] .mango-collision__seam {
+    inset-inline-start: 48%;
+    transform: rotate(-30deg);
+  }
+}

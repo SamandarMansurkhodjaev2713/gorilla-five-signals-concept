@@ -70,7 +70,7 @@ test.describe("compare progressive enhancement", () => {
     expect(errors).toEqual([]);
   });
 
-  test("GIVEN a compact viewport WHEN a three-product URL opens THEN the experience is bounded to two accessible slots", async ({
+  test("GIVEN a three-product URL WHEN the viewport changes THEN all selections remain accessible and shareable", async ({
     page,
   }) => {
     await page.setViewportSize({ width: 390, height: 844 });
@@ -82,12 +82,28 @@ test.describe("compare progressive enhancement", () => {
 
     await expect(
       page.locator("[data-compare-slot-wrapper]:visible"),
-    ).toHaveCount(2);
-    await expect(page.locator(SELECT).nth(2)).toBeDisabled();
-    await expect.poll(() => selectedSlugs(page)).toEqual(["original", "zero"]);
+    ).toHaveCount(3);
+    await expect(page.locator(SELECT).nth(2)).toBeEnabled();
+    await expect
+      .poll(() => selectedSlugs(page))
+      .toEqual(["original", "zero", "extra"]);
     await expect
       .poll(() => new URL(page.url()).searchParams.get("products"))
-      .toBe("original,zero");
+      .toBe("original,zero,extra");
+
+    for (const viewport of [
+      { width: 1440, height: 900 },
+      { width: 844, height: 390 },
+      { width: 390, height: 844 },
+    ]) {
+      await page.setViewportSize(viewport);
+      await expect
+        .poll(() => selectedSlugs(page))
+        .toEqual(["original", "zero", "extra"]);
+      expect(new URL(page.url()).searchParams.get("products")).toBe(
+        "original,zero,extra",
+      );
+    }
 
     const undersized = await page
       .locator(
@@ -149,11 +165,17 @@ test.describe("compare progressive enhancement", () => {
   });
 
   test("GIVEN clipboard permission WHEN copy is activated THEN the canonical comparison URL is copied", async ({
+    baseURL,
     context,
     page,
   }) => {
+    if (baseURL === undefined) {
+      throw new Error(
+        "Clipboard journey requires a configured application baseURL.",
+      );
+    }
     await context.grantPermissions(["clipboard-read", "clipboard-write"], {
-      origin: "http://127.0.0.1:4321",
+      origin: new URL(baseURL).origin,
     });
     await openConfirmedCompare(page, "en", "/compare/?products=original,extra");
     await page.locator("[data-compare-copy]").click();
@@ -181,7 +203,7 @@ test.describe("compare no-JavaScript baseline", () => {
       page.locator("[data-compare-fallback] thead th[data-product-slug]"),
     ).toHaveCount(PRODUCT_SLUGS.length);
     await expect(page.locator("[data-compare-fallback] tbody tr")).toHaveCount(
-      6,
+      5,
     );
     await expect(
       page.locator("[data-compare-fallback] a[href*='/products/']"),

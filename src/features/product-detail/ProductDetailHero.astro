@@ -1,0 +1,135 @@
+---
+import type { SupportedLocale } from "@/config/site";
+import type { ProductView } from "@/features/site/catalog";
+import type { SiteCopy } from "@/features/site/copy";
+import { localePath } from "@/features/site/localization";
+
+import ProductPackshot from "./ProductPackshot.astro";
+import {
+  productTitleScale,
+  type ProductSlug,
+  type ProductWorldSpec,
+} from "./product-world-contract";
+import ProductWorldArt from "./world-art/ProductWorldArt.astro";
+
+interface Props {
+  copy: SiteCopy;
+  fallbackLabel: string;
+  locale: SupportedLocale;
+  product: ProductView;
+  productCount: string;
+  productNumber: string;
+  slug: ProductSlug;
+  world: ProductWorldSpec;
+}
+
+const {
+  copy,
+  fallbackLabel,
+  locale,
+  product,
+  productCount,
+  productNumber,
+  slug,
+  world,
+} = Astro.props;
+const titleParts = product.name
+  .split(/[-–—]/u)
+  .map((part) => part.trim())
+  .filter(Boolean);
+const renderedTitleParts = titleParts.length > 0 ? titleParts : [product.name];
+const titleScale = productTitleScale(product.name);
+const particles = ["alpha", "beta", "gamma", "delta", "epsilon"] as const;
+---
+
+<header
+  class="product-hero material-grain"
+  data-world-hero
+  data-world-geometry={world.geometry}
+  data-world-material={world.material}
+>
+  <div class="product-world-volume" aria-hidden="true" data-world-volume>
+    <span
+      class="product-world-plane product-world-plane--rear"
+      data-world-volume-layer></span>
+    <span
+      class="product-world-plane product-world-plane--mid"
+      data-world-volume-layer></span>
+    <span class="product-world-horizon" data-world-volume-layer></span>
+    <span class="product-world-impact" data-world-volume-layer></span>
+    {
+      particles.map((particle) => (
+        <span
+          class={`product-world-particle product-world-particle--${particle}`}
+          data-world-particle
+        />
+      ))
+    }
+  </div>
+
+  <div class="product-world-field" data-world-art>
+    <ProductWorldArt indexLabel={productNumber} {slug} />
+    <span class="product-world-vector product-world-vector--a" data-world-vector
+    ></span>
+    <span class="product-world-vector product-world-vector--b" data-world-vector
+    ></span>
+    <span class="product-world-vector product-world-vector--c" data-world-vector
+    ></span>
+  </div>
+
+  <div
+    class="product-heading"
+    data-motion-copy
+    data-world-copy
+    data-title-scale={titleScale}
+  >
+    <p class="type-label product-heading__index">
+      {productNumber} / {productCount} · Gorilla Energy
+    </p>
+    <h1 class="type-display product-heading__title" aria-label={product.name}>
+      {
+        renderedTitleParts.map((part) => (
+          <span class="product-heading__title-line" aria-hidden="true">
+            {part}
+          </span>
+        ))
+      }
+    </h1>
+    <p class="type-body-lg measure-compact product-heading__description">
+      {product.description}
+    </p>
+    <div class="actions">
+      <a
+        class="control control--primary"
+        href={`${localePath(locale, "/find")}?product=${product.slug}`}
+      >
+        <span>{product.findLabel}</span>
+        <i class="product-action-mark" aria-hidden="true"></i>
+      </a>
+      <a
+        class="text-link product-compare-link"
+        href={`${localePath(locale, "/compare")}?products=${product.slug}`}
+      >
+        {copy.navigation.compare}
+      </a>
+    </div>
+  </div>
+
+  <figure class="can-stage" data-motion-product data-world-can>
+    <span class="can-stage__aura" aria-hidden="true" data-world-can-aura></span>
+    <span class="can-stage__reflection" aria-hidden="true" data-world-reflection
+    ></span>
+    <span class="can-stage__contact" aria-hidden="true"></span>
+    <div class="can-stage__media" data-world-can-media>
+      <ProductPackshot {fallbackLabel} {product} />
+    </div>
+  </figure>
+
+  <div class="product-world-readout" aria-hidden="true">
+    <span>{productNumber}</span>
+    <span class="product-world-readout__notes">
+      {product.flavorNotes.join(" / ")}
+    </span>
+    <span class="product-world-readout__market">UZ</span>
+  </div>
+</header>

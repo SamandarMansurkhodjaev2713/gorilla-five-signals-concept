@@ -10,6 +10,7 @@ const STATUS_SELECTOR = "[data-motion-media-status]";
 
 type MediaState =
   "poster" | "loading" | "playing" | "paused" | "ended" | "error";
+type PauseOutcome = "paused" | "poster";
 
 function isCurrent(session: PlaybackSession, generation: number): boolean {
   return session.phase === "active" && session.generation === generation;
@@ -61,7 +62,6 @@ export function handlePlayFailure(
   cancelPendingPlayback(root, session);
   session.autoPlayback = "failed";
   session.generation += 1;
-  session.resumeAfterVisibility = false;
   releaseMedia(media);
   setMediaState(root, "error");
   setStatus(root, root.dataset.mediaErrorLabel ?? "Media playback failed.");
@@ -113,12 +113,13 @@ export function pauseMedia(
   root: HTMLElement,
   media: HTMLVideoElement,
   session: PlaybackSession,
+  outcome: PauseOutcome = "paused",
 ): void {
   cancelPendingPlayback(root, session);
   session.generation += 1;
-  media.pause();
+  releaseMedia(media);
   if (root.dataset.mediaState !== "error") {
-    setMediaState(root, media.hidden ? "poster" : "paused");
+    setMediaState(root, outcome);
   }
 }
 
@@ -130,7 +131,6 @@ export function completePlayback(
   cancelPendingPlayback(root, session);
   session.autoPlayback = "completed";
   session.generation += 1;
-  session.resumeAfterVisibility = false;
   releaseMedia(media);
   setMediaState(root, "ended");
   setStatus(root);

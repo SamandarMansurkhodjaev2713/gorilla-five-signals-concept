@@ -63,7 +63,10 @@ if (firstProduct === undefined || lastProduct === undefined) {
       aria-label={`${copy.navigation.compare}: ${firstProduct.name} / ${lastProduct.name}`}
       data-motion-reveal
     >
-      <span class="home-duel__frequency" aria-hidden="true">01</span>
+      <span
+        class="home-duel__frequency home-duel__frequency--left"
+        aria-hidden="true">01</span
+      >
       <div class="home-duel__product home-duel__product--left">
         <img
           src={firstProduct.imagePath}
@@ -75,7 +78,6 @@ if (firstProduct === undefined || lastProduct === undefined) {
           loading="lazy"
           decoding="async"
         />
-        <strong>{firstProduct.name}</strong>
       </div>
 
       <span class="home-duel__beam" aria-hidden="true"></span>
@@ -91,12 +93,14 @@ if (firstProduct === undefined || lastProduct === undefined) {
           loading="lazy"
           decoding="async"
         />
-        <strong>{lastProduct.name}</strong>
       </div>
-      <span class="home-duel__frequency" aria-hidden="true">05</span>
+      <span
+        class="home-duel__frequency home-duel__frequency--right"
+        aria-hidden="true">05</span
+      >
 
       <span class="home-duel__action">
-        <small>04—05 / {copy.navigation.compare}</small>
+        <small aria-hidden="true">01 ↔ 05</small>
         <b>{copy.navigation.compare}</b>
         <i aria-hidden="true">↗</i>
       </span>

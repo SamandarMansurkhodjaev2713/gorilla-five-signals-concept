@@ -1,0 +1,43 @@
+---
+import type { ProductView } from "@/features/site/catalog";
+
+interface Props {
+  fallbackLabel: string;
+  product: ProductView;
+}
+
+const { fallbackLabel, product } = Astro.props;
+---
+
+<product-packshot class="product-packshot" data-media-state="loading">
+  <picture class="product-packshot__picture">
+    <img
+      data-packshot-image
+      src={product.imagePath}
+      srcset={product.imageSrcSet}
+      sizes="(min-width: 90rem) 25rem, (min-width: 64rem) 21rem, 11rem"
+      width={product.width}
+      height={product.height}
+      alt={product.alt}
+      fetchpriority="high"
+      loading="eager"
+      decoding="async"
+    />
+  </picture>
+
+  <div
+    class="product-packshot__fallback"
+    role="img"
+    aria-label={`${product.name}. ${fallbackLabel}.`}
+  >
+    <span class="product-packshot__fallback-shell" aria-hidden="true">
+      <span>GORILLA</span>
+      <i>{product.name}</i>
+    </span>
+    <small>{fallbackLabel}</small>
+  </div>
+</product-packshot>
+
+<script>
+  import "./product-packshot-element";
+</script>

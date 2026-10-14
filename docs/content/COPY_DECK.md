@@ -8,6 +8,17 @@
 
 ## Copy rules
 
+Release copy revision — 2026-10-14: product descriptions now use the approved
+flavor directions and observable packaging colors. ZERO's brand name is
+retained, while the conditional composition claim is absent from descriptive
+copy. Unverified tasting finish/texture language and design-process prose were
+removed. Atlas instructions describe choosing, opening, and comparing products;
+internal source IDs stay in data/provenance, not comparison UI. Product detail
+directs visitors to the current can label for complete information. Runtime
+strings in `src/content/products/`, `product-atlas-copy.ts`, and `copy.ts` are
+authoritative for this revision; the original tables below record the initial
+copy deck and are not evidence of current rendered wording.
+
 1. Copy describes product choice, flavour, verified composition, interface
    state, or visual idea. It does not promise an effect.
 2. `Gorilla`, `ZERO`, and `EXTRA` retain brand casing.
