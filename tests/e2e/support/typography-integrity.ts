@@ -60,30 +60,75 @@ export async function verifyTypographyStress(subject: Locator): Promise<void> {
   expect(metrics.word).toBeCloseTo(0.16, 3);
 }
 
-async function wordPaint(subject: Locator): Promise<readonly TextPaint[]> {
-  return subject.evaluate((element) => {
-    const words = [];
-    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
-    let node = walker.nextNode();
-    while (node !== null) {
-      for (const match of (node.textContent ?? "").matchAll(/\S+/gu)) {
-        const range = document.createRange();
-        range.setStart(node, match.index);
-        range.setEnd(node, match.index + match[0].length);
-        const rectangles = [...range.getClientRects()].map((rect) => ({
+/** One synchronous layout read prevents scroll/reflow between text and owner samples. */
+async function paintSnapshot(
+  subject: Locator,
+  owner: Locator,
+  mode: "words" | "entire-label",
+): Promise<{
+  readonly words: readonly TextPaint[];
+  readonly owner: PaintRectangle;
+}> {
+  const ownerElement = await owner.elementHandle();
+  if (ownerElement === null) throw new Error("Paint owner must be attached.");
+  try {
+    return await subject.evaluate(
+      (element, options) => {
+        if (
+          !element.isConnected ||
+          !options.ownerElement.isConnected ||
+          element.ownerDocument !== options.ownerElement.ownerDocument
+        ) {
+          throw new Error("Text and owner must share the current document.");
+        }
+        const rectangle = (rect: DOMRect): PaintRectangle => ({
           left: rect.left,
           right: rect.right,
           top: rect.top,
           bottom: rect.bottom,
           width: rect.width,
           height: rect.height,
-        }));
-        words.push({ text: match[0], rectangles });
-      }
-      node = walker.nextNode();
-    }
-    return words;
-  });
+        });
+        const ownerBounds = rectangle(
+          options.ownerElement.getBoundingClientRect(),
+        );
+        if (options.mode === "entire-label") {
+          const range = document.createRange();
+          range.selectNodeContents(element);
+          return {
+            owner: ownerBounds,
+            words: [
+              {
+                text: element.textContent ?? "",
+                rectangles: [...range.getClientRects()]
+                  .filter((rect) => rect.width > 0 && rect.height > 0)
+                  .map(rectangle),
+              },
+            ],
+          };
+        }
+        const words: TextPaint[] = [];
+        const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+        let node = walker.nextNode();
+        while (node !== null) {
+          for (const match of (node.textContent ?? "").matchAll(/\S+/gu)) {
+            const range = document.createRange();
+            range.setStart(node, match.index);
+            range.setEnd(node, match.index + match[0].length);
+            words.push({
+              text: match[0],
+              rectangles: [...range.getClientRects()].map(rectangle),
+            });
+          }
+          node = walker.nextNode();
+        }
+        return { owner: ownerBounds, words };
+      },
+      { ownerElement, mode },
+    );
+  } finally {
+    await ownerElement.dispose();
+  }
 }
 
 function expectSinglePaintedLine(paint: TextPaint): void {
@@ -103,22 +148,14 @@ function expectSinglePaintedLine(paint: TextPaint): void {
   }
 }
 
-async function expectPaintInside(
-  paint: TextPaint,
-  owner: Locator,
-): Promise<void> {
-  const bounds = await owner.boundingBox();
-  expect(bounds).not.toBeNull();
-  if (bounds === null) throw new Error("Paint owner must be visible.");
+function expectPaintInside(paint: TextPaint, bounds: PaintRectangle): void {
+  expect(bounds.width).toBeGreaterThan(0);
+  expect(bounds.height).toBeGreaterThan(0);
   for (const rect of paint.rectangles) {
-    expect(rect.left).toBeGreaterThanOrEqual(bounds.x - PAINT_TOLERANCE_PX);
-    expect(rect.right).toBeLessThanOrEqual(
-      bounds.x + bounds.width + PAINT_TOLERANCE_PX,
-    );
-    expect(rect.top).toBeGreaterThanOrEqual(bounds.y - PAINT_TOLERANCE_PX);
-    expect(rect.bottom).toBeLessThanOrEqual(
-      bounds.y + bounds.height + PAINT_TOLERANCE_PX,
-    );
+    expect(rect.left).toBeGreaterThanOrEqual(bounds.left - PAINT_TOLERANCE_PX);
+    expect(rect.right).toBeLessThanOrEqual(bounds.right + PAINT_TOLERANCE_PX);
+    expect(rect.top).toBeGreaterThanOrEqual(bounds.top - PAINT_TOLERANCE_PX);
+    expect(rect.bottom).toBeLessThanOrEqual(bounds.bottom + PAINT_TOLERANCE_PX);
   }
 }
 
@@ -128,11 +165,11 @@ export async function verifyWholeWords(
   owner: Locator = subject,
 ): Promise<void> {
   await expect(subject).toBeVisible();
-  const words = await wordPaint(subject);
-  expect(words.length).toBeGreaterThan(0);
-  for (const word of words) {
+  const snapshot = await paintSnapshot(subject, owner, "words");
+  expect(snapshot.words.length).toBeGreaterThan(0);
+  for (const word of snapshot.words) {
     expectSinglePaintedLine(word);
-    await expectPaintInside(word, owner);
+    expectPaintInside(word, snapshot.owner);
   }
 }
 
@@ -141,26 +178,12 @@ export async function verifyEntireLabelLine(
   subject: Locator,
   owner: Locator,
 ): Promise<void> {
-  const paint = await subject.evaluate((element) => {
-    const range = document.createRange();
-    range.selectNodeContents(element);
-    return {
-      text: element.textContent ?? "",
-      rectangles: [...range.getClientRects()]
-        .filter((rect) => rect.width > 0 && rect.height > 0)
-        .map((rect) => ({
-          left: rect.left,
-          right: rect.right,
-          top: rect.top,
-          bottom: rect.bottom,
-          width: rect.width,
-          height: rect.height,
-        })),
-    };
-  });
+  const snapshot = await paintSnapshot(subject, owner, "entire-label");
+  const paint = snapshot.words[0];
+  if (paint === undefined) throw new Error("Label paint must be nonempty.");
   expect(paint.text.trim().length).toBeGreaterThan(0);
   expectSinglePaintedLine(paint);
-  await expectPaintInside(paint, owner);
+  expectPaintInside(paint, snapshot.owner);
 }
 
 /** Native target geometry is asserted independently of decorative label bounds. */

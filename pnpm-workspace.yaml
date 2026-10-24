@@ -11,7 +11,7 @@ nodeVersion: 24.16.0
 overrides:
   brace-expansion: 5.0.12
   devalue: 5.9.3
-  fast-uri: 3.1.8
+  fast-uri: 3.1.9
   http-cache-semantics: 4.3.0
   js-yaml: 4.3.2
   nanoid: 3.3.18
@@ -20,8 +20,11 @@ overrides:
   smol-toml: 1.9.1
   source-map-js: 1.2.2
   svgo: 4.1.0
+  undici: 8.12.2
+  vite: 8.1.6
+  "zod@>=4.0.0 <4.6.7": 4.6.7
 patchedDependencies:
-  astro@7.3.1: patches/astro@7.3.1.patch
+  astro@7.3.3: patches/astro@7.3.3.patch
 preferFrozenLockfile: true
 saveExact: true
 strictPeerDependencies: true

@@ -198,3 +198,35 @@ patch digest and SBOM whenever the framework or dependency lock changes.
    error filter, or exception payload is introduced by the patch.
 5. Maintenance/release: exact version and generated patch digest, installed-code
    tests, SBOM regeneration, explicit limitation, and upstream removal condition.
+
+## Security refresh — 2026-10-25
+
+The current pin is **Astro 7.3.3**, with
+`patches/astro@7.3.3.patch`. The earlier 7.3.1 measurements above remain dated
+historical evidence, not automatically renewed browser proof for this version.
+
+An in-memory comparison of the official npm tarballs for Astro 7.3.1 and 7.3.3
+found their pristine `dist/transitions/router.js` byte-identical: 17,985 bytes,
+SHA-256 `65f5a9dc072ed72304776eed6113af3fb4d08beb2d98fef5db0c5a338c600f8a`.
+The [7.3.3 upstream router](https://github.com/withastro/astro/blob/astro%407.3.3/packages/astro/src/transitions/router.ts)
+still does not own the native readiness rejection. Therefore the existing
+pnpm-generated patch is retained byte-for-byte, renamed for the new exact version.
+Its SHA-256 remains
+`10d9fba95e33f9149aa1b4020aee86f199da90e6a20adb8ebfe2d5ce197efc81`.
+Normal pnpm installation applies it; a frozen install verifies the new lockfile.
+Installed-helper tests and actual browser navigation must still validate the
+updated installation before promotion. No timer, promise filter or callback
+replacement is added to make the patch pass.
+
+The accompanying dependency refresh pins Vite 8.1.6, Undici 8.12.2, fast-uri
+3.1.9, Vitest/coverage 4.1.12 and Zod 4.6.7. The Zod override is explicitly
+restricted to existing 4.x consumers; it must not force the 4.x API into 3.x
+consumers. Lighthouse 13.5.0 selects an upstream Puppeteer/Chromium BiDi chain
+that already uses Zod 4, removing the old 3.25.76 chain without a major-version
+override. Lighthouse 13.4.1 measurements above are not directly reused as new
+13.5.0 performance acceptance evidence.
+
+Registry license metadata was reviewed for each newly resolved package and the
+617-component SBOM regenerated. Current candidate audit has zero reported
+advisories; default-main alerts do not close until the promoted dependency graph
+has refreshed. This audit result does not prove absence of unknown vulnerabilities.
