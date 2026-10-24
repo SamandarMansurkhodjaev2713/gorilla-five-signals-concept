@@ -90,16 +90,6 @@ const { copy, locale, products, ui } = Astro.props;
           <h2>{product.name}</h2>
           <p class="signal-channel__notes">{product.flavorNotes.join(" · ")}</p>
           <p class="signal-channel__description">{product.description}</p>
-          <dl class="signal-channel__facts">
-            <div>
-              <dt>{ui.sugar}</dt>
-              <dd>{copy.verifiedPending}</dd>
-            </div>
-            <div>
-              <dt>{ui.composition}</dt>
-              <dd>{copy.verifiedPending}</dd>
-            </div>
-          </dl>
           <a
             class="text-link"
             href={localePath(locale, `/products/${product.slug}`)}

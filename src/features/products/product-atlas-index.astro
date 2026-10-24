@@ -26,8 +26,7 @@ const { atlas, entries } = Astro.props;
     <div class="archive-scan__sticky">
       <header class="archive-scan__header">
         <div>
-          <p class="type-label">02 / {atlas.text.collectionWall}</p>
-          <p class="type-data">UZ / 01—05 / {atlas.text.scan}</p>
+          <p class="type-label">{atlas.text.collectionWall}</p>
         </div>
         <p
           class="archive-scan__status type-data"
@@ -76,7 +75,6 @@ const { atlas, entries } = Astro.props;
 
       <div class="archive-scan__readout" aria-hidden="true">
         <span>{atlas.text.scrollToScan}</span>
-        <span>41°17′58″N / 69°14′24″E</span>
       </div>
     </div>
   </aside>

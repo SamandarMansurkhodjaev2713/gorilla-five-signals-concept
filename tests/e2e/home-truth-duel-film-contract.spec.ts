@@ -1,6 +1,11 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 import {
+  closeConsumerMotionControls,
+  openConsumerMotionControls,
+} from "./support/consumer-motion-controls";
+
+import {
   collectRuntimeErrors,
   expectNoHorizontalOverflow,
   localizedPath,
@@ -436,14 +441,16 @@ test.describe("Product Truth, Signal Duel and Material Film contract", () => {
     const errors = await collectRuntimeErrors(page);
     await openHome(page, { motion: "full" });
     const film = page.locator(FILM);
-    const toggle = page.locator(".site-header > [data-motion-toggle]");
+    const toggle = page.locator(".menu-motion-console [data-motion-toggle]");
     await film.scrollIntoViewIfNeeded();
     for (let cycle = 0; cycle < REMOUNT_CYCLES; cycle += 1) {
       await expect(film).toHaveAttribute(
         "data-media-state",
         /^(?:loading|playing)$/u,
       );
+      await openConsumerMotionControls(page);
       await toggle.click();
+      await closeConsumerMotionControls(page);
       await expect(page.locator("html")).toHaveAttribute(
         "data-motion-tier",
         "reduced",
@@ -452,7 +459,9 @@ test.describe("Product Truth, Signal Duel and Material Film contract", () => {
       await expect(film).toHaveAttribute("data-media-state", "poster");
       await expectReleasedMedia(film);
       await expect(film.locator(MEDIA_CONTROLS)).toBeHidden();
+      await openConsumerMotionControls(page);
       await toggle.click();
+      await closeConsumerMotionControls(page);
       await expect(page.locator("html")).toHaveAttribute(
         "data-motion-tier",
         "full",

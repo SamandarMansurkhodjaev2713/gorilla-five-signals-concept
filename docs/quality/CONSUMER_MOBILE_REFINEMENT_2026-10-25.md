@@ -1,0 +1,75 @@
+# Consumer mobile refinement — 2026-10-25
+
+## Publication hold
+
+The latest user feedback rejects the mobile presentation and exposed developer
+information. It supersedes the earlier request for immediate promotion. PR #7
+was returned to draft. Do not merge or deploy this checkpoint as a finished
+product without the remaining visual and motion verification.
+
+## Implemented changes
+
+- Header shows the brand and navigation. The real pause/resume control remains
+  keyboard-accessible inside the menu; runtime tier badges are not customer UI.
+- Entry animation settings use a native, initially collapsed disclosure. Device
+  reduced-motion preferences remain respected without opening settings.
+- Compare omits entirely unavailable sugar/composition rows and the repeated
+  packaging-data placeholder. Approved names, descriptions, flavor notes, real
+  links, selection state and no-script table remain. No specifications invented.
+- Atlas uses product/flavor language and removes decorative GPS/live-scan
+  readouts. Hash navigation and accessible selection announcements remain.
+- Contact uses two columns at medium widths and three only at wide widths.
+  Text tracks shrink correctly; section and topic typography fit actual words.
+- FAQ headings and calls to action own complete rows instead of losing width to
+  their metadata. Tablet footer gives navigation sufficient width.
+- Product-information links have real 44px targets. Extra's small heading label
+  uses the paper foreground. Mango's description has an opaque warm surface so
+  its dark text remains readable over the blue diagonal.
+- Compact hero entry travel is 32px rather than desktop 112px, shared by CSS
+  framing and the actual animation. The mobile artstage no longer reserves the
+  desktop entrance's excessive vertical clearance.
+- Lite receives a finite 640ms can/title/band sequence. Reduced and no-script
+  defaults preserve static content; mobile is not forced into Full.
+- Product-world scroll transforms start after the real entrance timeline
+  releases ownership, through the scene's owned callback and abort guard.
+
+## Five review lenses
+
+1. Correctness: retain canonical product facts, selected products and real
+   navigation; remove unavailable data rather than fabricating it.
+2. Architecture: share compact entry constants between framing and motion;
+   retain scoped resources and deterministic cleanup, with no global kills.
+3. UX/accessibility: preserve native disclosures, pause, keyboard/focus behavior,
+   reduced motion, localized labels and practical touch targets.
+4. Performance/security: preserve current audited dependency pins and artifact
+   budgets. Logical transform ownership is not a measured FPS guarantee.
+5. Maintainability/release: adapt tests to the actual consumer journey; preserve
+   negative controls and record failures rather than regenerating every golden.
+
+## Evidence and limits
+
+The earlier all-page capture covered 47 HTML documents at 320, 768 and 1440px,
+plus three Contact contexts at 1024px. It exposed genuine Contact clipping,
+small legal links, FAQ orphan letters and Mango/Extra readability problems.
+Full-page images re-skip deferred sections after returning to the top, so black
+regions in those files do not prove that lower home scenes were visually tested.
+Real scroll-position captures are required for those scenes and footers.
+
+The first coherent consumer source quality run passed 247 strict-check files
+with zero diagnostics, 177 unit tests, 47 routes, artifact/font/provenance/SBOM
+checks and the dependency audit. A subsequent focused browser run exposed a
+long Russian Contact topic overflowing and a 44px menu control measuring
+43.99997px during its presentation. The topic scale and control geometry were
+corrected in source; they were not waived by a larger tolerance.
+
+Final browser/visual evidence must be recorded against the resulting artifact.
+High-density WebKit active-frame performance, all animation paths, physical
+devices, assistive technology and final commercial approval remain unproven.
+
+The corrected final browser batch passed all 54 Chromium contracts in 45.6s:
+16 Contact layout cases, 10 entry/transition cases, 10 FAQ cases, four consumer
+chrome/no-script cases and 14 localized typography cases. These include real
+old-layout negative controls, keyboard navigation and 200% text spacing. The
+two known failures from the preceding batch are not hidden or retried away;
+their source geometry was corrected before this new build and complete rerun.
+This result is not cross-engine or frame-performance acceptance.

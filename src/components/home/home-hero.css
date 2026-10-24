@@ -19,6 +19,8 @@
 }
 
 .hero-artstage {
+  --hero-can-entry-travel: var(--hero-can-entry-travel-desktop);
+
   display: contents;
 }
 

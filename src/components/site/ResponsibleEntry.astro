@@ -50,23 +50,26 @@ const motionCopy = getMotionChromeCopy(locale);
       </h2>
       <p class="entry-warning" id="responsible-entry-warning">{warning}</p>
 
-      <fieldset class="entry-motion">
-        <legend>{motionCopy.title}</legend>
-        <p>{motionCopy.entryDescription}</p>
-        <div>
-          {
-            MOTION_PREFERENCES.map((preference) => (
-              <button
-                type="button"
-                aria-pressed={preference === "system" ? "true" : "false"}
-                data-motion-preference={preference}
-              >
-                {motionCopy.preferenceLabels[preference]}
-              </button>
-            ))
-          }
-        </div>
-      </fieldset>
+      <details class="entry-motion-options">
+        <summary>{motionCopy.title}</summary>
+        <fieldset class="entry-motion">
+          <legend>{motionCopy.title}</legend>
+          <p>{motionCopy.entryDescription}</p>
+          <div>
+            {
+              MOTION_PREFERENCES.map((preference) => (
+                <button
+                  type="button"
+                  aria-pressed={preference === "system" ? "true" : "false"}
+                  data-motion-preference={preference}
+                >
+                  {motionCopy.preferenceLabels[preference]}
+                </button>
+              ))
+            }
+          </div>
+        </fieldset>
+      </details>
 
       <nav class="entry-language" aria-label={copy.language}>
         <span class="type-label">{copy.language}</span>
@@ -317,6 +320,20 @@ const motionCopy = getMotionChromeCopy(locale);
     margin: 0;
     border: 0;
     border-block: var(--size-rule-hairline) solid var(--color-border-subtle);
+  }
+
+  .entry-motion-options > summary {
+    display: flex;
+    min-block-size: var(--size-control-min);
+    align-items: center;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-sm);
+  }
+
+  .entry-motion-options > summary:focus-visible {
+    outline: var(--size-rule-strong) solid var(--color-focus-on-dark);
+    outline-offset: var(--space-1);
   }
 
   .entry-motion legend {

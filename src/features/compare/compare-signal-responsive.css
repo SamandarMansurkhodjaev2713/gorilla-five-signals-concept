@@ -88,15 +88,6 @@
     font-size: var(--font-size-caption);
     line-height: 1.45;
   }
-
-  .verification-note {
-    grid-template-columns: auto 1fr;
-    gap: var(--space-3);
-  }
-
-  .verification-note p:last-child {
-    grid-column: 2;
-  }
 }
 
 @media (orientation: landscape) and (max-height: 31.25rem) and (max-width: 63.99rem) {

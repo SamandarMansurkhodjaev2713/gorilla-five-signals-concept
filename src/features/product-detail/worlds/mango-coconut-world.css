@@ -75,6 +75,13 @@
   color: #07172c;
 }
 
+.product-detail[data-flavor="mango-coconut"] .product-heading__description {
+  --mango-copy-surface: #ffca55;
+
+  padding: var(--space-2) var(--space-3);
+  background: var(--mango-copy-surface);
+}
+
 @media (min-width: 64rem) {
   .product-detail[data-flavor="mango-coconut"] .product-hero {
     background: linear-gradient(

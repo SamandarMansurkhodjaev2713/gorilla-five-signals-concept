@@ -4,7 +4,11 @@ import type { ProductView } from "@/features/site/catalog";
 import { createHeroImageLayout } from "@/features/site/hero-image-layout";
 import type { SiteCopy } from "@/features/site/copy";
 import { localePath } from "@/features/site/localization";
-import { HERO_CAN_ENVELOPE, HERO_CAN_ENTRY_SPEC } from "@/motion/hero-can-spec";
+import {
+  HERO_CAN_COMPACT_ENTRY_SPEC,
+  HERO_CAN_ENVELOPE,
+  HERO_CAN_ENTRY_SPEC,
+} from "@/motion/hero-can-spec";
 
 import "./home-hero.css";
 import "./home-hero-fallbacks.css";
@@ -64,7 +68,8 @@ const primaryImageLayout = createHeroImageLayout(primaryProduct);
         "--hero-primary-projected-width-ratio":
           primaryImageLayout.projectedWidth,
         "--hero-can-scale-envelope": HERO_CAN_ENVELOPE.scale,
-        "--hero-can-entry-travel": `${String(HERO_CAN_ENVELOPE.travelY)}px`,
+        "--hero-can-entry-travel-desktop": `${String(HERO_CAN_ENVELOPE.travelY)}px`,
+        "--hero-can-entry-travel-compact": `${String(HERO_CAN_COMPACT_ENTRY_SPEC.travelY)}px`,
         "--hero-can-rest-rotation": `${String(HERO_CAN_ENTRY_SPEC.restRotationDegrees)}deg`,
       }}
     >

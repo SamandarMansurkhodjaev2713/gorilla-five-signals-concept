@@ -2,6 +2,11 @@ import process from "node:process";
 
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
+import {
+  closeConsumerMotionControls,
+  openConsumerMotionControls,
+} from "./support/consumer-motion-controls";
+
 import { expectPaintedTargets } from "./support/painted-targets";
 import {
   acceptResponsibleEntry,
@@ -243,7 +248,9 @@ for (const viewport of VIEWPORTS) {
     expect(errors).toEqual([]);
 
     if (process.env.CAPTURE_COMPARE === "true") {
-      await page.locator(".site-header > [data-motion-toggle]").click();
+      const pauseControl = await openConsumerMotionControls(page);
+      await pauseControl.click();
+      await closeConsumerMotionControls(page);
       await expect(page.locator("html")).toHaveAttribute(
         "data-motion-tier",
         "reduced",
@@ -381,9 +388,14 @@ for (const preference of ["reduced", "lite"] as const) {
       preference,
     );
     await expect(page.locator(SELECTED)).toHaveCount(2);
-    await expect(page.locator(`${SELECTED} dd`).first()).toContainText(
-      "Not yet verified",
-    );
+    await expect(
+      page.locator(`${SELECTED} .signal-channel__description`),
+    ).toHaveCount(2);
+    await expect(
+      page.locator(`${SELECTED} .signal-channel__description`).first(),
+    ).toContainText(/\S/u);
+    await expect(page.locator(`${SELECTED} dd`)).toHaveCount(0);
+    await expect(page.locator(".verification-note")).toHaveCount(0);
     await page
       .locator("[data-compare-slot]")
       .nth(1)

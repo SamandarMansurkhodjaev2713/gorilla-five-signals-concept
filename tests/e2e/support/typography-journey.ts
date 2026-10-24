@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 import type { Page } from "@playwright/test";
 
 import { getSiteCopy } from "../../../src/features/site/copy";
+import { getProductAtlasCopy } from "../../../src/features/products/product-atlas-copy";
 import type { SupportedLocale } from "../../../src/config/site";
 import { waitForCompactFonts } from "./compact-fonts";
 import {
@@ -150,15 +151,12 @@ async function verifyAtlasTypography(
   await expect(range).toHaveText(RANGE_TEXT);
   await verifyEntireLabelLine(range, metadata);
   const label = metadata.locator(".type-label");
-  expect(
-    (await label.textContent())?.replace(RANGE_TEXT, "").replace("/", "").trim()
-      .length,
-  ).toBeGreaterThan(0);
+  await expect(label).toContainText(
+    getProductAtlasCopy(scenario.locale).currentRange,
+  );
   await verifyWholeWords(label, metadata);
   const coordinates = metadata.locator(".archive-hero__coordinate");
-  await expect(coordinates).toHaveText(["41.2995° N", "69.2401° E"]);
-  for (const coordinate of await coordinates.all())
-    await verifyEntireLabelLine(coordinate, metadata);
+  await expect(coordinates).toHaveCount(0);
   if (scenario.enlarged) await verifyTypographyStress(label);
   const briefLabel = page.locator(".archive-hero__brief .type-label");
   await verifyWholeWords(briefLabel, page.locator(".archive-hero__brief"));

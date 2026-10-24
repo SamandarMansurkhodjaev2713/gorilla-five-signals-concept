@@ -1,5 +1,10 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
+import {
+  closeConsumerMotionControls,
+  openConsumerMotionControls,
+} from "./support/consumer-motion-controls";
+
 import { expectPaintedTargets } from "./support/painted-targets";
 import { expectNoHorizontalOverflow, localizedPath } from "./support/site";
 
@@ -107,7 +112,9 @@ test.describe("homepage authored chapter system", () => {
     await expect(reactor.locator("[data-motion-selected]")).toHaveCount(1);
     await expect(reactor.locator("[data-reactor-leaving]")).toHaveCount(0);
 
-    await page.locator(".site-header > [data-motion-toggle]").click();
+    const pauseControl = await openConsumerMotionControls(page);
+    await pauseControl.click();
+    await closeConsumerMotionControls(page);
     await expect(page.locator("html")).toHaveAttribute(
       "data-motion-tier",
       "reduced",

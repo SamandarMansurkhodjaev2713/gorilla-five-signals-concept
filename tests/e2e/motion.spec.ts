@@ -1,6 +1,11 @@
 import { expect, test } from "@playwright/test";
 
 import {
+  closeConsumerMotionControls,
+  openConsumerMotionControls,
+} from "./support/consumer-motion-controls";
+
+import {
   HOME_RUNTIME_SCENE_IDS,
   collectRuntimeErrors,
   expectSemanticPage,
@@ -39,10 +44,13 @@ test.describe("motion capability and lifecycle", () => {
       /^(?:full|lite)$/,
     );
 
+    await openConsumerMotionControls(page);
     const toggles = page.locator("[data-motion-toggle]");
     await expect(toggles).toHaveCount(1);
     await expect(toggles.first()).toHaveAttribute("aria-pressed", "false");
-    await toggles.first().click();
+    await toggles.first().focus();
+    await expect(toggles.first()).toBeFocused();
+    await toggles.first().press("Enter");
 
     for (const toggle of await toggles.all()) {
       await expect(toggle).toHaveAttribute("aria-pressed", "true");
@@ -51,13 +59,16 @@ test.describe("motion capability and lifecycle", () => {
       "data-motion-preference",
       "reduced",
     );
+    await closeConsumerMotionControls(page);
 
     await page.reload({ waitUntil: "domcontentloaded" });
+    await openConsumerMotionControls(page);
     await expect(toggles.first()).toHaveAttribute("aria-pressed", "true");
     await expect(page.locator("html")).toHaveAttribute(
       "data-motion-tier",
       "reduced",
     );
+    await closeConsumerMotionControls(page);
   });
 
   test("GIVEN explicit Full motion WHEN Reduced is selected during product choreography THEN CSS motion stops and GSAP presentation styles are reverted", async ({
@@ -80,7 +91,9 @@ test.describe("motion capability and lifecycle", () => {
     );
 
     await root.locator("[data-compare-slot]").first().selectOption("extra");
-    await page.locator(".site-header > [data-motion-toggle]").click();
+    const pauseControl = await openConsumerMotionControls(page);
+    await pauseControl.click();
+    await closeConsumerMotionControls(page);
 
     await expect(page.locator("html")).toHaveAttribute(
       "data-motion-tier",
@@ -156,7 +169,9 @@ test.describe("motion capability and lifecycle", () => {
       await expect(scene).toHaveAttribute("data-motion-ready", "full");
     }
 
-    await page.locator(".site-header > [data-motion-toggle]").click();
+    const pauseControl = await openConsumerMotionControls(page);
+    await pauseControl.click();
+    await closeConsumerMotionControls(page);
     await expect(page.locator("html")).toHaveAttribute(
       "data-motion-tier",
       "reduced",

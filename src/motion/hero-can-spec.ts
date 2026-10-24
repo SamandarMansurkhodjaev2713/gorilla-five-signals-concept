@@ -7,6 +7,21 @@ export const HERO_CAN_ENTRY_SPEC = Object.freeze({
   restRotationDegrees: 2,
 });
 
+export const HERO_COMPACT_MEDIA_QUERY = "(max-width: 22rem)";
+export const HERO_CAN_COMPACT_ENTRY_SPEC = Object.freeze({
+  rotationDegrees: -3,
+  scale: 0.92,
+  travelY: 32,
+  restRotationDegrees: HERO_CAN_ENTRY_SPEC.restRotationDegrees,
+});
+
+/** CSS and native matchMedia use this same breakpoint, independent of root text scaling. */
+export function resolveHeroCanEntrySpec(options: {
+  readonly compact: boolean;
+}) {
+  return options.compact ? HERO_CAN_COMPACT_ENTRY_SPEC : HERO_CAN_ENTRY_SPEC;
+}
+
 const BACK_OUT_PATTERN = /^back\.out\((\d+(?:\.\d+)?)\)$/u;
 const BACK_PEAK_CUBIC_FACTOR = 4;
 const BACK_PEAK_DENOMINATOR = 27;

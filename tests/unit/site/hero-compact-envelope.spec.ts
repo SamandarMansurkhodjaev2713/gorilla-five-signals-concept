@@ -26,9 +26,12 @@ describe("compact hero native framing contract", () => {
       readFile("src/components/home/home-hero-compact.css", "utf8"),
       readFile("src/components/home/HomeHero.astro", "utf8"),
     ]);
-    expect(hero).toContain("rotate: HERO_CAN_ENTRY_SPEC.rotationDegrees");
-    expect(hero).toContain("scale: HERO_CAN_ENTRY_SPEC.scale");
-    expect(hero).toContain("y: HERO_CAN_ENTRY_SPEC.travelY");
+    expect(hero).toContain("resolveHeroCanEntrySpec");
+    expect(hero).toContain("rotate: entry.rotationDegrees");
+    expect(hero).toContain("scale: entry.scale");
+    expect(hero).toContain("y: entry.travelY");
+    expect(markup).toContain("HERO_CAN_COMPACT_ENTRY_SPEC.travelY");
+    expect(compact).toContain("--hero-can-entry-travel-compact");
     expect(product).toContain("rotate(var(--hero-can-rest-rotation))");
     expect(markup).toContain("HERO_CAN_ENTRY_SPEC.restRotationDegrees");
     expect(compact.replace(/\s+/gu, " ")).toContain(

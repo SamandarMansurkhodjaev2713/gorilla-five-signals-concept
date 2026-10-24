@@ -8,7 +8,7 @@ import {
 import { productSlug } from "./product-atlas-elements";
 
 const HASH_PREFIX = "#signal-";
-const FALLBACK_SELECTED_LABEL = "Active frequency";
+const FALLBACK_SELECTED_LABEL = "Selected flavor";
 const ARCHIVE_INDEX_PROPERTY = "--archive-index";
 
 export function slugFromHash(windowValue: Window): string | null {

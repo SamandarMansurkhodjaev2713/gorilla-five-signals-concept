@@ -1,7 +1,11 @@
 import type { SceneSetup } from "../create-scene";
-import { HERO_CAN_ENTRY_SPEC } from "../hero-can-spec";
+import {
+  HERO_COMPACT_MEDIA_QUERY,
+  resolveHeroCanEntrySpec,
+} from "../hero-can-spec";
 import { MOTION_DURATION_SECONDS, MOTION_EASE } from "../tokens";
 import { markSceneReady } from "./shared";
+import { animateLiteSignalBoot } from "./hero-lite";
 
 const FREQUENCY_SELECTOR = "[data-motion-hero-frequency]";
 const GHOST_CAN_SELECTOR = "[data-hero-ghost]";
@@ -23,6 +27,12 @@ const SUPPORT_STAGGER_SECONDS = 0.05;
 const TITLE_ENTRY_Y_PERCENT = 104;
 
 function animateSignalBoot(context: Parameters<SceneSetup>[0]): void {
+  const entry = resolveHeroCanEntrySpec({
+    compact:
+      context.root.ownerDocument.defaultView?.matchMedia(
+        HERO_COMPACT_MEDIA_QUERY,
+      ).matches === true,
+  });
   const primaryCan = context.query<HTMLElement>(PRIMARY_CAN_SELECTOR);
   const signalPlate = context.query<HTMLElement>(SIGNAL_PLATE_SELECTOR);
   const timeline = context.gsap.timeline();
@@ -53,9 +63,9 @@ function animateSignalBoot(context: Parameters<SceneSetup>[0]): void {
       {
         duration: MOTION_DURATION_SECONDS.entranceMax,
         ease: MOTION_EASE.settle,
-        rotate: HERO_CAN_ENTRY_SPEC.rotationDegrees,
-        scale: HERO_CAN_ENTRY_SPEC.scale,
-        y: HERO_CAN_ENTRY_SPEC.travelY,
+        rotate: entry.rotationDegrees,
+        scale: entry.scale,
+        y: entry.travelY,
       },
       "-=0.58",
     );
@@ -156,7 +166,11 @@ function mountPointerDepth(context: Parameters<SceneSetup>[0]): void {
 
 export const setupHero: SceneSetup = (context): (() => void) => {
   const cleanupReady = markSceneReady(context);
-  if (context.capability.kind !== "full") return cleanupReady;
+  if (context.capability.kind === "reduced") return cleanupReady;
+  if (context.capability.kind === "lite") {
+    animateLiteSignalBoot(context);
+    return cleanupReady;
+  }
 
   animateSignalBoot(context);
   mountPointerDepth(context);

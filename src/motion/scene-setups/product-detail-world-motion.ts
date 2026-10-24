@@ -72,6 +72,7 @@ function addActivation(
 
 function animateHero(
   context: SceneSetupContext,
+  hero: HTMLElement,
   spec: ProductWorldMotionSpec,
 ): void {
   const entry = context.capability.kind === "full" ? spec.full : spec.lite;
@@ -79,7 +80,10 @@ function animateHero(
   addActivation(context, timeline, FIELD_SELECTOR, entry.field);
   addActivation(context, timeline, MEDIA_SELECTOR, entry.media);
   timeline.call((): void => {
+    if (context.signal.aborted) return;
     context.root.dataset.worldEntranceReady = "animated";
+    // The entrance releases transform ownership before real scroll progress takes over.
+    context.runOwned((): void => createHeroScrub(context, hero, spec));
   });
 }
 
@@ -130,8 +134,7 @@ export const setupProductDetailWorld: SceneSetup = (context): (() => void) => {
     playOnceWhenVisible(
       context,
       (): void => {
-        animateHero(context, spec);
-        createHeroScrub(context, hero, spec);
+        animateHero(context, hero, spec);
       },
       hero,
     );

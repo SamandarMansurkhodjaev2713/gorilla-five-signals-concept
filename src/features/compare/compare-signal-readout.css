@@ -40,33 +40,6 @@
   color: var(--color-text-secondary);
 }
 
-.signal-channel__facts {
-  display: grid;
-  margin: var(--space-3) 0 0;
-}
-
-.signal-channel__facts div {
-  display: grid;
-  grid-template-columns: minmax(7rem, 0.75fr) minmax(0, 1.25fr);
-  gap: var(--space-3);
-  padding-block: var(--space-3);
-  border-block-start: var(--size-rule-hairline) solid var(--color-border-subtle);
-}
-
-.signal-channel__facts :is(dt, dd) {
-  margin: 0;
-}
-
-.signal-channel__facts dt {
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-caption);
-}
-
-.signal-channel__facts dd {
-  text-align: end;
-  overflow-wrap: anywhere;
-}
-
 .signal-channel__copy .text-link {
   justify-self: start;
   margin-block-start: var(--space-2);

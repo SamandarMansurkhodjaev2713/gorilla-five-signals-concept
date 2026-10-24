@@ -95,15 +95,6 @@
     font-size: clamp(3rem, 15vw, 5rem);
   }
 
-  .signal-channel__facts div {
-    grid-template-columns: 1fr;
-    gap: var(--space-1);
-  }
-
-  .signal-channel__facts dd {
-    text-align: start;
-  }
-
   .selected-products__versus {
     inset-block-start: calc(var(--space-5) + 27svh);
     inline-size: 4.5rem;

@@ -1,5 +1,10 @@
 import { expect, test, type Page } from "@playwright/test";
 
+import {
+  closeConsumerMotionControls,
+  openConsumerMotionControls,
+} from "./support/consumer-motion-controls";
+
 const CONFIRMATION_KEY = "gorilla-responsible-entry-confirmed";
 const PREFERENCE_KEY = "gorilla:motion-preference:v1";
 const DESKTOP_VIEWPORT = { height: 900, width: 1_440 } as const;
@@ -38,18 +43,18 @@ async function openSignalMenu(page: Page): Promise<void> {
 test.describe("global route and navigation motion", () => {
   test.skip(({ browserName }) => browserName !== "chromium");
 
-  test("GIVEN Full and a fine pointer WHEN header intent moves and releases THEN feedback is bounded, finite, and header-owned", async ({
+  test("GIVEN Full and a fine pointer WHEN consumer menu intent moves and releases THEN feedback is bounded, finite, and navigation-owned", async ({
     page,
   }) => {
     await openWithPreference(page, "full");
     const header = page.locator(".site-header");
-    const target = header.locator(":scope > [data-motion-toggle]");
+    const target = await openConsumerMotionControls(page);
     await expect(header).toHaveAttribute("data-pointer-feedback", "magnetic");
 
     const bounds = await target.boundingBox();
     expect(bounds).not.toBeNull();
     if (bounds === null) {
-      return;
+      throw new Error("A visible consumer menu control must have bounds.");
     }
     await page.mouse.move(bounds.x + bounds.width - 1, bounds.y + 2);
     await expect(target).toHaveAttribute("data-motion-magnetic", "tracking");
@@ -78,6 +83,7 @@ test.describe("global route and navigation motion", () => {
       "data-route-phase",
       "arriving",
     );
+    await openConsumerMotionControls(page);
     await target.click();
     await expect(page.locator("html")).toHaveAttribute(
       "data-motion-tier",
@@ -91,6 +97,7 @@ test.describe("global route and navigation motion", () => {
     await expect
       .poll(() => target.evaluate((element) => element.style.transform))
       .toBe("");
+    await closeConsumerMotionControls(page);
   });
 
   test("GIVEN rapid menu intents WHEN the final intent is open THEN native focus wins and all presentation residue clears", async ({

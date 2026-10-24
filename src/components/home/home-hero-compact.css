@@ -10,6 +10,7 @@
   }
 
   .hero-artstage {
+    --hero-can-entry-travel: var(--hero-can-entry-travel-compact);
     --hero-compact-can-width-cap: calc(
       (100vw - (2 * var(--space-gutter))) /
         (

@@ -54,7 +54,7 @@ if (warning === undefined) {
             <span class="marker" aria-hidden="true" />
             <p class="type-label">{String(index + 1).padStart(2, "0")} / 05</p>
             <h2 class="type-title-sm">{product.name}</h2>
-            <p>{copy.verifiedPending}</p>
+            <p>{product.description}</p>
             <a href={localePath(locale, `/products/${product.slug}`)}>
               {copy.openDetails}
             </a>
@@ -93,6 +93,9 @@ if (warning === undefined) {
   }
 
   .product-list a {
+    display: inline-flex;
+    min-block-size: var(--size-control-min);
+    align-items: center;
     color: inherit;
     font-weight: 700;
     text-decoration-color: var(--flavor-signal);

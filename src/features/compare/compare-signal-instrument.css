@@ -160,27 +160,3 @@
   text-decoration-color: var(--color-signal-brand);
   text-underline-offset: 0.3em;
 }
-
-.verification-note {
-  display: grid;
-  grid-template-columns: auto minmax(10rem, 0.6fr) minmax(0, 1.4fr);
-  align-items: start;
-  gap: var(--space-5);
-  padding: var(--space-5) 0;
-  border-block: var(--size-rule-hairline) solid var(--color-border-strong);
-}
-
-.verification-note p {
-  margin: 0;
-}
-
-.verification-note p:last-child {
-  color: var(--color-text-secondary);
-}
-
-.verification-note__mark {
-  inline-size: 0.75rem;
-  aspect-ratio: 1;
-  border: var(--size-rule-strong) solid var(--color-signal-brand);
-  border-radius: 50%;
-}
