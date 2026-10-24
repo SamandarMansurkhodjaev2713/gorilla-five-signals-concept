@@ -108,3 +108,14 @@ localized values remain complete; existing content/API ownership is unchanged;
 no controls, warnings or semantic structure are removed; no assets/dependencies
 or animation cost are added; and the outstanding frame-performance gate above
 remains explicit rather than being implied complete by this copy correction.
+
+A fresh at-scroll Chromium visual check covered the film and contact sections
+at UZ 320px, RU 390px and UZ 768px with loaded fonts and Reduced motion. All six
+viewports had zero document overflow and zero page errors. Direct screenshot
+inspection found the film heading's local 0.78 leading too compressed; it now
+uses the existing 0.9 display-leading token. The three film screenshots were
+recaptured and inspected after rebuilding. This preserves type size, content,
+scene ownership and the established scale while separating adjacent lines.
+No performance, physical-device or all-screen acceptance is inferred from
+these six observations. The build, content-integrity check and point-edit
+formatting check passed; the preceding complete browser suite is historical.
