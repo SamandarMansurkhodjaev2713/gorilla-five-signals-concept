@@ -113,6 +113,12 @@ const isCurrent = (href: string) =>
           <span aria-hidden="true">×</span>
           {copy.closeMenu}
         </button>
+        <noscript>
+          <a class="menu-close" href={currentPathname} data-native-menu-close>
+            <span aria-hidden="true">×</span>
+            {copy.closeMenu}
+          </a>
+        </noscript>
       </header>
 
       <nav aria-label={copy.menu}>
@@ -187,6 +193,10 @@ const isCurrent = (href: string) =>
       }
 
       .site-header :is(.site-header__signal, .motion-toggle) {
+        display: none;
+      }
+
+      .site-header .mobile-navigation button.menu-close {
         display: none;
       }
 

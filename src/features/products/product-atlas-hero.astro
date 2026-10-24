@@ -10,8 +10,13 @@ const { atlas } = Astro.props;
 
 <header class="archive-hero material-grain">
   <div class="archive-hero__meta" data-motion-reveal>
-    <p class="type-label">01—05 / {atlas.text.currentRange}</p>
-    <p class="type-data">41.2995° N / 69.2401° E</p>
+    <p class="type-label">
+      <span class="archive-hero__range">01—05</span> / {atlas.text.currentRange}
+    </p>
+    <p class="type-data">
+      <span class="archive-hero__coordinate">41.2995° N</span> /
+      <span class="archive-hero__coordinate">69.2401° E</span>
+    </p>
   </div>
 
   <div class="archive-hero__title" data-motion-reveal>

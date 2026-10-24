@@ -158,11 +158,28 @@
   .home-duel__action {
     inset-inline: var(--space-3);
     inset-block-end: var(--space-3);
-    padding: var(--space-4);
+    padding: var(--space-4) var(--space-2);
   }
 
   .home-duel__action b {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    overflow-wrap: normal;
+    line-height: var(--line-height-title);
     font-size: clamp(2.9rem, 12.6vw, 4.4rem);
+  }
+
+  .home-duel__action small,
+  .home-duel__action i {
+    grid-row: 1;
+  }
+
+  .home-duel__action small {
+    grid-column: 1;
+  }
+
+  .home-duel__action i {
+    grid-column: 2;
   }
 }
 

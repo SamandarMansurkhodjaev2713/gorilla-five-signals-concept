@@ -1,3 +1,10 @@
+@media (max-width: 22rem) {
+  .archive-hero {
+    --archive-compact-gutter: 5vw;
+    padding-inline: min(var(--space-gutter), var(--archive-compact-gutter));
+  }
+}
+
 @media (max-width: 47.99rem) {
   .archive-index {
     --archive-anchor-offset: calc(
@@ -12,12 +19,21 @@
   }
 
   .archive-hero__meta {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
     align-items: flex-start;
   }
 
   .archive-hero__meta .type-data {
-    max-inline-size: 12ch;
-    text-align: end;
+    max-inline-size: 100%;
+    text-align: start;
+  }
+
+  .archive-hero__range,
+  .archive-hero__coordinate {
+    display: inline-block;
+    max-inline-size: 100%;
+    white-space: nowrap;
   }
 
   .archive-hero__mark {
@@ -38,7 +54,7 @@
   }
 
   .archive-hero__brief {
-    padding-inline-start: var(--space-4);
+    padding-inline: var(--space-2);
   }
 
   .archive-spectrum {

@@ -222,6 +222,7 @@
   font-weight: 800;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
+  text-decoration: none;
 }
 
 .site-header .mobile-navigation .menu-close span {
@@ -352,12 +353,21 @@
 
 @media (max-width: 22rem) {
   .site-header {
+    --header-brand-inline-limit: 44px;
+    --header-control-gap-limit: 8px;
+
     display: flex;
     flex-wrap: wrap;
+    gap: min(var(--space-2), var(--header-control-gap-limit));
   }
 
   .site-header .brand {
     flex-shrink: 0;
+    inline-size: min(var(--size-control-min), var(--header-brand-inline-limit));
+  }
+
+  .site-header .brand img {
+    inline-size: min(2.6rem, var(--header-brand-inline-limit));
   }
 
   .site-header .motion-toggle {
