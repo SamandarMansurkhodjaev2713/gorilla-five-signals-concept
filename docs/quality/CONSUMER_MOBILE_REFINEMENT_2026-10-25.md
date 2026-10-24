@@ -119,3 +119,52 @@ scene ownership and the established scale while separating adjacent lines.
 No performance, physical-device or all-screen acceptance is inferred from
 these six observations. The build, content-integrity check and point-edit
 formatting check passed; the preceding complete browser suite is historical.
+
+## Enlarged film text and intrinsic layout
+
+A separate 320px / 200% text probe exposed clipping that the normal-scale
+screenshots did not show: the implicit grid's minimum-content track expanded
+beyond the clipped stage, and the long film headline could not reflow legibly.
+The first attempted emergency word wrapping contained the paint but produced
+single-letter remnants; it was rejected and never shipped. Native hyphenation
+alone also failed the whole-word contract under added text spacing.
+
+The final correction gives the copy grid an explicit `minmax(0, 1fr)` track and
+zero minimum inline size. Named container queries respond to the section's
+width in inherited `em`, allowing enlarged text to return to the full-width
+composition without shrinking the body or introducing a text-fitting script.
+The compact display minimum is 2.25rem. The film now uses a short localized
+range heading (All five / Все пять / Besh ta’m), referring only to the five
+approved products. Main hero copy, product facts, warnings and media are intact.
+
+Five review lenses:
+
+1. Correctness: all three locale fields exist; no product count or claim is
+   invented. The original headline/intrinsic-grid negative control must fail.
+2. Architecture: CSS owns reflow; no resize/text-fitting observers, dependency,
+   runtime branch or new lifecycle resource is introduced.
+3. UX/accessibility: preserve whole words within the actual stage clip at
+   320/390/768px, including 200% root text, 1.5 line height, .12em letter spacing,
+   .16em word spacing and paragraph spacing. Do not accept a zero page-overflow
+   reading alone because the section can hide clipped text.
+4. Performance/security: no media, network requests, additional motion or
+   dependency changes are added. Compositor performance remains a separate
+   confirmed failure, not acceptance of these text checks.
+5. Maintainability/release: dedicated `film-layout.spec.ts` reuses the atomic
+   glyph/owner helper. All 57 cases passed in 1.1 minutes across Chromium,
+   Firefox and WebKit, including three negative controls. Earlier six-failure
+   and three-failure Chromium batches are superseded by source corrections,
+   not relaxed tolerances. General source checks are recorded separately.
+
+The coherent `quality:pages` run passed 248 checked files with zero diagnostics,
+177 unit tests, 47 routes, all artifact/font/provenance/SBOM/license checks and
+a zero-advisory audit. Final decoded-poster screenshots, rather than only the
+pre-decode background, exposed bright can photography behind some enlarged
+body text. The paragraph now uses the existing dark scrim token with one-unit
+padding; text remains a normal grid item. The build and point-edit formatting
+check passed again after this CSS-only addition. This is a contrast backplate,
+not an additional media effect or a claim that every photograph pixel was
+automatically contrast-audited.
+
+After the final paragraph backplate, the entire 57-case three-engine film
+matrix passed again in 1.0 minute; it was not accepted from a partial rerun.

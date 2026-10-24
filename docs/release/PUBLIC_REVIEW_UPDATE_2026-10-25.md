@@ -7,6 +7,13 @@ This is an incremental public review update, not completion of the broader
 Awwwards-level implementation goal. Do not describe it as commissioned by Gorilla
 or as a fully approved commercial release.
 
+Publication status: the current refinement remains on the draft rebuild PR;
+`main` is still `784a2b1`. The `959c71e` source workflow passes 247 checked files,
+177 unit tests, 47 routes, artifact checks and a zero-advisory dependency audit.
+The deployed branch has not received those fixes. Full visual/browser gates,
+measured WebKit motion and final release evidence remain open. Do not mistake
+a pushed working branch or green source workflow for a deployed review update.
+
 Included changes preserve native product-image proportions, complete mobile
 hero copy, keyboard navigation, reduced-motion and no-script paths. The
 typography refinement keeps Oswald/Onest and canonical localized copy, gives

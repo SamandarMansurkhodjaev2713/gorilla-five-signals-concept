@@ -1,22 +1,29 @@
 # Release checklist
 
-- Audited browser candidate: `beebfd7`; lifecycle/capture refinements are the next candidate on `codex/awwwards-rebuild`, not the live Pages artifact
-- Updated: 2026-10-14
+- Last immutable source baseline: `959c71e` on `codex/awwwards-rebuild`; subsequent film reflow evidence is recorded in the consumer refinement report, not the live Pages artifact
+- Historical broad browser candidate: `beebfd7`; its results do not certify the current candidate
+- Updated: 2026-10-25
 - Rule: `[x]` means current evidence exists; `[ ]` is unfinished; `[!]` requires external/manual evidence
 
-The live Pages build is a historical public review baseline. Source quality for
-the refinement passes (115 unit tests and a 47-page build), but the completed
-786-case browser attempt has seven failures. The expanded inventory has 861 cases.
-Neither
-old runtime results nor regenerated snapshots certify the final candidate. The
-last Lighthouse artifact predates this candidate and must be measured again.
+The live Pages build remains `784a2b1`, a historical public review baseline.
+That baseline's protected source workflow passed 247 checked files,
+177 unit tests, 47 generated pages, artifact checks and a zero-advisory audit:
+[immutable source run](https://github.com/SamandarMansurkhodjaev2713/gorilla-five-signals-concept/actions/runs/40126799015).
+Focused browser batches and six at-scroll mobile film/contact observations are
+recorded in `docs/quality/CONSUMER_MOBILE_REFINEMENT_2026-10-25.md`; none is a
+complete current browser matrix. The historical 786-case attempt had seven
+failures, and its subsequent inventory of 861 cases is not a current census.
+Neither old runtime results nor regenerated snapshots certify this candidate.
+The last Lighthouse artifact predates it and must be measured again. WebKit
+DPR2 active motion remains a confirmed failure, not just a missing check.
 
 ## Artifact and provenance
 
 - [x] Frozen install is defined by the pnpm lockfile and pinned engines.
 - [x] Format, lint, strict typecheck, unit coverage, build, verifiers, and audit pass.
-      Current source evidence: 219 checked files with zero errors/warnings/hints,
-      111 unit tests, 47 pages, and no known dependency vulnerabilities.
+      Immutable baseline source evidence: 247 checked files with zero diagnostics,
+      177 unit tests, 47 pages, and no known dependency vulnerabilities in the
+      immutable source run above. This does not describe deployed `main`.
 - [x] Every shipped brand, media, and font checksum matches the provenance ledger.
 - [x] Published facts resolve to approved Uzbekistan source records; contradictory or unverified facts are omitted.
 - [x] Local research, source masters, secrets, private legal files, source maps, and generated reports are excluded.
@@ -56,8 +63,12 @@ last Lighthouse artifact predates this candidate and must be measured again.
 - [x] Initial JavaScript, critical transfer, font, and responsive-image budgets pass.
 - [x] Media source structure is responsive and poster/fallback-first.
 - [ ] Current runtime verifies no below-fold film request before proximity/intent, finite playback, pause/visibility ownership, and usable media-failure fallback.
-- [x] Dependency audit reports no known vulnerabilities on 2026-10-14;
-      SBOM/license verification passes.
+- [x] Candidate dependency audit reports no known vulnerabilities on 2026-10-25;
+      SBOM/license verification passes in the immutable source run above.
+- [ ] Deployed default branch receives the reviewed dependency fixes. GitHub
+      still reported 25 default-branch advisories during the latest push
+      (two critical, 13 high, 10 moderate); candidate audit success does not
+      close those deployed-branch alerts.
 - [x] Document-level CSP and referrer fallbacks are present; response-level
       policies are explicitly recorded as GitHub Pages platform responsibilities.
 - [ ] Final deployed CSP/fallback behavior, redirects, 404, media/cache policies, and platform limitations are measured on Pages separately from the worker contract.

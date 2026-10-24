@@ -22,6 +22,7 @@ export type SiteCopy = Readonly<{
   legal: string;
   market: string;
   materialIntro: string;
+  materialTitle: string;
   menu: string;
   materialStudy: string;
   navigation: Readonly<Record<NavigationKey, string>>;
@@ -132,6 +133,11 @@ const values = {
     en: "Gorilla film",
     ru: "Ролик о Gorilla",
     uz: "Gorilla haqida rolik",
+  },
+  materialTitle: {
+    en: "All five",
+    ru: "Все пять",
+    uz: "Besh ta’m",
   },
   materialIntro: {
     en: "One frame. Five characters. Aluminium, water, light, and the city after dark.",
@@ -253,6 +259,7 @@ export function getSiteCopy(locale: SupportedLocale): SiteCopy {
     legal: values.legal[locale],
     market: values.market[locale],
     materialIntro: values.materialIntro[locale],
+    materialTitle: values.materialTitle[locale],
     menu: values.menu[locale],
     materialStudy: values.materialStudy[locale],
     navigation: {

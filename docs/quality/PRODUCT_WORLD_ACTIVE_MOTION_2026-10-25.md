@@ -121,3 +121,38 @@ The overlay contributes to the bottleneck but does not explain it completely.
 Removing it is not an adequate production fix: approximately 1.5 FPS and a
 12.5-second entrance still fail the experience target. No rendering change,
 raster asset or relaxed performance gate was adopted from this experiment.
+
+## Observer, combined-layer and engine-floor controls
+
+Further bounded controls used the same Original HTML digest above. A passive
+observer read phase attributes and RAF timestamps only, with transform reads
+limited to preparation/final evidence. Source still failed: 12 phase frames,
+median 1352ms, maximum 1415ms, no completion after 15022ms. Disabling only the
+native can drop-shadow and reflection blur/blend also failed: 13 frames,
+median 1289ms, maximum 1382ms, no completion after 15039ms. Per-frame style
+readback therefore is not a sufficient explanation of the source failure.
+
+Static field fidelity was regenerated against the current artifact before
+combining cached FIELD with no outer grain. The source without outer grain
+completed in 12284ms (18 active frames, median 677ms, maximum 709ms); the cached
+candidate completed in 755ms but supplied only three active frames, with two
+gaps up to 246ms. Completion time improved substantially; smoothness did not.
+An independent repeat of that cached control completed in 759ms (three frames,
+235ms gaps). Removing its can/reflection effects gave 745ms (four frames,
+median 172ms, maximum 185ms); hiding only its static volume instead gave 679ms
+(three frames, 215ms gaps). These sparse samples cannot establish stable FPS.
+All cases preserved DPR2, real entry clocks and decoded media, and reported no
+runtime errors. Private diagnostic browsers were closed after every batch.
+
+A minimal WebKit DPR2 control using the installed GSAP and the native can image
+completed a natural 0.58-second two-part transform sequence in 541ms with 25
+RAF samples, median 22ms and maximum 28ms. A simple box control took 559ms with
+26 samples, median 21ms and maximum 29ms. These fixture controls do not prove
+application performance or the 16ms target; they do show that the local engine
+is not intrinsically limited to the source scene's roughly one FPS.
+
+Decision: preserve authored motion and investigate a cheaper compositing
+architecture. Do not ship a 2.58MB raster, remove scene layers speculatively,
+claim that an observer-only change fixes the site, or substitute a short
+entrance-completion time for active-frame acceptance. The remaining bottleneck
+belongs to the rendered scene beyond any one isolated effect tested so far.

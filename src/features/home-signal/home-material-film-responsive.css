@@ -1,4 +1,4 @@
-@media (min-width: 48rem) {
+@container gorilla-film (min-width: 48em) {
   .home-material-film__stage {
     block-size: clamp(46rem, 100svh, 64rem);
   }
@@ -43,7 +43,7 @@
   }
 }
 
-@media (min-width: 80rem) {
+@container gorilla-film (min-width: 80em) {
   .home-material-film__copy {
     inline-size: min(47rem, 48vw);
   }
@@ -66,7 +66,7 @@
   }
 }
 
-@media (max-width: 47.99rem) {
+@container gorilla-film (max-width: 47.99em) {
   .home-material-film__copy .type-body-lg {
     font-size: var(--font-size-body);
   }
@@ -76,13 +76,13 @@
   }
 }
 
-@media (max-width: 22.5rem) {
+@container gorilla-film (max-width: 22.5em) {
   .home-material-film__copy {
     inset-inline: var(--space-3);
   }
 
   .home-material-film__copy h2 {
-    font-size: clamp(3.2rem, 14vw, 4.5rem);
+    font-size: clamp(2.25rem, 14vw, 4.5rem);
   }
 
   .home-material-film__crosshair {

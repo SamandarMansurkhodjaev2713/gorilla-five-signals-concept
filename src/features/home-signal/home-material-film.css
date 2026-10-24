@@ -1,4 +1,5 @@
 .home-material-film {
+  container: gorilla-film / inline-size;
   position: relative;
   overflow: clip;
   color: var(--color-text-primary);
@@ -102,12 +103,15 @@
 
 .home-material-film__copy-inner {
   display: grid;
+  min-inline-size: 0;
   max-inline-size: 33rem;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-3);
   text-shadow: 0 0.15rem 0.65rem rgb(0 0 0 / 96%);
 }
 
 .home-material-film__copy h2 {
+  min-inline-size: 0;
   max-inline-size: 8.5ch;
   margin: 0;
   font-family: var(--font-display);
@@ -121,6 +125,11 @@
 
 .home-material-film__copy p {
   max-inline-size: 31ch;
+}
+
+.home-material-film__copy .type-body-lg {
+  padding: var(--space-1);
+  background: var(--color-scrim);
 }
 
 .home-material-film__calibration {
