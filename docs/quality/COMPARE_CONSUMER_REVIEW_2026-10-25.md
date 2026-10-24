@@ -84,3 +84,47 @@ not Full-motion, all-locale/all-route, keyboard or physical-device acceptance.
 The intermediate failed localization artifacts are preserved privately under
 `.tmp/compare-copy-verification-before-count-fix/`. No trace, local account path
 or private screenshot is added to the public repository.
+
+## Landscape and product-name follow-up
+
+The short-landscape rule incorrectly applied seven mobile rows through 1023px,
+although the three-column cards above 768px use only the first three rows.
+Initial native viewport images and measurements show a 288px unused track at
+769/844px (290px including the border). The new regression rejected both cases
+before the CSS fix; one- and two-product cases passed unchanged. The seven-row
+layout now applies only to the two-column composition at or below 768px.
+
+Intermediate three-column headings also used viewport-sized lettering that
+split Uzbek `Shakarsiz` into a word and a final letter. Their existing viewport
+type ramp is now capped by a named local-column fit token. The copy block owns
+the inline-size container; phone heading rules and the larger desktop ramp
+remain authoritative at their own breakpoints.
+
+Five review lenses:
+
+1. Correctness: test one/two/three selections at five landscape widths, including
+   the exact 768/769 boundary. Require real copy, headings, actions and the
+   arena's end to coincide with content, rather than just checking no overflow.
+2. Architecture: CSS-only presentation changes with no new runtime owner or
+   dependency. Browser text measurement and assertions are separate small
+   helpers; existing loaded-face verification is reused.
+3. UX/accessibility: preserve product count, artwork, native scrolling, actions
+   and legal content. Lexical words must paint intact and inside the heading;
+   natural compound-name breaks at dashes are permitted. UZ/RU/EN and 100/200%
+   root-font stress are covered, which is not a physical-device or browser-zoom
+   certification. Fluid heading sizes do not imply an exact doubling of every
+   computed font size when the root size doubles.
+4. Performance/security: no new media, network work, handlers or animation.
+   Existing Full-motion/WebKit/Lighthouse failures remain open; static layout
+   passes do not prove motion performance.
+5. Maintainability/release: retain initial failures privately and compare one
+   final four-viewport batch. Document the mismatch between layout breakpoints
+   instead of adding unexplained empty-space overrides.
+
+Final source quality passes: strict diagnostics on 254 files, 177 unit tests,
+47-page build, formatting/lint, artifact/provenance/SBOM checks and dependency
+audit. The strengthened browser batch passes **93/93** cases: 45 landscape,
+36 localized product-name/root-font and 12 portrait artwork cases across three
+engines. Four final UZ viewport images at 768/769/844/1024 all have only the 2px
+border after content; `Shakarsiz` is whole. No full-suite or release approval is
+inferred. Initial/final images remain private in `.tmp/compare-landscape-*`.

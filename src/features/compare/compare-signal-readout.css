@@ -4,6 +4,7 @@
   display: grid;
   min-inline-size: 0;
   grid-row: 3;
+  container-type: inline-size;
   align-content: start;
   gap: var(--space-3);
   padding: var(--space-5);

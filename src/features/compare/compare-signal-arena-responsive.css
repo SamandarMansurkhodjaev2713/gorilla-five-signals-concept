@@ -119,7 +119,7 @@
   }
 
   .signal-duel[data-selection-count="3"] .selected-products {
-    grid-template-rows: auto 19rem auto auto auto 18rem auto;
+    grid-template-rows: auto 19rem auto;
   }
 
   .signal-channel__visual img,
@@ -129,5 +129,11 @@
 
   .selected-products__versus {
     inset-block-start: 11rem;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 31.25rem) and (max-width: 48rem) {
+  .signal-duel[data-selection-count="3"] .selected-products {
+    grid-template-rows: auto 19rem auto auto auto 18rem auto;
   }
 }

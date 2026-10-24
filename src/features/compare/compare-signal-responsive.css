@@ -12,7 +12,9 @@
   }
 
   .signal-channel__copy h2 {
-    font-size: clamp(2.5rem, 6.5vw, 5rem);
+    --compare-title-column-fit: 20cqi;
+
+    font-size: min(clamp(2.5rem, 6.5vw, 5rem), var(--compare-title-column-fit));
   }
 }
 
