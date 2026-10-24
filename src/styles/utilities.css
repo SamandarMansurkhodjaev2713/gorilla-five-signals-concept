@@ -73,17 +73,8 @@
   inset: 0;
   pointer-events: none;
   content: "";
-  background-image:
-    repeating-radial-gradient(
-      circle at 17% 31%,
-      #fff 0 0.03rem,
-      transparent 0.04rem 0.18rem
-    ),
-    repeating-radial-gradient(
-      circle at 73% 67%,
-      #000 0 0.025rem,
-      transparent 0.035rem 0.16rem
-    );
+  background-image: url("/media/generated/material/material-grain-v1.png");
+  background-repeat: repeat;
   opacity: var(--material-grain-opacity);
 }
 

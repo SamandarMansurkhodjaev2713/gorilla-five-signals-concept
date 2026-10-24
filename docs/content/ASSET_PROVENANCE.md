@@ -47,6 +47,26 @@ as the initial mobile payload.
 
 ## Release-registered generated derivatives
 
+### Original material grain
+
+`public/media/generated/material/material-grain-v1.png` is project-owned
+procedural artwork, not an official Gorilla asset or a transformed reference.
+Its source is `scripts/material-grain-core.mjs`; `pnpm media:grain` encodes it
+with pinned Sharp 0.35.5 / libvips 8.18.7, PNG compression 9, no palette. The
+fixed xorshift32 seed is 1853386090; 96×96 RGBA output uses neutral black/white
+and transparent samples, with opaque-byte threshold 85/256. No clock, external
+image, AI service or runtime canvas is involved. The intentional uint32 wrap
+is decorative PRNG arithmetic, not an overflow bug or cryptographic primitive.
+
+RGBA SHA-256: `45531b0ecda4b64b54eea7a584e3746935d06a95726a97125c7b19654f0d65df`.
+PNG SHA-256: `c32ae0815b89870f194330c274b5e8cd455c1f73152ad5d259016a4c2414ae52`.
+The encoded file is 2605 bytes; decoded RGBA is 36864 bytes. Two independent
+encodes matched. `src/content/media/material-grain.json` records decorative
+status, null alt text, rights, UZ territory and checksum. Source verification
+is complete; visual/performance review controls adoption of the texture, not
+ownership of this original work. The generator's optional binary metadata
+field is omitted because an output digest is not a native-binary digest.
+
 The deployable tree does not serve the source PNGs above as product media.
 `scripts/build-brand-assets.mjs` emits WebP masters plus 160/320/480 product
 variants and 96/192 logo variants under `public/media/generated/`. Eight

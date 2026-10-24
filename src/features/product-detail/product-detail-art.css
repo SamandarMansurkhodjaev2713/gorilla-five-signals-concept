@@ -25,20 +25,6 @@
   letter-spacing: -0.1em;
 }
 
-.product-detail .product-world-art::after {
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle at 19% 31%, currentColor 0 0.6px, transparent 0.8px),
-    radial-gradient(circle at 71% 63%, currentColor 0 0.45px, transparent 0.7px);
-  background-size:
-    7px 7px,
-    11px 11px;
-  content: "";
-  opacity: 0.08;
-  mix-blend-mode: soft-light;
-}
-
 .product-detail .product-world-particle--alpha {
   inset: 14% auto auto 17%;
   transform: rotate(13deg);

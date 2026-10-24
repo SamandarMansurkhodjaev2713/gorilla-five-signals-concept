@@ -76,6 +76,11 @@ Lighthouse retains each run's trace and DevTools log under the ignored
 use them to investigate failures rather than repeatedly rerunning an unexplained
 slow result. A passing source workflow is not a runtime performance approval.
 
+`pnpm media:grain` rebuilds the original deterministic 96×96 material-grain
+texture. The provenance gate checks its fixed RGBA policy, repeatability,
+neutral transparency, encoded size and registered checksum. Brand packshots
+and films are not changed by this generator.
+
 ## Architecture
 
 ```text

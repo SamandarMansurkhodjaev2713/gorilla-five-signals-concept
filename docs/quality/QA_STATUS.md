@@ -1,5 +1,13 @@
 # QA status
 
+## Latest material refinement — 2026-10-25
+
+The current branch replaces concentric grain gradients with a small original
+texture and removes the redundant moving dot blend. Thirty focused browser cases
+pass across three engines. See [scope, five review lenses and performance
+limitations](MATERIAL_GRAIN_REVIEW_2026-10-25.md). WebKit motion and stable
+Lighthouse acceptance remain open; this is not a production release approval.
+
 ## Revalidation — 2026-10-14
 
 ### Shared font-loading and small-screen investigation
