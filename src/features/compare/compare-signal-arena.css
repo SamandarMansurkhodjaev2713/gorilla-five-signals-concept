@@ -104,23 +104,6 @@
   block-size: 120%;
 }
 
-.selected-products__frequency {
-  position: absolute;
-  inset-block-end: var(--space-3);
-  inset-inline-start: 50%;
-  display: inline-flex;
-  min-block-size: 1.75rem;
-  align-items: center;
-  padding-inline: var(--space-2);
-  border: var(--size-rule-hairline) solid rgb(145 212 1 / 38%);
-  color: var(--color-signal-brand);
-  background: rgb(11 13 9 / 88%);
-  font-size: 0.625rem;
-  line-height: 1;
-  transform: translateX(-50%);
-  white-space: nowrap;
-}
-
 .selected-products__versus {
   position: absolute;
   z-index: 7;

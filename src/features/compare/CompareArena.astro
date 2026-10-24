@@ -29,11 +29,10 @@ const { copy, locale, products, ui } = Astro.props;
     <span class="selected-products__orbit selected-products__orbit--inner"
     ></span>
     <span class="selected-products__crosshair"></span>
-    <span class="selected-products__frequency type-data">{ui.signalLock}</span>
   </div>
   <p class="selected-products__versus" aria-hidden="true">{ui.versus}</p>
   {
-    products.map((product, index) => (
+    products.map((product) => (
       <article
         class="signal-channel"
         data-compare-product
@@ -42,10 +41,7 @@ const { copy, locale, products, ui } = Astro.props;
         hidden
       >
         <div class="signal-channel__topline">
-          <span class="type-data">CH/{String(index + 1).padStart(2, "0")}</span>
-          <span class="type-label">
-            {ui.channel} / {product.name}
-          </span>
+          <span class="type-label">{product.name}</span>
         </div>
 
         <div class="signal-channel__visual" data-motion-product>
@@ -71,18 +67,6 @@ const { copy, locale, products, ui } = Astro.props;
             loading="lazy"
             decoding="async"
           />
-          <div class="signal-channel__meter" aria-hidden="true">
-            <>
-              <>
-                <span>00</span>
-                <i />
-                <i />
-                <i />
-                <i />
-                <span>05</span>
-              </>
-            </>
-          </div>
         </div>
 
         <div class="signal-channel__copy">
@@ -101,7 +85,6 @@ const { copy, locale, products, ui } = Astro.props;
     ))
   }
   <p class="empty-state" data-compare-empty>
-    <span class="type-data" aria-hidden="true">NO SIGNAL / 000</span>
     <span>{ui.empty}</span>
   </p>
 </div>

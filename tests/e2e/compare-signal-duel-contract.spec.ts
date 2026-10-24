@@ -29,8 +29,6 @@ const VIEWPORTS = [
 const ROOT = "[data-compare-root]";
 const SELECTED = "[data-compare-product]:not([hidden])";
 const SELECTED_PRODUCTS = ["original", "zero", "extra"] as const;
-const COMPACT_ARENA_QUERY = "(max-width: 48rem)";
-const CHANNEL_TEXT_COUNTS = { topline: 2, meter: 2 } as const;
 const PRESENTATION_PROPERTIES = [
   "clip-path",
   "opacity",
@@ -90,10 +88,8 @@ async function expectArenaTextNotToOverlap(page: Page): Promise<void> {
     .locator(".selected-products")
     .evaluate((arena) => {
       const selectors = [
-        ".selected-products__frequency",
         ".selected-products__versus",
         "[data-compare-product]:not([hidden]) .signal-channel__topline > span",
-        "[data-compare-product]:not([hidden]) .signal-channel__meter > span",
       ];
       const elements = selectors.flatMap((selector) =>
         Array.from(arena.querySelectorAll<HTMLElement>(selector)),
@@ -133,41 +129,37 @@ async function expectArenaTextNotToOverlap(page: Page): Promise<void> {
 async function expectArenaTextFamilies(page: Page): Promise<void> {
   const selected = page.locator(SELECTED);
   await expect(selected).toHaveCount(SELECTED_PRODUCTS.length);
-  await expectPaintedTargets(page.locator(".selected-products__frequency"), 1);
-  const compact = await page.evaluate(
-    (query) => matchMedia(query).matches,
-    COMPACT_ARENA_QUERY,
-  );
+  await expect(
+    page.locator(".selected-products__frequency, .signal-channel__meter"),
+  ).toHaveCount(0);
+  await expect(page.locator(".empty-state .type-data")).toHaveCount(0);
   for (const card of await selected.all()) {
-    await expectChannelText(card, compact ? "compact" : "expanded");
+    await expectChannelText(card);
   }
   await expect(page.locator(".selected-products__versus")).toHaveCount(1);
   await expect(page.locator(".selected-products__versus")).toBeHidden();
 }
 
-async function expectChannelText(
-  card: Locator,
-  presentation: "compact" | "expanded",
-): Promise<void> {
-  await expect(card.locator(".signal-channel__topline > span")).toHaveCount(
-    CHANNEL_TEXT_COUNTS.topline,
-  );
-  const meter = card.locator(".signal-channel__meter > span");
-  await expect(meter).toHaveCount(CHANNEL_TEXT_COUNTS.meter);
-  await expectPaintedTargets(
-    card.locator(".signal-channel__topline .type-data"),
-    1,
+async function expectChannelText(card: Locator): Promise<void> {
+  await expect(card.locator(".signal-channel__topline > span")).toHaveCount(1);
+  await expect(card.locator(".signal-channel__topline .type-data")).toHaveCount(
+    0,
   );
   const name = card.locator(".signal-channel__topline .type-label");
   await expect(name).toHaveCount(1);
-  await expect(card.locator(".signal-channel__meter")).toHaveCount(1);
-  if (presentation === "compact") {
-    await expect(name).toBeHidden();
-    await expect(card.locator(".signal-channel__meter")).toBeHidden();
-    return;
+  const productName = await card
+    .locator(".signal-channel__copy h2")
+    .textContent();
+  if (productName === null || productName.trim() === "") {
+    throw new Error("Selected products must expose their canonical name.");
   }
+  await expect(name).toHaveText(productName);
   await expectPaintedTargets(name, 1);
-  await expectPaintedTargets(meter, CHANNEL_TEXT_COUNTS.meter);
+  await expectPaintedTargets(card.locator(".signal-channel__notes"), 1);
+  await expectPaintedTargets(card.locator(".signal-channel__description"), 1);
+  await expect(card.locator(".signal-channel__copy .type-label")).toHaveText(
+    "Ta’m",
+  );
 }
 
 for (const viewport of VIEWPORTS) {
@@ -423,10 +415,29 @@ for (const preference of ["reduced", "lite"] as const) {
 test("GIVEN all supported locales WHEN Signal Duel opens THEN the authored lead and native selector stay localized", async ({
   page,
 }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
   const expectations = {
-    en: ["Five signals.", "Choose products to compare"],
-    ru: ["Пять сигналов.", "Выберите продукты для сравнения"],
-    uz: ["Beshta signal.", "Taqqoslash uchun mahsulotlarni tanlang"],
+    en: {
+      title: "Five signals.",
+      legend: "Choose products to compare",
+      slots: ["Product 1", "Product 2", "Product 3"],
+      rows: ["Flavor", "Description", "Open product"],
+      empty: "Choose products to compare.",
+    },
+    ru: {
+      title: "Пять сигналов.",
+      legend: "Выберите продукты для сравнения",
+      slots: ["Продукт 1", "Продукт 2", "Продукт 3"],
+      rows: ["Вкус", "Описание", "Открыть продукт"],
+      empty: "Выберите продукты для сравнения.",
+    },
+    uz: {
+      title: "Beshta signal.",
+      legend: "Taqqoslash uchun mahsulotlarni tanlang",
+      slots: ["Mahsulot 1", "Mahsulot 2", "Mahsulot 3"],
+      rows: ["Ta’m", "Tavsif", "Mahsulotni ochish"],
+      empty: "Taqqoslash uchun mahsulotlarni tanlang.",
+    },
   } as const;
 
   for (const locale of ["en", "ru", "uz"] as const) {
@@ -435,28 +446,62 @@ test("GIVEN all supported locales WHEN Signal Duel opens THEN the authored lead 
     );
     await expectSemanticPage(page, locale, "/compare/");
     await expect(page.locator(".duel-lead h1")).toContainText(
-      expectations[locale][0],
+      expectations[locale].title,
     );
     await expect(page.locator(".selector-panel legend")).toHaveText(
-      expectations[locale][1],
+      expectations[locale].legend,
     );
+    await expect(page.locator(".slot-grid__label")).toHaveText(
+      expectations[locale].slots,
+    );
+    await expect(page.locator(".slot-grid__label .type-data")).toHaveCount(0);
+    await expectPaintedTargets(
+      page.locator(".slot-grid label:not([hidden]) .slot-grid__label"),
+      expectations[locale].slots.length,
+    );
+    await expect(page.locator("[data-compare-fallback] tbody th")).toHaveText(
+      expectations[locale].rows,
+    );
+    await expect(page.locator("[data-compare-empty]")).toHaveText(
+      expectations[locale].empty,
+    );
+    await expect(
+      page.locator(".selected-products__frequency, .signal-channel__meter"),
+    ).toHaveCount(0);
   }
 });
 
 test.describe("no-JavaScript Signal Duel", () => {
   test.use({ javaScriptEnabled: false });
 
-  test("GIVEN scripts are unavailable WHEN compare renders THEN the complete evidence table remains readable", async ({
+  test("GIVEN scripts are unavailable WHEN compare renders THEN all five products retain real descriptions and native product actions", async ({
     page,
   }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await expectSemanticPage(page, "uz", "/compare/");
     await expect(page.locator("[data-compare-enhanced]")).toBeHidden();
     await expect(page.locator("[data-compare-fallback] tbody tr")).toHaveCount(
-      5,
+      3,
     );
-    await expect(page.locator("[data-compare-fallback]")).toContainText(
-      "Hali tasdiqlanmagan",
-    );
+    const table = page.locator("[data-compare-fallback]");
+    await expect(table.locator("thead [data-product-slug]")).toHaveCount(5);
+    await expect(table.locator("tbody th")).toHaveText([
+      "Ta’m",
+      "Tavsif",
+      "Mahsulotni ochish",
+    ]);
+    await expect(table.locator("tbody td")).toHaveCount(15);
+    for (const cell of await table.locator("tbody td").all()) {
+      await expect(cell).toContainText(/\S/u);
+    }
+    const links = table.locator("tbody a[href]");
+    await expect(links).toHaveCount(5);
+    for (const link of await links.all()) {
+      await expect(link).toHaveAttribute(
+        "href",
+        /^\/uz\/products\/[a-z-]+\/$/u,
+      );
+    }
+    await expect(table).not.toContainText("Hali tasdiqlanmagan");
   });
 });

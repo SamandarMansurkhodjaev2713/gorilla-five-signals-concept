@@ -1,8 +1,8 @@
 {
   "answer": {
-    "en": "The exact value depends on the product and current packaging. A verified value appears on the product page; the purchased can label takes priority.",
-    "ru": "Точное значение зависит от продукта и актуальной упаковки. Подтверждённое значение указано на странице продукта; приоритет имеет этикетка приобретённой банки.",
-    "uz": "Aniq qiymat mahsulot va joriy qadoqqa bog‘liq. Tasdiqlangan qiymat mahsulot sahifasida ko‘rsatiladi; xarid qilingan bankadagi yorliq ustuvor hisoblanadi."
+    "en": "Check the caffeine content on the label of the can you are buying.",
+    "ru": "Содержание кофеина смотрите на этикетке приобретаемой банки.",
+    "uz": "Kofein miqdorini xarid qilayotgan bankangiz yorlig‘idan tekshiring."
   },
   "faqId": "caffeine",
   "question": {

@@ -57,7 +57,3 @@
   color: var(--color-text-secondary);
   text-align: center;
 }
-
-.empty-state .type-data {
-  color: var(--color-signal-brand);
-}

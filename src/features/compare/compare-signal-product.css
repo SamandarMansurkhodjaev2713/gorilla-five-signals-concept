@@ -4,7 +4,7 @@
   display: flex;
   min-inline-size: 0;
   grid-row: 1;
-  justify-content: space-between;
+  justify-content: start;
   gap: var(--space-3);
   padding: var(--space-4);
   border-block-end: var(--size-rule-hairline) solid rgb(255 255 255 / 15%);
@@ -22,16 +22,10 @@
   grid-column: 3;
 }
 
-.signal-channel__topline .type-data {
-  color: var(--channel-accent);
-}
-
 .signal-channel__topline .type-label {
   min-inline-size: 0;
-  overflow: hidden;
   color: var(--color-text-secondary);
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: normal;
 }
 
 .signal-channel__visual {
@@ -121,35 +115,6 @@
 
 .signal-duel[data-selection-count="3"] .signal-channel__visual img {
   block-size: min(52svh, 30rem);
-}
-
-.signal-channel__meter {
-  position: absolute;
-  inset-block: var(--space-5);
-  inset-inline-end: var(--space-3);
-  display: grid;
-  inline-size: 1.25rem;
-  grid-template-rows: auto repeat(4, 1fr) auto;
-  align-items: center;
-  justify-items: center;
-  color: var(--color-text-secondary);
-  font-family: var(--font-data);
-  font-size: 0.625rem;
-}
-
-.signal-channel__meter i {
-  inline-size: 100%;
-  block-size: var(--size-rule-hairline);
-  background: var(--color-border-strong);
-}
-
-.signal-duel[data-selection-count="2"]
-  .signal-channel[data-compare-position="0"]
-  .signal-channel__meter,
-.signal-duel[data-selection-count="3"]
-  .signal-channel[data-compare-position="0"]
-  .signal-channel__meter {
-  inset-inline: var(--space-3) auto;
 }
 
 .signal-duel[data-selection-count="3"]

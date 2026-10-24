@@ -1,7 +1,10 @@
 @media (max-width: 48rem) {
   .selected-products,
   .signal-duel[data-selection-count="1"] .selected-products,
-  .signal-duel[data-selection-count="2"] .selected-products {
+  .signal-duel[data-selection-count="2"] .selected-products,
+  .signal-duel[data-selection-count="3"] .selected-products {
+    --compare-mobile-can-fit: 96vw;
+
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: auto minmax(22rem, 54svh) auto auto;
   }
@@ -40,14 +43,9 @@
     padding: var(--space-3);
   }
 
-  .signal-channel__topline .type-label,
-  .signal-channel__meter {
-    display: none;
-  }
-
   .signal-channel__visual img,
   .signal-duel[data-selection-count="3"] .signal-channel__visual img {
-    block-size: min(46svh, 22rem);
+    block-size: min(46svh, 22rem, var(--compare-mobile-can-fit));
   }
 
   .signal-duel[data-selection-count="2"]

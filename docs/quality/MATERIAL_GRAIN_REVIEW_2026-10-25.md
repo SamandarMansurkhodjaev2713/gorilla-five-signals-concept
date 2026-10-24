@@ -102,6 +102,17 @@ Post-adoption checks: 47-page build, lint, strict diagnostics on 250 files and
 177-unit/audit evidence belongs to `4e84881`; no domain logic or dependencies
 changed in the lighting follow-up. A fresh full release suite has not run.
 
+## Rejected follow-up: bake opacity into the texture
+
+On the `6d4e988` artifact, a private candidate encodes the grain's existing
+opacity into generated RGBA alpha and uses pseudo-element opacity 1. The paired
+static image differs by at most one RGB level out of 255, with identical
+geometry. Nevertheless WebKit active-frame median is 501ms for source and 507ms
+for candidate; native completion is 2,056ms versus 2,215ms. Samples are sparse
+(four/three RAF, five/four distinct poses). Actual request bodies and opacity
+are verified before natural GSAP activation. The candidate is rejected: no
+production texture, token or CSS change is made from this null experiment.
+
 Private reports/screenshots remain ignored under `.tmp/`; Lighthouse traces are
 retained under `test-results/`. No personal paths or trace payloads are published.
 The focused browser pass does not replace the complete release matrix, physical

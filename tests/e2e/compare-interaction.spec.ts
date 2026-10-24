@@ -193,7 +193,7 @@ test.describe("compare progressive enhancement", () => {
 test.describe("compare no-JavaScript baseline", () => {
   test.use({ javaScriptEnabled: false });
 
-  test("GIVEN JavaScript is unavailable WHEN compare opens THEN every product and verified editorial dimension remains readable", async ({
+  test("GIVEN JavaScript is unavailable WHEN compare opens THEN every product retains flavor description and a native detail link", async ({
     page,
   }) => {
     await expectSemanticPage(page, "uz", "/compare/");
@@ -203,13 +203,21 @@ test.describe("compare no-JavaScript baseline", () => {
       page.locator("[data-compare-fallback] thead th[data-product-slug]"),
     ).toHaveCount(PRODUCT_SLUGS.length);
     await expect(page.locator("[data-compare-fallback] tbody tr")).toHaveCount(
-      5,
+      3,
     );
     await expect(
       page.locator("[data-compare-fallback] a[href*='/products/']"),
     ).toHaveCount(PRODUCT_SLUGS.length);
-    await expect(page.locator("[data-compare-fallback]")).toContainText(
-      "Hali tasdiqlanmagan",
-    );
+    const table = page.locator("[data-compare-fallback]");
+    await expect(table.locator("tbody th")).toHaveText([
+      "Ta’m",
+      "Tavsif",
+      "Mahsulotni ochish",
+    ]);
+    await expect(table.locator("tbody td")).toHaveCount(15);
+    for (const cell of await table.locator("tbody td").all()) {
+      await expect(cell).toContainText(/\S/u);
+    }
+    await expect(table).not.toContainText("Hali tasdiqlanmagan");
   });
 });

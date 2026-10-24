@@ -1,5 +1,13 @@
 # QA status
 
+## Latest comparison cleanup — 2026-10-25
+
+Removed pseudo-technical comparison labels and corrected FAQ guidance. Fixed the
+three-selection mobile grid specificity defect and narrow-screen can fit.
+Twelve new cross-engine artwork checks pass at 320/360/390/768. Source quality,
+177 units, 47-page build and audit pass; full browser/release acceptance does
+not. See [current scope and remaining failures](COMPARE_CONSUMER_REVIEW_2026-10-25.md).
+
 ## Latest material refinement — 2026-10-25
 
 The current branch replaces concentric grain gradients with a small original

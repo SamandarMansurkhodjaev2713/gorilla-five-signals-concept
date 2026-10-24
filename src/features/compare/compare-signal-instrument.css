@@ -46,10 +46,6 @@
   text-transform: uppercase;
 }
 
-.slot-grid__label .type-data {
-  color: var(--color-signal-brand);
-}
-
 .compare-actions {
   display: flex;
   flex-wrap: wrap;
