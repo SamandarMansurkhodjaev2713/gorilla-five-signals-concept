@@ -71,6 +71,11 @@ The host-specific film generator is verified only on its registered Windows
 toolchain; the Linux Pages builder verifies immutable shipped-media checksums
 and never regenerates release media.
 
+Lighthouse retains each run's trace and DevTools log under the ignored
+`test-results/lighthouse/` directory. Keep these local diagnostics private;
+use them to investigate failures rather than repeatedly rerunning an unexplained
+slow result. A passing source workflow is not a runtime performance approval.
+
 ## Architecture
 
 ```text

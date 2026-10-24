@@ -156,3 +156,27 @@ architecture. Do not ship a 2.58MB raster, remove scene layers speculatively,
 claim that an observer-only change fixes the site, or substitute a short
 entrance-completion time for active-frame acceptance. The remaining bottleneck
 belongs to the rendered scene beyond any one isolated effect tested so far.
+
+## Additional bounded controls: no production motion change
+
+- Replacing only both procedural grain backgrounds with a decoded seeded
+  96px tile retained their original opacity and local soft-light blend. Source
+  median active gap was 1394ms; tile candidate 948ms. Neither entry completed
+  within 15 seconds. A cheaper texture alone is not a smooth-scene fix.
+- After cached FIELD plus no outer grain, an exact two-scalar compiled-option
+  diagnostic verified both real targets changed from `force3D:true`/3D inline
+  transforms to `false`/2D transforms. Control completed in 762ms with three
+  active samples and 244ms gaps; candidate in 839ms with three samples and
+  302ms gaps. The 2D hypothesis was rejected, not adopted as a source change.
+- Article-group controls preserved the full source artwork and changed only
+  article content visibility, then visibility plus isolation. Source median
+  gap was 1636ms, visible-only 1444ms, visible-plus-auto-isolation 1404ms; none
+  completed within the finite observation window. The article stayed 1440px
+  wide and 2337px tall. Hero isolation, clipping, backgrounds, z-order, grain
+  and field nodes were asserted unchanged. This does not prove GPU allocation
+  size or identify an offscreen-group cause. One earlier preparation timed out
+  before intervention; a later unchanged preparation passed, without a proven
+  explanation. That timeout is not silently converted into an animation pass.
+
+All diagnostic browsers were closed. No textures, compiled-module overrides,
+visibility changes or reduced DPR were shipped from these controls.

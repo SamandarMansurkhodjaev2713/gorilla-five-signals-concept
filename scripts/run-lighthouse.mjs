@@ -115,6 +115,7 @@ async function runAudit(route, runIndex, debugPort) {
     `${ORIGIN}${route}`,
     "--quiet",
     "--output=json",
+    "--save-assets",
     `--output-path=${outputPath}`,
     "--only-categories=performance,accessibility,best-practices,seo",
     "--chrome-flags=--headless=new --no-sandbox --disable-dev-shm-usage",
