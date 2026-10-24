@@ -102,3 +102,22 @@ Reject full-field flattening as a sufficient solution. Do not ship the 2.58MB
 PNG, build a five-world raster pipeline, or relax the frame/transfer budgets on
 the basis of this experiment. Global overlay/compositing interactions remain a
 separate causal question, not a demonstrated fix.
+
+## Current-build global overlay control
+
+On commit `690b8a2`, Original HTML SHA-256
+`8ffc77e934fdbd31cf191fc20da1faa61173ab9884365c3bc358d99e2f056449`,
+two fresh WebKit Full 1440×900 DPR2 cases used the same real GSAP network
+gate, loaded fonts and decoded native packshot. The old raster was excluded
+because its artifact binding no longer matched. Only the candidate disabled
+the global hero grain pseudo-element; the source control retained it.
+
+The source produced 10 active frames, median gap 1445ms and maximum 1776ms,
+without completing before the outer deadline. The candidate produced 18
+active frames, median 686ms and maximum 781ms, completing 12532ms after real
+readiness. Both had zero runtime errors. All diagnostic browsers were closed.
+
+The overlay contributes to the bottleneck but does not explain it completely.
+Removing it is not an adequate production fix: approximately 1.5 FPS and a
+12.5-second entrance still fail the experience target. No rendering change,
+raster asset or relaxed performance gate was adopted from this experiment.

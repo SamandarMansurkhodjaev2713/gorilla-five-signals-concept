@@ -99,3 +99,12 @@ CSS-only specificity correction the build passed again. A separate actual
 rectangles: every word stayed on one line within the 304px panel right edge.
 The longest Uzbek word ended at 303.671875px; no speculative type shrinking was
 applied. These observations are not a new all-page/cross-engine visual approval.
+
+The remaining film-section label “Material study” was replaced in all three
+locales with direct Gorilla-film language, and the decorative “MATERIAL /
+SIGNAL” readout now identifies “GORILLA / UZ”. This is a point edit, not a new
+claim about the film, product or commissioning status. Five review lenses:
+localized values remain complete; existing content/API ownership is unchanged;
+no controls, warnings or semantic structure are removed; no assets/dependencies
+or animation cost are added; and the outstanding frame-performance gate above
+remains explicit rather than being implied complete by this copy correction.

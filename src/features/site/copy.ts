@@ -129,9 +129,9 @@ const values = {
     uz: "Bozor",
   },
   materialStudy: {
-    en: "Material study",
-    ru: "Исследование материала",
-    uz: "Material tadqiqoti",
+    en: "Gorilla film",
+    ru: "Ролик о Gorilla",
+    uz: "Gorilla haqida rolik",
   },
   materialIntro: {
     en: "One frame. Five characters. Aluminium, water, light, and the city after dark.",
