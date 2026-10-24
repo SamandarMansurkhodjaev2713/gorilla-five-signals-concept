@@ -43,6 +43,8 @@ test.describe("responsible entry and route signal continuity", () => {
     const dialog = page.locator("[data-responsible-entry]");
 
     await expect(dialog).toHaveAttribute("open", "");
+    await expect(dialog).not.toContainText("ENTRY SIGNAL");
+    await expect(dialog.locator(".entry-frequency")).toBeVisible();
     await page.keyboard.press("Escape");
     await expect(dialog).toHaveAttribute("open", "");
     await expect(dialog.locator("[data-responsible-leave]")).toBeFocused();
@@ -55,6 +57,7 @@ test.describe("responsible entry and route signal continuity", () => {
       await page.setViewportSize(viewport);
       await expectSemanticPage(page, "uz");
       const dialog = page.locator("[data-responsible-entry]");
+      await expect(dialog.locator(".entry-frequency")).toBeVisible();
       const geometry = await dialog
         .locator(ENTRY_CONTENT_SELECTOR)
         .evaluateAll((elements) =>

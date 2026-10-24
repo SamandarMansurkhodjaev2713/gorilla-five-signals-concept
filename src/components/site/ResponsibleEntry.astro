@@ -36,7 +36,6 @@ const motionCopy = getMotionChromeCopy(locale);
       <p class="entry-frequency" aria-hidden="true">
         <span></span><span></span><span></span><span></span><span></span>
       </p>
-      <p class="type-label">ENTRY SIGNAL</p>
     </header>
 
     <div class="entry-age" aria-hidden="true">
@@ -222,15 +221,11 @@ const motionCopy = getMotionChromeCopy(locale);
   .entry-header {
     display: grid;
     grid-area: header;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
     gap: var(--space-5);
     padding-block-end: var(--space-4);
     border-block-end: var(--size-rule-hairline) solid var(--color-border-strong);
-  }
-
-  .entry-header > :last-child {
-    text-align: end;
   }
 
   .entry-frequency {
@@ -589,14 +584,6 @@ const motionCopy = getMotionChromeCopy(locale);
         max(var(--space-4), env(safe-area-inset-right))
         max(var(--space-3), env(safe-area-inset-bottom))
         max(var(--space-4), env(safe-area-inset-left));
-    }
-
-    .entry-header {
-      grid-template-columns: 1fr auto;
-    }
-
-    .entry-header > :last-child {
-      display: none;
     }
 
     .entry-frequency {

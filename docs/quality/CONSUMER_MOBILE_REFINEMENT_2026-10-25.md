@@ -168,3 +168,16 @@ automatically contrast-audited.
 
 After the final paragraph backplate, the entire 57-case three-engine film
 matrix passed again in 1.0 minute; it was not accepted from a partial rerun.
+
+## First-visit chrome
+
+The unlocalized technical “ENTRY SIGNAL” header label was removed from the
+responsible-entry screen. Its header now has two real columns instead of an
+empty third column. The obsolete last-child hiding/alignment rules were removed
+too, so removing the label cannot accidentally hide the five-color decoration
+on mobile. Required 18+ information, warnings, language, preferences, immediate
+Continue, leave path and legal links are untouched. The ten Chromium entry/
+transition cases passed after the source change; the viewport matrix also
+asserts the decoration remains visible. This covers correctness and cleanup,
+scoped layout ownership, consumer/a11y behavior, smaller static markup/CSS, and
+regression/release evidence without adding an animation or dependency.
