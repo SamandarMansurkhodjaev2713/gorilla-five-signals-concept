@@ -4,7 +4,10 @@
 
 The current branch replaces concentric grain gradients with a small original
 texture and removes the redundant moving dot blend. Thirty focused browser cases
-pass across three engines. See [scope, five review lenses and performance
+pass across three engines. The Original metal follow-up replaces the large
+blurred slab shadow with local gradient shading; all 36 focused grain/lighting
+cases pass. Canonical Lighthouse still fails homepage/product performance.
+See [scope, five review lenses and performance
 limitations](MATERIAL_GRAIN_REVIEW_2026-10-25.md). WebKit motion and stable
 Lighthouse acceptance remain open; this is not a production release approval.
 

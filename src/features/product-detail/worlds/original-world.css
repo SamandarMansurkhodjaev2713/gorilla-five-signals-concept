@@ -5,10 +5,18 @@
 }
 
 .product-detail[data-flavor="original"] .original-metal {
+  --original-metal-edge-depth: linear-gradient(
+    90deg,
+    rgb(0 0 0 / 60%) 0,
+    rgb(0 0 0 / 30%) 2rem,
+    transparent 6rem
+  );
+
   inset: 9% -14% 6% 34%;
   border: 1px solid color-mix(in srgb, var(--flavor-signal) 62%, white);
   border-radius: 50% 7% 42% 5%;
   background:
+    var(--original-metal-edge-depth),
     repeating-linear-gradient(
       93deg,
       transparent 0 1.8rem,
@@ -23,9 +31,6 @@
       #1b211b 61%,
       #080a08 100%
     );
-  box-shadow:
-    inset 2rem 0 4rem rgb(0 0 0 / 60%),
-    0 0 5rem rgb(135 255 19 / 11%);
   clip-path: polygon(8% 0, 100% 8%, 91% 100%, 0 86%);
   transform: rotate(-7deg) skewX(-4deg);
 }
