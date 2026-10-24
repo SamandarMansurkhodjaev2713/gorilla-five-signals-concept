@@ -83,14 +83,14 @@ const values = {
     uz: "Toshkentda yaratilgan mustaqil dizayn konsepti. U sayt Gorilla tomonidan buyurtma qilingan yoki boshqarilishini anglatmaydi.",
   },
   contactIntro: {
-    en: "Choose the right official destination. This concept does not collect personal information.",
-    ru: "Выберите подходящий официальный канал. Эта концепция не собирает персональные данные.",
-    uz: "Tegishli rasmiy yo‘nalishni tanlang. Ushbu konsept shaxsiy ma’lumot yig‘maydi.",
+    en: "Contact Gorilla",
+    ru: "Связаться с Gorilla",
+    uz: "Gorilla bilan bog‘lanish",
   },
   cultureIntro: {
-    en: "A Tashkent-made study of type, material, contrast, and five packaging signals.",
-    ru: "Созданное в Ташкенте исследование типографики, материала, контраста и пяти сигналов упаковки.",
-    uz: "Toshkentda yaratilgan tipografika, material, kontrast va beshta qadoq signali tadqiqoti.",
+    en: "Explore five Gorilla flavors and choose your favorite.",
+    ru: "Познакомьтесь с пятью вкусами Gorilla и выберите свой.",
+    uz: "Gorilla’ning besh ta’mini ko‘ring va o‘zingizga yoqqanini tanlang.",
   },
   findIntro: {
     en: "Verified store addresses are not available yet. Use a clearly labelled third-party search and confirm availability with the retailer.",

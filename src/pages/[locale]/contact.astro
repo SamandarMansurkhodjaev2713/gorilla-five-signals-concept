@@ -19,11 +19,11 @@ const copy = getSiteCopy(locale);
 const officialWebsite = `https://www.gorillaenergy.uz/?locale=${locale}`;
 const content = {
   en: {
-    channel: "One verified channel",
-    eyebrow: "Five intents / One official route",
-    note: "This independent concept does not collect messages. Continue to Gorilla Uzbekistan’s verified website for current contact options.",
+    channel: "Contact Gorilla Uzbekistan",
+    eyebrow: "Gorilla Uzbekistan",
+    note: "Find current contact options on Gorilla Uzbekistan’s official website. This independent concept does not collect messages.",
     official: "Open official website",
-    route: "Official channel",
+    route: "Official Gorilla website",
     topics: [
       "Product information",
       "Retail and distribution",
@@ -33,11 +33,11 @@ const content = {
     ],
   },
   ru: {
-    channel: "Один проверенный канал",
-    eyebrow: "Пять запросов / Один официальный маршрут",
-    note: "Этот независимый концепт не собирает сообщения. Актуальные способы связи доступны на проверенном сайте Gorilla Uzbekistan.",
+    channel: "Связаться с Gorilla Uzbekistan",
+    eyebrow: "Gorilla Uzbekistan",
+    note: "Актуальные способы связи доступны на официальном сайте Gorilla Uzbekistan. Этот независимый концепт не собирает сообщения.",
     official: "Открыть официальный сайт",
-    route: "Официальный канал",
+    route: "Официальный сайт Gorilla",
     topics: [
       "Информация о продукте",
       "Розница и дистрибуция",
@@ -47,11 +47,11 @@ const content = {
     ],
   },
   uz: {
-    channel: "Bitta tasdiqlangan kanal",
-    eyebrow: "Besh murojaat / Bitta rasmiy yo‘l",
-    note: "Bu mustaqil konsept xabarlarni yig‘maydi. Amaldagi aloqa usullari uchun Gorilla Uzbekistan tasdiqlangan saytiga o‘ting.",
+    channel: "Gorilla Uzbekistan bilan bog‘lanish",
+    eyebrow: "Gorilla Uzbekistan",
+    note: "Amaldagi aloqa usullarini Gorilla Uzbekistan rasmiy saytidan toping. Bu mustaqil konsept xabarlarni yig‘maydi.",
     official: "Rasmiy saytni ochish",
-    route: "Rasmiy kanal",
+    route: "Gorilla rasmiy sayti",
     topics: [
       "Mahsulot haqida",
       "Chakana savdo va distribyutsiya",
@@ -106,7 +106,7 @@ const content = {
 
       <div class="routing-endpoint" data-motion-reveal>
         <span class="endpoint-pulse" aria-hidden="true"></span>
-        <p class="type-label">{content.route} / VERIFIED OUTBOUND</p>
+        <p class="type-label">{content.route}</p>
         <a
           class="control control--primary"
           data-contact-official

@@ -73,3 +73,29 @@ old-layout negative controls, keyboard navigation and 200% text spacing. The
 two known failures from the preceding batch are not hidden or retried away;
 their source geometry was corrected before this new build and complete rerun.
 This result is not cross-engine or frame-performance acceptance.
+
+## Follow-up consumer language and lifecycle checks
+
+Locator, Contact, Culture and FAQ now use direct product/action language instead
+of source-verification, outbound-routing and design-study labels. The locator's
+single notice about unverified retailer availability is retained. Official
+destinations, product data, privacy boundaries and the independent-concept
+disclaimer are unchanged. The contact action is concise instead of repeating a
+two-sentence data-collection notice in a large button.
+
+Unused header tier-badge pseudo-elements and signal styles were removed rather
+than hidden behind another override. The menu control's scoped selector retains
+its 48px target against the generic menu-button rule; no-script hiding uses the
+same selector specificity. A broader lifecycle batch caught that specificity
+regression before acceptance. The source was corrected, rebuilt and the entire
+batch rerun: all 41 Chromium cases passed in 45.5s, including Contact, FAQ, real
+pause/persistence, Full-to-Reduced cleanup, route/menu state and five distinct
+product-world scrub responses. This does not replace the WebKit FPS gate.
+
+The coherent source check passed 247 strict-check files with zero diagnostics,
+177 unit tests, 47 routes and all artifact/security gates. After the final
+CSS-only specificity correction the build passed again. A separate actual
+320px locator word probe covered UZ/RU/EN with loaded fonts and atomic word/owner
+rectangles: every word stayed on one line within the 304px panel right edge.
+The longest Uzbek word ended at 303.671875px; no speculative type shrinking was
+applied. These observations are not a new all-page/cross-engine visual approval.

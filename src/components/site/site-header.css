@@ -33,23 +33,6 @@
   filter: invert(1);
 }
 
-.site-header__signal {
-  grid-column: 2;
-  justify-self: center;
-  margin: 0;
-  color: var(--color-text-secondary);
-  font-family: var(--font-data);
-  font-size: clamp(0.68rem, 0.64rem + 0.12vw, 0.78rem);
-  font-weight: 750;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.site-header__signal span {
-  color: var(--color-signal-brand);
-}
-
 .site-header .desktop-navigation,
 .site-header .locale-list {
   display: none;
@@ -76,13 +59,12 @@
   outline-offset: var(--space-1);
 }
 
-.site-header .motion-toggle {
+.site-header .menu-motion-console .motion-toggle {
   position: static;
-  display: grid;
-  min-inline-size: 5.75rem;
-  min-block-size: var(--size-control-min);
-  grid-column: 3;
-  grid-template-columns: auto auto;
+  display: inline-flex;
+  min-inline-size: var(--size-control-min);
+  min-block-size: max(var(--size-control-min), 3rem);
+  grid-column: auto;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
@@ -90,41 +72,15 @@
   border: var(--size-rule-hairline) solid var(--color-border-strong);
   color: var(--color-text-primary);
   background: var(--color-surface-page);
-  font-size: 0;
+  font-size: var(--chrome-label-size);
   font-weight: 800;
   line-height: 1;
-  text-transform: uppercase;
+  text-transform: none;
   touch-action: manipulation;
   transition:
     color var(--motion-duration-quick) var(--motion-ease-enter),
     border-color var(--motion-duration-quick) var(--motion-ease-enter),
     background-color var(--motion-duration-quick) var(--motion-ease-enter);
-}
-
-.site-header .motion-toggle::before,
-.site-header .motion-toggle::after {
-  font-family: var(--font-data);
-  font-size: var(--chrome-label-size);
-  letter-spacing: 0.04em;
-}
-
-.site-header .motion-toggle::before {
-  color: var(--color-text-secondary);
-  content: attr(data-motion-status-label);
-}
-
-.site-header .motion-toggle::after {
-  color: var(--color-signal-brand);
-  content: attr(data-motion-tier-lite);
-}
-
-:root[data-motion-tier="full"] .site-header .motion-toggle::after {
-  content: attr(data-motion-tier-full);
-}
-
-:root[data-motion-tier="reduced"] .site-header .motion-toggle::after {
-  color: var(--color-status-warning);
-  content: attr(data-motion-tier-reduced);
 }
 
 .site-header .motion-toggle:is(:hover, :active) {
@@ -331,20 +287,6 @@
   display: none;
 }
 
-@media (max-width: 23rem) {
-  .site-header .motion-toggle {
-    min-inline-size: var(--size-control-min);
-  }
-
-  .site-header .motion-toggle::before {
-    display: none;
-  }
-
-  .site-header .menu-motion-console > div {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
 @media (max-width: 25rem) {
   .site-header .menu-motion-console > div {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -368,10 +310,6 @@
 
   .site-header .brand img {
     inline-size: min(2.6rem, var(--header-brand-inline-limit));
-  }
-
-  .site-header .motion-toggle {
-    margin-inline-start: auto;
   }
 
   .site-header .mobile-navigation {
@@ -405,12 +343,6 @@
   }
 }
 
-@media (max-width: 47.99rem) {
-  .site-header__signal {
-    display: none;
-  }
-}
-
 @media (min-width: 80rem) {
   .site-header {
     gap: var(--space-4);
@@ -431,29 +363,10 @@
     place-items: center;
   }
 
-  .site-header .motion-toggle {
-    grid-column: 3;
-  }
-
   .site-header .mobile-navigation {
     display: block;
     grid-column: 2;
   }
-}
-
-.site-header .menu-motion-console .motion-toggle {
-  display: inline-flex;
-  min-inline-size: var(--size-control-min);
-  min-block-size: max(var(--size-control-min), 3rem);
-  grid-column: auto;
-  margin-inline-start: 0;
-  font-size: var(--chrome-label-size);
-  text-transform: none;
-}
-
-.site-header .menu-motion-console .motion-toggle::before,
-.site-header .menu-motion-console .motion-toggle::after {
-  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -471,10 +384,5 @@
 
   .site-header .brand img {
     filter: none;
-  }
-
-  .site-header__signal,
-  .site-header__signal span {
-    color: CanvasText;
   }
 }

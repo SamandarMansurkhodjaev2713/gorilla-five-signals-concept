@@ -31,8 +31,7 @@
   text-transform: uppercase;
 }
 
-.locator-panel > .type-label,
-.source-date {
+.locator-panel > .type-label {
   color: var(--color-status-warning);
 }
 
