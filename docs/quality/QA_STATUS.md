@@ -1,5 +1,51 @@
 # QA status
 
+## Adaptive native home entrances — 2026-10-25
+
+Manifesto and Tashkent Terminal now join Reactor and Material Film on the shared
+finite native player and exact-snapshot entrance owner. Full/Lite choreography,
+terminal timing, reduced/no-JS visibility and the scoped GSAP fallback remain
+intact. Adaptive sampled easing replaces the rejected uniform 513-stop curves;
+operation-local public `KeyframeEffect` copies avoid reparsing identical effects
+without retaining targets across scenes, documents or route lifetimes. Unsafe
+or side-effectful frames bypass reuse and remain browser-validated.
+
+The current artifact SHA-256 is
+`577dd60a1cd70b3a56c84d003b2a892019eb5d5fdfc5e87389f079de7840434b`.
+The complete source/artifact gate passes formatting, lint, 335 strict files, 435
+units, production build, budgets, content/fonts/provenance, 617-component SBOM,
+licenses and high-severity dependency audit. The final current-hash browser run
+passes all 27 cases without retries or skips: 12 native home entrances, 12 Reactor
+cleanup cases and three product/route history cases across all three engines.
+Full/Lite use 390/1440px viewports. Entrance tests observe real native
+start/finish/cancel events rather than racing a post-completion effect query.
+
+The first adaptive parity matrix exposed a WebKit 390px heading rebalance at
+natural cleanup. A controlled eight-case experiment confirms that stable
+`text-wrap: wrap` removes the discrepancy with maximum rect delta 0.0111px; the
+production Terminal heading adopts that rule. The final current-hash matrix then
+passes 24 scene comparisons (12 matched backend pairs × two scenes) and 48
+scene/backend captures across three engines, Full/Lite and 390/1440px with zero
+differences. Natural cleanup passes 48/48 and exact inline restoration 24/24.
+Maximum rect/opacity/matrix-linear/matrix-translation/clip deltas remain within
+their unchanged bounds. This is controlled parity and cleanup evidence, not
+native-input or FPS acceptance.
+
+Uniform 513-stop hardware CPU×4 callbacks failed 16ms. Adaptive sampling brings
+Manifesto and Material below 16ms in all three runs, while Terminal still records
+one 20.806ms breach. The following copy-reuse artifact records Manifesto at
+17.801/13.098/21.664ms, Material at 6.530/5.967/5.659ms and Terminal at
+7.952/13.064/4.176ms, with zero nested style-tree updates/layouts. Manifesto
+still fails two runs, and the cross-run variance does not prove that reuse caused
+an overall improvement. Three still-unattributed Product/Store/Contact boundary
+callbacks also remain over budget; those labels do not prove exact feature
+ownership. The trace predates the final fail-closed key correction and is
+diagnostic, not current-hash performance acceptance. Canonical Lighthouse,
+complete-journey, physical-device and release gates remain open. Main/Pages
+remain held. See the
+[five-lens review](NATIVE_HOME_ENTRANCES_REVIEW_2026-10-25.md) and
+[ADR-0013](../decisions/ADR-0013-native-home-entrances.md).
+
 ## Entry paint and native Material Film — 2026-10-25
 
 The opaque responsible-entry checkpoint now excludes its occluded page siblings

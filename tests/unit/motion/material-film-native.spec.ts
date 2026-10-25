@@ -123,14 +123,31 @@ function createNativeRoot(options: NativeRootOptions = {}): HTMLElement {
   const calibration = elements.slice(2, 7);
   const crosshair = elements.slice(7);
   class KeyframeEffectPort {
+    target: unknown;
+    private timing: Readonly<KeyframeEffectOptions>;
+
     constructor(
-      targetValue: unknown,
-      frames: readonly Keyframe[],
-      timing: Readonly<KeyframeEffectOptions>,
+      targetOrSource: unknown,
+      frames?: readonly Keyframe[],
+      timing?: Readonly<KeyframeEffectOptions>,
     ) {
-      void targetValue;
-      void frames;
-      void timing;
+      if (targetOrSource instanceof KeyframeEffectPort) {
+        this.target = targetOrSource.target;
+        this.timing = { ...targetOrSource.getTiming() };
+        return;
+      }
+      if (frames === undefined || timing === undefined)
+        throw new TypeError("Original effects require frames and timing.");
+      this.target = targetOrSource;
+      this.timing = { delay: 0, ...timing };
+    }
+
+    getTiming(): Readonly<KeyframeEffectOptions> {
+      return this.timing;
+    }
+
+    updateTiming(timing: Readonly<OptionalEffectTiming>): void {
+      this.timing = { ...this.timing, ...timing };
     }
   }
   class AnimationPort {}

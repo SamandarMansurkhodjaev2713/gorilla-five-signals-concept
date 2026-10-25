@@ -1,72 +1,45 @@
 import type { SceneSetup, SceneSetupContext } from "../create-scene";
-import { MOTION_DURATION_SECONDS, MOTION_EASE } from "../tokens";
+import { publishMotionDiagnostic } from "../diagnostics";
+import { MOTION_EASE } from "../tokens";
+import { HomeTerminalEntranceOwner } from "./home-terminal-entrance-owner";
+import { TERMINAL_MOTION_TIMING_SECONDS } from "./home-terminal-motion-spec";
+import {
+  TERMINAL_COORDINATE_SELECTOR,
+  TERMINAL_COPY_SELECTOR,
+  TERMINAL_FIELD_SELECTOR,
+  TERMINAL_LOCATOR_COPY_SELECTOR,
+  TERMINAL_LOCATOR_SELECTOR,
+  TERMINAL_LOCATOR_SIGNAL_SELECTOR,
+  TERMINAL_NODE_SELECTOR,
+  TERMINAL_ROUTE_SELECTOR,
+  TERMINAL_WORD_SELECTOR,
+} from "./home-terminal-motion-contract";
 import { markSceneReady, playOnceWhenVisible } from "./shared";
-
-const COPY_SELECTOR = ".tashkent-terminal__copy > *";
-const FIELD_SELECTOR = ".tashkent-terminal__field";
-const WORD_SELECTOR = ".tashkent-terminal__word";
-const COORDINATE_SELECTOR = ".tashkent-terminal__coordinate";
-const ROUTE_SELECTOR = ".tashkent-terminal__route";
-const NODE_SELECTOR = ".tashkent-terminal__route i";
-const LOCATOR_SELECTOR = ".tashkent-terminal__locator";
-const LOCATOR_COPY_SELECTOR =
-  ".tashkent-terminal__locator > :not(.tashkent-terminal__grid):not(.tashkent-terminal__marker)";
-const LOCATOR_SIGNAL_SELECTOR = [
-  ".tashkent-terminal__grid",
-  ".tashkent-terminal__marker",
-].join(", ");
-const PRESENTATION_SELECTOR = [
-  COPY_SELECTOR,
-  FIELD_SELECTOR,
-  WORD_SELECTOR,
-  COORDINATE_SELECTOR,
-  ROUTE_SELECTOR,
-  NODE_SELECTOR,
-  LOCATOR_SELECTOR,
-  LOCATOR_COPY_SELECTOR,
-  LOCATOR_SIGNAL_SELECTOR,
-].join(", ");
-const PRESENTATION_PROPERTIES = ["clip-path", "opacity"] as const;
-const TRACE_STAGGER_SECONDS = 0.055;
 
 type SetupContext = Parameters<SceneSetup>[0];
 type SceneTimeline = ReturnType<SceneSetupContext["gsap"]["timeline"]>;
-
-function clearPresentation(root: HTMLElement): void {
-  root
-    .querySelectorAll<HTMLElement>(PRESENTATION_SELECTOR)
-    .forEach((element): void => {
-      for (const property of PRESENTATION_PROPERTIES) {
-        element.style.removeProperty(property);
-      }
-    });
-}
-
-function clearAfterContextRevert(root: HTMLElement): void {
-  clearPresentation(root);
-  queueMicrotask((): void => clearPresentation(root));
-}
 
 function animateTerminalLead(
   context: SetupContext,
   timeline: SceneTimeline,
 ): void {
-  timeline.from(context.queryAll<HTMLElement>(COPY_SELECTOR), {
+  const timing = TERMINAL_MOTION_TIMING_SECONDS;
+  timeline.from(context.queryAll<HTMLElement>(TERMINAL_COPY_SELECTOR), {
     opacity: 0,
     clipPath: "inset(0 0 100% 0)",
-    duration: MOTION_DURATION_SECONDS.standard,
+    duration: timing.standardDuration,
     ease: MOTION_EASE.enter,
-    stagger: TRACE_STAGGER_SECONDS,
+    stagger: timing.traceStagger,
   });
   timeline.from(
-    context.query<HTMLElement>(FIELD_SELECTOR),
+    context.query<HTMLElement>(TERMINAL_FIELD_SELECTOR),
     {
       opacity: 0,
       clipPath: "inset(0 100% 0 0)",
-      duration: MOTION_DURATION_SECONDS.scene,
+      duration: timing.sceneDuration,
       ease: MOTION_EASE.material,
     },
-    0.08,
+    timing.fieldDelay,
   );
 }
 
@@ -75,27 +48,32 @@ function animateCoordinateTrace(
   timeline: SceneTimeline,
 ): void {
   if (context.capability.kind !== "full") return;
+  const timing = TERMINAL_MOTION_TIMING_SECONDS;
   timeline.from(
     context.queryAll<HTMLElement>(
-      [WORD_SELECTOR, ROUTE_SELECTOR, COORDINATE_SELECTOR].join(", "),
+      [
+        TERMINAL_WORD_SELECTOR,
+        TERMINAL_ROUTE_SELECTOR,
+        TERMINAL_COORDINATE_SELECTOR,
+      ].join(", "),
     ),
     {
       opacity: 0,
-      duration: MOTION_DURATION_SECONDS.standard,
+      duration: timing.standardDuration,
       ease: MOTION_EASE.enter,
-      stagger: TRACE_STAGGER_SECONDS,
+      stagger: timing.traceStagger,
     },
-    0.24,
+    timing.coordinateDelay,
   );
   timeline.from(
-    context.queryAll<HTMLElement>(NODE_SELECTOR),
+    context.queryAll<HTMLElement>(TERMINAL_NODE_SELECTOR),
     {
       opacity: 0,
-      duration: MOTION_DURATION_SECONDS.quick,
+      duration: timing.quickDuration,
       ease: MOTION_EASE.snap,
-      stagger: TRACE_STAGGER_SECONDS,
+      stagger: timing.traceStagger,
     },
-    0.36,
+    timing.nodeDelay,
   );
 }
 
@@ -103,54 +81,74 @@ function animateLocatorHandoff(
   context: SetupContext,
   timeline: SceneTimeline,
 ): void {
+  const timing = TERMINAL_MOTION_TIMING_SECONDS;
   timeline.from(
-    context.query<HTMLElement>(LOCATOR_SELECTOR),
+    context.query<HTMLElement>(TERMINAL_LOCATOR_SELECTOR),
     {
       opacity: 0,
       clipPath: "inset(8% 8% 8% 8%)",
-      duration: MOTION_DURATION_SECONDS.scene,
+      duration: timing.sceneDuration,
       ease: MOTION_EASE.material,
     },
-    context.capability.kind === "full" ? 0.48 : 0.22,
+    context.capability.kind === "full"
+      ? timing.locatorFullDelay
+      : timing.locatorLiteDelay,
   );
   if (context.capability.kind !== "full") return;
   timeline.from(
-    context.queryAll<HTMLElement>(LOCATOR_SIGNAL_SELECTOR),
+    context.queryAll<HTMLElement>(TERMINAL_LOCATOR_SIGNAL_SELECTOR),
     {
       opacity: 0,
-      duration: MOTION_DURATION_SECONDS.standard,
+      duration: timing.standardDuration,
       ease: MOTION_EASE.enter,
-      stagger: TRACE_STAGGER_SECONDS,
+      stagger: timing.traceStagger,
     },
-    0.56,
+    timing.locatorSignalDelay,
   );
   timeline.from(
-    context.queryAll<HTMLElement>(LOCATOR_COPY_SELECTOR),
+    context.queryAll<HTMLElement>(TERMINAL_LOCATOR_COPY_SELECTOR),
     {
       opacity: 0,
       clipPath: "inset(0 0 100% 0)",
-      duration: MOTION_DURATION_SECONDS.standard,
+      duration: timing.standardDuration,
       ease: MOTION_EASE.enter,
-      stagger: TRACE_STAGGER_SECONDS,
+      stagger: timing.traceStagger,
     },
-    0.62,
+    timing.locatorCopyDelay,
   );
 }
 
-function createTerminalHandoff(context: SetupContext): void {
-  const clear = (): void => clearPresentation(context.root);
-  const timeline = context.gsap.timeline({ onComplete: clear });
+function createTerminalHandoff(
+  context: SetupContext,
+  onComplete: () => void,
+): void {
+  const timeline = context.gsap.timeline({ onComplete });
   animateTerminalLead(context, timeline);
   animateCoordinateTrace(context, timeline);
   animateLocatorHandoff(context, timeline);
 }
 
+function reportEntranceFailure(context: SetupContext, error: unknown): void {
+  const windowValue = context.root.ownerDocument.defaultView;
+  if (windowValue === null) return;
+  publishMotionDiagnostic(windowValue, {
+    code: "scene-mount-failed",
+    sceneId: "culture-signal",
+    message: error instanceof Error ? error.message : String(error),
+  });
+}
+
 export const setupCultureScene: SceneSetup = (context): (() => void) => {
   const cleanupReady = markSceneReady(context);
-  context.onCleanup((): void => clearAfterContextRevert(context.root));
-  if (context.capability.kind !== "reduced") {
-    playOnceWhenVisible(context, (): void => createTerminalHandoff(context));
-  }
+  const owner = new HomeTerminalEntranceOwner({
+    context,
+    onFailure: (error): void => reportEntranceFailure(context, error),
+    playFallback: (onComplete): void =>
+      createTerminalHandoff(context, onComplete),
+  });
+  context.onCleanup((): void => owner.destroy());
+  if (context.capability.kind !== "reduced")
+    playOnceWhenVisible(context, (): void => owner.start());
   return cleanupReady;
 };
 

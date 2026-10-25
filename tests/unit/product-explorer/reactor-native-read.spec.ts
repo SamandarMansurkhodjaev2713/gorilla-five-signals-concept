@@ -9,7 +9,8 @@ type ApiMode =
   "complete" | "missing-animation" | "missing-effect" | "missing-matrix";
 type CssMode = "missing" | "supported" | "unsupported";
 type MatrixMode = "identity" | "singular" | "three-dimensional";
-type ProbeMode = "success" | "type-error" | "unknown-error";
+type ProbeMode =
+  "clone-type-error" | "success" | "type-error" | "unknown-error";
 
 interface HarnessOptions {
   readonly api?: ApiMode;
@@ -128,12 +129,56 @@ function createHarness(options: HarnessOptions = {}): Harness {
   }
 
   class EffectPort {
-    constructor(target: unknown) {
-      effectTargets.push(target);
-      operations.push(target === null ? "effect:probe" : "effect:target");
-      if (target !== null) return;
+    private targetValue: unknown;
+    private timing: Readonly<KeyframeEffectOptions>;
+
+    constructor(
+      targetOrSource: unknown,
+      _frames?: readonly Keyframe[],
+      timing?: Readonly<KeyframeEffectOptions>,
+    ) {
+      if (targetOrSource instanceof EffectPort) {
+        if (
+          targetOrSource.target === null &&
+          options.probe === "clone-type-error"
+        )
+          throw new TypeError("known clone probe");
+        this.targetValue = targetOrSource.target;
+        this.timing = { ...targetOrSource.getTiming() };
+        operations.push(
+          this.targetValue === null ? "effect:probe-clone" : "effect:clone",
+        );
+        return;
+      }
+      this.targetValue = targetOrSource;
+      this.timing = { delay: 0, ...timing };
+      effectTargets.push(targetOrSource);
+      operations.push(
+        targetOrSource === null ? "effect:probe" : "effect:target",
+      );
+      if (targetOrSource !== null) return;
       if (options.probe === "type-error") throw new TypeError("known probe");
       if (options.probe === "unknown-error") throw PROBE_ERROR;
+    }
+
+    get target(): unknown {
+      return this.targetValue;
+    }
+
+    set target(value: unknown) {
+      this.targetValue = value;
+      if (value !== null) {
+        effectTargets.push(value);
+        operations.push("effect:target");
+      }
+    }
+
+    getTiming(): Readonly<KeyframeEffectOptions> {
+      return this.timing;
+    }
+
+    updateTiming(timing: Readonly<OptionalEffectTiming>): void {
+      this.timing = { ...this.timing, ...timing };
     }
   }
 
@@ -275,6 +320,15 @@ describe("native Reactor capability and read boundary", () => {
     const harness = createHarness({ probe: "type-error" });
 
     expect(createPlayer(harness)).toBeNull();
+    expect(harness.animationConstructions.count).toBe(0);
+  });
+
+  it("GIVEN the public effect copy constructor rejects its source WHEN probed THEN native stays disabled before reading presentation", () => {
+    const harness = createHarness({ probe: "clone-type-error" });
+
+    expect(createPlayer(harness)).toBeNull();
+    expect(harness.effectTargets).toEqual([null]);
+    expect(harness.operations).toEqual(["effect:probe"]);
     expect(harness.animationConstructions.count).toBe(0);
   });
 

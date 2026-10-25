@@ -20,6 +20,8 @@ const MAX_PRODUCT_TRAVEL_ERROR_PX = 0.25;
 const MAX_ROTATION_ERROR_DEGREES = 0.1;
 const PRODUCT_TRAVEL_PX = 136;
 const ROTATION_DEGREES = 32;
+const WIDE_CLIP_EDGE_PX = 3_840;
+const MAX_CLIP_EDGE_ERROR_PX = 0.25;
 const GSAP_EASE_NAMES: Readonly<Record<ReactorEase, string>> = Object.freeze({
   enter: MOTION_EASE.enter,
   material: MOTION_EASE.material,
@@ -84,7 +86,8 @@ describe("reactor native easing", () => {
 
     for (const role of REACTOR_EASES) {
       const stops = parseLinear(REACTOR_NATIVE_EASING[role]);
-      expect(stops).toHaveLength(65);
+      expect(stops.length).toBeGreaterThan(2);
+      expect(stops.length).toBeLessThanOrEqual(513);
       expect(stops[0]).toEqual({ input: 0, output: 0 });
       expect(stops.at(-1)).toEqual({ input: 1, output: 1 });
       expect(
@@ -98,7 +101,7 @@ describe("reactor native easing", () => {
     }
   });
 
-  it("GIVEN installed GSAP 3.15 eases WHEN generated curves are densely interpolated THEN opacity, travel, and rotation errors stay invisible", () => {
+  it("GIVEN installed GSAP 3.15 eases WHEN generated curves are densely interpolated THEN opacity, travel, rotation and wide clip errors stay within budget", () => {
     for (const role of REACTOR_EASES) {
       const parsedEase = gsap.parseEase(GSAP_EASE_NAMES[role]);
       const error = maximumError(
@@ -113,6 +116,9 @@ describe("reactor native easing", () => {
       ).toBeLessThan(MAX_PRODUCT_TRAVEL_ERROR_PX);
       expect(ROTATION_DEGREES * error, `${role} rotation error`).toBeLessThan(
         MAX_ROTATION_ERROR_DEGREES,
+      );
+      expect(WIDE_CLIP_EDGE_PX * error, `${role} wide clip error`).toBeLessThan(
+        MAX_CLIP_EDGE_ERROR_PX,
       );
     }
   });

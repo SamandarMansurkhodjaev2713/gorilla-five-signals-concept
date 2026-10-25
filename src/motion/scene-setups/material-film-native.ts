@@ -3,6 +3,7 @@ import {
   FiniteAnimationPlayer,
   supportsFiniteAnimationPlayer,
 } from "../native/finite-animation-player";
+import { hasInlinePresentation } from "../native/presentation-guard";
 import { MATERIAL_FILM_TIMING_SECONDS } from "./material-film-motion-spec";
 
 import type { FiniteAnimationCue } from "../native/finite-animation-player";
@@ -157,13 +158,7 @@ function hasCustomInlinePresentation(
     ...targets.calibration,
     ...targets.crosshair,
   ];
-  return elements.some((element) =>
-    NATIVE_PRESENTATION_PROPERTIES.some(
-      (property) =>
-        element.style.getPropertyValue(property) !== "" ||
-        element.style.getPropertyPriority(property) !== "",
-    ),
-  );
+  return hasInlinePresentation(elements, NATIVE_PRESENTATION_PROPERTIES);
 }
 
 /** Build an explicit native plan without computed-style or geometry reads. */

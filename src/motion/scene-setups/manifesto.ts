@@ -1,69 +1,99 @@
 import type { SceneSetup } from "../create-scene";
-import { MOTION_DURATION_SECONDS, MOTION_EASE } from "../tokens";
+import { publishMotionDiagnostic } from "../diagnostics";
+import { captureInlineStyles } from "../inline-style-snapshot";
+import { FiniteEntranceOwner } from "../native/finite-entrance-owner";
+import { MOTION_EASE } from "../tokens";
+import {
+  MANIFESTO_MOTION_SPEC as SPEC,
+  MANIFESTO_PRESENTATION_PROPERTIES,
+  MANIFESTO_PRESENTATION_SELECTOR,
+  MANIFESTO_SELECTOR,
+} from "./manifesto-motion-spec";
+import { createNativeManifesto } from "./manifesto-native";
 import { markSceneReady, playOnceWhenVisible } from "./shared";
 
-const LINE_SELECTOR = "[data-manifesto-line]";
-const SIGNAL_SELECTOR = "[data-motion-signal]";
-const HANDOFF_SELECTOR = ".manifesto-handoff";
-const TRANSMISSION_SELECTOR = ".manifesto-transmission > span";
-const LINE_STAGGER_SECONDS = 0.075;
-const SIGNAL_STAGGER_SECONDS = 0.045;
-const SUPPORTING_COPY_SELECTOR = ".manifesto-intro";
-const SUPPORTING_COPY_OFFSET_PX = 24;
+type SetupContext = Parameters<SceneSetup>[0];
 
-function revealManifesto(context: Parameters<SceneSetup>[0]): void {
-  const lines = context.queryAll<HTMLElement>(LINE_SELECTOR);
-  const signals = context.queryAll<HTMLElement>(SIGNAL_SELECTOR);
-  const handoff = context.query<HTMLElement>(HANDOFF_SELECTOR);
-  const transmission = context.queryAll<HTMLElement>(TRANSMISSION_SELECTOR);
-  const supportingCopy = context.query<HTMLElement>(SUPPORTING_COPY_SELECTOR);
-  const timeline = context.gsap.timeline();
+function revealManifesto(context: SetupContext, onComplete: () => void): void {
+  const lines = context.queryAll<HTMLElement>(MANIFESTO_SELECTOR.lines);
+  const signals = context.queryAll<HTMLElement>(MANIFESTO_SELECTOR.signals);
+  const handoff = context.query<HTMLElement>(MANIFESTO_SELECTOR.handoff);
+  const transmission = context.queryAll<HTMLElement>(
+    MANIFESTO_SELECTOR.transmission,
+  );
+  const supportingCopy = context.query<HTMLElement>(MANIFESTO_SELECTOR.copy);
+  const timeline = context.gsap.timeline({ onComplete });
 
   timeline
     .from(handoff, {
-      duration: MOTION_DURATION_SECONDS.standard,
+      duration: SPEC.handoffDuration,
       ease: MOTION_EASE.material,
       scaleY: 0,
       transformOrigin: "top center",
     })
     .from(lines, {
-      duration: MOTION_DURATION_SECONDS.scene,
+      duration: SPEC.lineDuration,
       clipPath: "inset(0 100% 0 0)",
       ease: MOTION_EASE.material,
-      stagger: LINE_STAGGER_SECONDS,
+      stagger: SPEC.lineStagger,
     })
     .from(
       supportingCopy,
       {
         autoAlpha: 0,
-        duration: MOTION_DURATION_SECONDS.standard,
+        duration: SPEC.supportDuration,
         ease: MOTION_EASE.enter,
-        y: SUPPORTING_COPY_OFFSET_PX,
+        y: SPEC.copyOffsetPx,
       },
-      "-=0.42",
+      `-=${SPEC.copyOverlap}`,
     )
     .from(
       transmission,
       {
-        duration: MOTION_DURATION_SECONDS.standard,
+        duration: SPEC.supportDuration,
         ease: MOTION_EASE.material,
         scaleX: 0,
-        stagger: SIGNAL_STAGGER_SECONDS,
+        stagger: SPEC.signalStagger,
         transformOrigin: "left center",
       },
-      "-=0.24",
+      `-=${SPEC.transmissionOverlap}`,
     )
     .from(
       signals,
       {
         autoAlpha: 0,
-        duration: MOTION_DURATION_SECONDS.standard,
+        duration: SPEC.supportDuration,
         ease: MOTION_EASE.enter,
-        stagger: SIGNAL_STAGGER_SECONDS,
-        y: SUPPORTING_COPY_OFFSET_PX,
+        stagger: SPEC.signalStagger,
+        y: SPEC.copyOffsetPx,
       },
-      "-=0.3",
+      `-=${SPEC.signalOverlap}`,
     );
+}
+
+function createOwner(context: SetupContext): FiniteEntranceOwner {
+  return new FiniteEntranceOwner({
+    label: "Manifesto",
+    subject: "manifesto",
+    capturePresentation: () =>
+      captureInlineStyles(
+        context.queryAll<HTMLElement>(MANIFESTO_PRESENTATION_SELECTOR),
+        MANIFESTO_PRESENTATION_PROPERTIES,
+      ),
+    createFallbackContext: (setup) => context.gsap.context(setup, context.root),
+    createNative: (lifecycle) =>
+      createNativeManifesto({ root: context.root, ...lifecycle }),
+    playFallback: (onComplete) => revealManifesto(context, onComplete),
+    onFailure: (error) => {
+      const windowValue = context.root.ownerDocument.defaultView;
+      if (windowValue === null) return;
+      publishMotionDiagnostic(windowValue, {
+        code: "scene-mount-failed",
+        sceneId: "range-manifesto",
+        message: error instanceof Error ? error.message : String(error),
+      });
+    },
+  });
 }
 
 export const setupManifesto: SceneSetup = (context): (() => void) => {
@@ -72,7 +102,9 @@ export const setupManifesto: SceneSetup = (context): (() => void) => {
     return cleanupReady;
   }
 
-  playOnceWhenVisible(context, (): void => revealManifesto(context));
+  const owner = createOwner(context);
+  context.onCleanup((): void => owner.destroy());
+  playOnceWhenVisible(context, (): void => owner.start());
 
   return cleanupReady;
 };

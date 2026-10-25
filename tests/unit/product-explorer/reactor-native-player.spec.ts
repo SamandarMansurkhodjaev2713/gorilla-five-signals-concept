@@ -7,9 +7,11 @@ import type { ReactorNativeCue } from "@/features/flavor-reactor/native/reactor-
 import type { Mock } from "vitest";
 
 interface EffectHarness {
+  readonly construction: "clone" | "original";
   readonly frames: readonly Keyframe[];
-  readonly target: unknown;
-  readonly timing: Readonly<KeyframeEffectOptions>;
+  readonly source: EffectHarness | null;
+  target: unknown;
+  timing: Readonly<KeyframeEffectOptions>;
 }
 
 class AnimationHarness extends EventTarget {
@@ -66,6 +68,7 @@ function createPorts(
     readonly cancelFailures?: ReadonlyMap<number, Error>;
     readonly currentTime?: number | null;
     readonly effectFailure?: PortFailure;
+    readonly originalMutationFailure?: Error;
   } = {},
 ): PlayerHarness {
   const state: PortState = {
@@ -77,17 +80,69 @@ function createPorts(
   let effectAttempt = 0;
   let animationAttempt = 0;
 
-  class KeyframeEffectPort {
+  class KeyframeEffectPort implements EffectHarness {
+    readonly construction: "clone" | "original";
+    readonly frames: readonly Keyframe[];
+    readonly source: EffectHarness | null;
+    private targetValue: unknown;
+    timing: Readonly<KeyframeEffectOptions>;
+
     constructor(
-      target: unknown,
-      frames: readonly Keyframe[],
-      timing: Readonly<KeyframeEffectOptions>,
+      targetOrSource: unknown,
+      frames?: readonly Keyframe[],
+      timing?: Readonly<KeyframeEffectOptions>,
     ) {
       const index = effectAttempt;
       effectAttempt += 1;
       if (options.effectFailure?.index === index)
         throw options.effectFailure.error;
-      state.effects.push({ frames, target, timing });
+      if (targetOrSource instanceof KeyframeEffectPort) {
+        this.construction = "clone";
+        this.frames = targetOrSource.frames.map((frame) => ({ ...frame }));
+        this.source = targetOrSource;
+        this.targetValue = targetOrSource.target;
+        this.timing = { ...targetOrSource.timing };
+      } else {
+        if (frames === undefined || timing === undefined)
+          throw new TypeError("Original effects require frames and timing.");
+        this.construction = "original";
+        this.frames = frames.map((frame) => {
+          const copy = { ...frame };
+          if (typeof copy.offset === "number" && !Number.isFinite(copy.offset))
+            throw new TypeError("Keyframe offsets must be finite.");
+          return copy;
+        });
+        this.source = null;
+        this.targetValue = targetOrSource;
+        this.timing = timing;
+      }
+      state.effects.push(this);
+    }
+
+    get target(): unknown {
+      return this.targetValue;
+    }
+
+    set target(value: unknown) {
+      if (
+        this.construction === "original" &&
+        options.originalMutationFailure !== undefined
+      )
+        throw options.originalMutationFailure;
+      this.targetValue = value;
+    }
+
+    getTiming(): Readonly<KeyframeEffectOptions> {
+      return this.timing;
+    }
+
+    updateTiming(timing: Readonly<OptionalEffectTiming>): void {
+      if (
+        this.construction === "original" &&
+        options.originalMutationFailure !== undefined
+      )
+        throw options.originalMutationFailure;
+      this.timing = { ...this.timing, ...timing };
     }
   }
 
@@ -175,6 +230,39 @@ function cueWithTiming(delayMs: number, durationMs: number): ReactorNativeCue {
   return { ...cue, delayMs, durationMs };
 }
 
+function repeatedCues(): readonly ReactorNativeCue[] {
+  const base = createCues()[1];
+  if (base === undefined) throw new Error("Missing repeated cue fixture.");
+  const source: ReactorNativeCue = {
+    ...base,
+    frames: [
+      { opacity: 0, visibility: "hidden" },
+      { opacity: 1, visibility: "visible" },
+    ],
+  };
+  return [
+    source,
+    {
+      ...source,
+      delayMs: 360,
+      frames: [
+        { visibility: "hidden", opacity: 0 },
+        { visibility: "visible", opacity: 1 },
+      ],
+      target: target("copy-secondary"),
+    },
+  ];
+}
+
+function cueWithFrames(
+  frames: readonly [Keyframe, Keyframe],
+  name: string,
+): ReactorNativeCue {
+  const base = createCues()[1];
+  if (base === undefined) throw new Error("Missing frame cue fixture.");
+  return { ...base, frames, target: target(name) };
+}
+
 function createPlayer(
   harness: PlayerHarness,
   cues: readonly ReactorNativeCue[] = createCues(),
@@ -210,6 +298,11 @@ describe("ReactorNativePlayer", () => {
     player.play();
 
     expect(harness.effects).toHaveLength(cues.length);
+    expect(harness.effects.map(({ construction }) => construction)).toEqual([
+      "original",
+      "original",
+      "original",
+    ]);
     expect(harness.animations).toHaveLength(cues.length);
     expect(harness.playConstructionCounts).toEqual([3, 3, 3]);
     harness.animations.forEach((animation, index) => {
@@ -228,8 +321,99 @@ describe("ReactorNativePlayer", () => {
         easing: REACTOR_NATIVE_EASING[cue.ease],
         fill: "both",
       });
-      expect(String(effect.timing.easing).split(",")).toHaveLength(65);
+      expect(String(effect.timing.easing).split(",")).toHaveLength(
+        REACTOR_NATIVE_EASING[cue.ease].split(",").length,
+      );
     });
+    expect(harness.onFailure).not.toHaveBeenCalled();
+  });
+
+  it("GIVEN equivalent frame values with different property order and delay WHEN effects are built THEN one parsed source is cloned with independent target and timing", () => {
+    const harness = createPorts();
+    const cues = repeatedCues();
+    const player = createPlayer(harness, cues);
+
+    player.play();
+
+    const [source, clone] = harness.effects;
+    if (source === undefined || clone === undefined)
+      throw new Error("Expected source and cloned effects.");
+    expect(harness.effects.map(({ construction }) => construction)).toEqual([
+      "original",
+      "clone",
+    ]);
+    expect(clone.source).toBe(source);
+    expect(source.target).toBe(cues[0]?.target);
+    expect(clone.target).toBe(cues[1]?.target);
+    expect(source.timing.delay).toBe(cues[0]?.delayMs);
+    expect(clone.timing.delay).toBe(cues[1]?.delayMs);
+    expect(source.frames).toEqual(clone.frames);
+    expect(source.frames).not.toBe(clone.frames);
+    expect(harness.animations).toHaveLength(2);
+    expect(harness.onFailure).not.toHaveBeenCalled();
+  });
+
+  it("GIVEN a valid null offset followed by a non-finite offset WHEN effects are built THEN the unsafe frame bypasses reuse and native validation rolls back the prior animation", () => {
+    const valid = cueWithFrames(
+      [
+        { offset: null, opacity: 0 },
+        { offset: null, opacity: 1 },
+      ],
+      "valid-null-offset",
+    );
+    const invalid = cueWithFrames(
+      [
+        { offset: Number.NaN, opacity: 0 },
+        { offset: Number.NaN, opacity: 1 },
+      ],
+      "invalid-nan-offset",
+    );
+    const harness = createPorts();
+    const player = createPlayer(harness, [valid, invalid]);
+
+    expect(() => player.play()).not.toThrow();
+
+    expect(harness.effects).toHaveLength(1);
+    expect(harness.effects[0]?.construction).toBe("original");
+    expect(harness.animations).toHaveLength(1);
+    expect(harness.animations[0]?.cancelCalls).toBe(1);
+    expect(firstFailure(harness)).toMatchObject({
+      message: "Keyframe offsets must be finite.",
+    });
+  });
+
+  it("GIVEN an enumerable accessor frame WHEN equivalent cues are built THEN keying never evaluates it and each native constructor remains the sole reader", () => {
+    let getterReads = 0;
+    const accessorFrame: Keyframe = {};
+    Object.defineProperty(accessorFrame, "opacity", {
+      enumerable: true,
+      get: (): number => {
+        getterReads += 1;
+        return 0;
+      },
+    });
+    const frames: readonly [Keyframe, Keyframe] = [
+      accessorFrame,
+      { opacity: 1 },
+    ];
+    const harness = createPorts({
+      originalMutationFailure: new Error(
+        "An unsafe original effect must not receive clone mutations.",
+      ),
+    });
+    const player = createPlayer(harness, [
+      cueWithFrames(frames, "accessor-first"),
+      cueWithFrames(frames, "accessor-second"),
+    ]);
+
+    player.play();
+
+    expect(getterReads).toBe(2);
+    expect(harness.effects.map(({ construction }) => construction)).toEqual([
+      "original",
+      "original",
+    ]);
+    expect(harness.animations).toHaveLength(2);
     expect(harness.onFailure).not.toHaveBeenCalled();
   });
 
@@ -275,6 +459,22 @@ describe("ReactorNativePlayer", () => {
       1, 1,
     ]);
     expect(firstFailure(harness)).toBe(setupError);
+  });
+
+  it("GIVEN a repeated cue clone fails after its source animation exists WHEN play runs THEN the partial group rolls back exactly", () => {
+    const cloneError = new Error("effect clone failed");
+    const harness = createPorts({
+      effectFailure: { error: cloneError, index: 1 },
+    });
+    const player = createPlayer(harness, repeatedCues());
+
+    expect(() => player.play()).not.toThrow();
+
+    expect(harness.effects).toHaveLength(1);
+    expect(harness.effects[0]?.construction).toBe("original");
+    expect(harness.animations).toHaveLength(1);
+    expect(harness.animations[0]?.cancelCalls).toBe(1);
+    expect(firstFailure(harness)).toBe(cloneError);
   });
 
   it("GIVEN Animation construction fails partway WHEN play runs THEN every previously owned animation rolls back", () => {

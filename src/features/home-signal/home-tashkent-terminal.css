@@ -44,7 +44,8 @@
   letter-spacing: -0.06em;
   line-height: 0.78;
   text-transform: uppercase;
-  text-wrap: balance;
+  /* Keep line layout stable when the clip entrance ends (WebKit rebalance case). */
+  text-wrap: wrap;
 }
 
 .tashkent-terminal__copy > p {

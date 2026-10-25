@@ -1,7 +1,10 @@
 import { runCleanupStack } from "../cleanup-stack";
+import { reusableEffectKey } from "./finite-animation-effect-key";
 import { NATIVE_MOTION_EASING } from "../native-easing";
 
 const support = new WeakMap<Window, boolean>();
+const PROBE_DELAY_MS = 1;
+const PROBE_DURATION_MS = 1;
 
 export interface FiniteAnimationCue {
   readonly target: HTMLElement;
@@ -21,6 +24,22 @@ interface PlayerOptions {
   readonly onFailure: (error: unknown) => void;
 }
 
+function probeEffectCloning(windowValue: Window & typeof globalThis): boolean {
+  const source = new windowValue.KeyframeEffect(
+    null,
+    [{ opacity: 0 }, { opacity: 1 }],
+    { duration: PROBE_DURATION_MS, easing: NATIVE_MOTION_EASING.material },
+  );
+  const clone = new windowValue.KeyframeEffect(source);
+  clone.target = null;
+  clone.updateTiming({ delay: PROBE_DELAY_MS });
+  return (
+    source !== clone &&
+    source.getTiming().delay === 0 &&
+    clone.getTiming().delay === PROBE_DELAY_MS
+  );
+}
+
 /** Verify the public Web Animations surface and the sampled linear() easing. */
 export function supportsFiniteAnimationPlayer(
   windowValue: Window & typeof globalThis,
@@ -38,11 +57,7 @@ export function supportsFiniteAnimationPlayer(
     )
   ) {
     try {
-      new windowValue.KeyframeEffect(null, [{ opacity: 0 }, { opacity: 1 }], {
-        duration: 1,
-        easing: NATIVE_MOTION_EASING.material,
-      });
-      supported = true;
+      supported = probeEffectCloning(windowValue);
     } catch (error: unknown) {
       if (!(error instanceof windowValue.TypeError)) throw error;
     }
@@ -89,17 +104,23 @@ export class FiniteAnimationPlayer {
     const windowValue = this.options.documentValue.defaultView;
     if (windowValue === null)
       throw new Error(`${this.options.label} requires an active document.`);
+    const sources = new Map<string, KeyframeEffect>();
     this.options.cues.forEach((cue, index): void => {
-      const effect = new windowValue.KeyframeEffect(
-        cue.target,
-        [...cue.frames],
-        {
-          delay: cue.delayMs,
-          duration: cue.durationMs,
-          easing: cue.easing,
-          fill: "both",
-        },
-      );
+      const key = reusableEffectKey(cue);
+      const source = key === null ? undefined : sources.get(key);
+      const effect =
+        source === undefined
+          ? new windowValue.KeyframeEffect(cue.target, [...cue.frames], {
+              delay: cue.delayMs,
+              duration: cue.durationMs,
+              easing: cue.easing,
+              fill: "both",
+            })
+          : new windowValue.KeyframeEffect(source);
+      if (source !== undefined) {
+        effect.target = cue.target;
+        effect.updateTiming({ delay: cue.delayMs });
+      } else if (key !== null) sources.set(key, effect);
       const animation = new windowValue.Animation(
         effect,
         this.options.documentValue.timeline,

@@ -2,8 +2,16 @@ export type NativeMotionEase = "enter" | "material" | "snap";
 
 type EaseFunction = (progress: number) => number;
 
-const EASING_SAMPLE_INTERVALS = 64;
 const SERIALIZED_DECIMAL_PLACES = 6;
+const MAX_NORMALIZED_SEGMENT_ERROR = 0.00004;
+const MAX_SUBDIVISION_DEPTH = 12;
+const MAX_EASING_STOPS = 513;
+const ERROR_PROBES = [0.25, 0.5, 0.75] as const;
+
+interface EaseStop {
+  readonly input: number;
+  readonly output: number;
+}
 
 const NATIVE_EASING_FUNCTIONS: Readonly<
   Record<NativeMotionEase, EaseFunction>
@@ -29,19 +37,51 @@ function serialize(value: number): string {
   return fixed.replace(/(?:\.0+|(\.\d+?)0+)$/, "$1");
 }
 
+function segmentError(
+  ease: EaseFunction,
+  left: EaseStop,
+  right: EaseStop,
+): number {
+  return Math.max(
+    ...ERROR_PROBES.map((fraction) => {
+      const progress = left.input + (right.input - left.input) * fraction;
+      const linearValue = left.output + (right.output - left.output) * fraction;
+      return Math.abs(normalize(ease(progress)) - linearValue);
+    }),
+  );
+}
+
+function appendStops(
+  ease: EaseFunction,
+  left: EaseStop,
+  right: EaseStop,
+  depth: number,
+  stops: EaseStop[],
+): void {
+  if (segmentError(ease, left, right) <= MAX_NORMALIZED_SEGMENT_ERROR) {
+    if (stops.length >= MAX_EASING_STOPS)
+      throw new Error("Native easing exceeded its finite stop bound.");
+    stops.push(right);
+    return;
+  }
+  if (depth >= MAX_SUBDIVISION_DEPTH)
+    throw new Error("Native easing exceeded its finite subdivision bound.");
+  const input = (left.input + right.input) / 2;
+  const middle = { input, output: normalize(ease(input)) };
+  appendStops(ease, left, middle, depth + 1, stops);
+  appendStops(ease, middle, right, depth + 1, stops);
+}
+
 function sampleEase(ease: EaseFunction): string {
-  const stops = Array.from(
-    { length: EASING_SAMPLE_INTERVALS + 1 },
-    (_, index) => {
-      const progress = index / EASING_SAMPLE_INTERVALS;
-      const value =
-        index === 0
-          ? 0
-          : index === EASING_SAMPLE_INTERVALS
-            ? 1
-            : ease(progress);
-      return `${serialize(value)} ${serialize(progress * 100)}%`;
-    },
+  const left = { input: 0, output: 0 },
+    right = { input: 1, output: 1 };
+  const points: EaseStop[] = [left];
+  // Wide clip masks need precise curves, but uniform 512-interval strings
+  // caused measured parser/effect setup regressions. Bound dense-test error
+  // while retaining fewer stops on the flat tail; no per-frame JS sampling.
+  appendStops(ease, left, right, 0, points);
+  const stops = points.map(
+    ({ input, output }) => `${serialize(output)} ${serialize(input * 100)}%`,
   );
   return `linear(${stops.join(", ")})`;
 }

@@ -38,7 +38,9 @@ release.
 ## Stack
 
 - Astro 7 with strict TypeScript and static output
-- GSAP for finite, context-scoped motion choreography
+- native Web Animations for guarded finite entrances and product presentation
+- GSAP for scroll choreography and scoped fallback when native capability or
+  presentation preconditions fail
 - Zod for environment and content-boundary validation
 - Vitest, Playwright, Axe, and Lighthouse for release evidence
 - pnpm with pinned Node.js and package-manager versions
@@ -110,7 +112,8 @@ Motion lifecycle decisions cover
 [exact Reactor presentation ownership](docs/decisions/ADR-0009-reactor-transition-presentation-owner.md),
 the [product/route history boundary](docs/decisions/ADR-0010-product-history-route-boundary.md),
 the [guarded native Reactor candidate](docs/decisions/ADR-0011-reactor-native-presentation-player.md),
-and [shared finite native entrances](docs/decisions/ADR-0012-shared-finite-native-entrances.md).
+the [shared finite native owner](docs/decisions/ADR-0012-shared-finite-native-entrances.md),
+and [adaptive native home entrances](docs/decisions/ADR-0013-native-home-entrances.md).
 Current limitations and measured gates remain in [QA status](docs/quality/QA_STATUS.md).
 `pnpm typecheck` also strictly checks the tiny external browser bootstrap through
 `tsconfig.browser-scripts.json`; it is not excluded merely because it runs before
