@@ -19,6 +19,21 @@ const DESKTOP = "(min-width: 64rem)";
 const TABLET = "(min-width: 48rem)";
 
 describe("hero responsive image numerical contract", () => {
+  it("GIVEN compact portrait art WHEN sizes is emitted THEN the 40svh hint preserves the separate wider-phone ceiling", () => {
+    const { sizes, aspect } = createHeroImageLayout(ASPECT_CASES[0]);
+    const compactStart = sizes.indexOf(COMPACT_PORTRAIT);
+    const compactEnd = sizes.indexOf(GENERAL_LANDSCAPE, compactStart);
+    expect(compactStart).toBeGreaterThanOrEqual(0);
+    expect(compactEnd).toBeGreaterThan(compactStart);
+    expect(sizes.slice(compactStart, compactEnd)).toContain("40svh");
+    expect(sizes.slice(compactStart, compactEnd)).not.toContain("48svh");
+    expect(
+      sizes.endsWith(
+        `min(calc(48svh * ${String(aspect)}), calc(25rem * ${String(aspect)}))`,
+      ),
+    ).toBe(true);
+  });
+
   it.each(ASPECT_CASES)(
     "GIVEN native dimensions %j WHEN every authored rotation is projected THEN the width cap contains the image",
     (dimensions) => {

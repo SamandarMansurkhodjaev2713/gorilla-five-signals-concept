@@ -272,12 +272,16 @@
   }
 
   .home-service-dock__contact {
+    grid-template-columns: minmax(0, 1fr);
     min-block-size: min(34rem, 68svh);
   }
 
   .home-service-dock__contact > strong {
-    max-inline-size: 9ch;
-    overflow-wrap: normal;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    font-size: clamp(3.25rem, 16vw, 9rem);
+    line-height: 0.95;
+    overflow-wrap: anywhere;
   }
 
   .home-service-dock__contact > small {

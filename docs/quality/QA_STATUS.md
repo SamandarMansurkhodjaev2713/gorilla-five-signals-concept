@@ -1,5 +1,22 @@
 # QA status
 
+## Consumer typography and mobile action fit — 2026-10-25
+
+Removed the untranslated range calibration eyebrow and restored its full-row
+mobile display heading. Fixed measured WebKit store/contact text overflow using
+available-width tracks and fluid mobile type; increased action leading to 0.95
+after native 320px inspection. Compact Hero SSR image sizing now matches 40svh.
+Source quality passes 273 strict files, 249 units, 47-page build, artifact checks
+and dependency audit. All 48 strengthened cross-engine heading/outro contracts
+pass without retries/skips, including three languages, 200% text and native no-JS
+footer activation. Earlier failures and exact diagnostic scope remain recorded.
+All 42 existing Chromium Reactor functional contracts also pass against the final
+artifact: seven viewport contexts, all products, history, keyboard, reduced
+motion, interruption and no-JS parity.
+See [five-lens review and evidence](CONSUMER_TYPE_REVIEW_2026-10-25.md).
+Full device/assistive-technology, startup/Lighthouse and release gates remain
+open; main/Pages are not updated by this branch correction.
+
 ## Hero first-fold availability — 2026-10-25
 
 Corrected clipped primary actions on ordinary phone/desktop viewports without

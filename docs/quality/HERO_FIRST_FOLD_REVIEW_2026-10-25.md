@@ -35,6 +35,9 @@ found no new CTA cropping or product obstruction. The existing SSR image sizes
 hint still conservatively describes the wider-phone 48svh ceiling on compact
 phones; the new 40svh paint size can over-request pixels. This is not a crop or
 blur, but remains a separate asset-sizing optimization, not a claimed saving.
+Follow-up: the compact 40svh SSR hint is now aligned in the
+[consumer type correction](CONSUMER_TYPE_REVIEW_2026-10-25.md); wider-phone and
+landscape branches retain their distinct limits.
 
 ## Five review lenses
 

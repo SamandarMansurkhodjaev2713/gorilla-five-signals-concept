@@ -18,13 +18,17 @@
   }
 
   .tashkent-terminal__locator {
+    grid-template-columns: minmax(0, 1fr);
     margin-inline: var(--space-gutter);
     padding-inline: var(--space-5);
   }
 
   .tashkent-terminal__locator > strong {
-    max-inline-size: 8.5ch;
-    overflow-wrap: normal;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    font-size: clamp(2.8rem, 13vw, 6.7rem);
+    line-height: 0.95;
+    overflow-wrap: anywhere;
   }
 }
 

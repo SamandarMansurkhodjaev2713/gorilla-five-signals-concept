@@ -10,14 +10,19 @@
   }
 
   .reactor-intro {
-    align-items: flex-start;
+    display: block;
   }
 
   .reactor-intro h2 {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 0;
-    max-inline-size: 11ch;
-    font-size: clamp(1.15rem, 5vw, 1.55rem);
+    justify-content: start;
+    max-inline-size: none;
+    font-size: clamp(2rem, 8vw, 3rem);
+    line-height: 0.95;
+    overflow-wrap: anywhere;
+    text-align: start;
   }
 
   .selector-list {
@@ -88,10 +93,6 @@
 
   .reactor-shell {
     padding-inline: var(--space-4);
-  }
-
-  .reactor-intro .type-label {
-    max-inline-size: 10ch;
   }
 
   .reactor-step span {
