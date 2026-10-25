@@ -9,7 +9,10 @@ import {
   LOCATOR_ROOT_SELECTOR,
   type LocatorController,
 } from "../features/locator/locator-contract";
-import { publishMotionDiagnostic } from "../motion/diagnostics";
+import {
+  publishMotionDiagnostic,
+  type MotionDiagnosticCode,
+} from "../motion/diagnostics";
 import type {
   createAccessibleMenu,
   AccessibleMenuController,
@@ -28,6 +31,11 @@ import type { createMotionRuntime, MotionRuntime } from "../motion/runtime";
 
 interface ConfirmedControllerFactories {
   createAccessibleMenu: typeof createAccessibleMenu;
+}
+
+interface AsyncLaunchDiagnostic {
+  readonly code: MotionDiagnosticCode;
+  readonly fallbackMessage: string;
 }
 
 type MotionRuntimeFactory = typeof createMotionRuntime;
@@ -133,11 +141,23 @@ function waitForAnimationFrame(): Promise<void> {
   return new Promise((resolve) => requestAnimationFrame(() => resolve()));
 }
 
-function scheduleMotionRuntime(activeGeneration: number): void {
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      void loadAndMountMotionRuntime(activeGeneration);
+function launchAsync(
+  operation: Promise<void>,
+  diagnostic: AsyncLaunchDiagnostic,
+): void {
+  void operation.catch((error: unknown): void => {
+    publishMotionDiagnostic(window, {
+      code: diagnostic.code,
+      message:
+        error instanceof Error ? error.message : diagnostic.fallbackMessage,
     });
+  });
+}
+
+function scheduleMotionRuntime(activeGeneration: number): void {
+  launchAsync(loadAndMountMotionRuntime(activeGeneration), {
+    code: "engine-load-failed",
+    fallbackMessage: "Motion startup failed.",
   });
 }
 
@@ -262,10 +282,9 @@ async function mountConfirmedControllers(
 function scheduleConfirmedControllers(activeGeneration: number): void {
   mountProductExplorer(activeGeneration);
   mountProductArchive(activeGeneration);
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      void mountConfirmedControllers(activeGeneration);
-    });
+  launchAsync(mountConfirmedControllers(activeGeneration), {
+    code: "controller-mount-failed",
+    fallbackMessage: "Controller startup failed.",
   });
 }
 

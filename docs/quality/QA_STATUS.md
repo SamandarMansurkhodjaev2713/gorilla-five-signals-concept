@@ -1,5 +1,43 @@
 # QA status
 
+## Direct startup scheduling candidate — partial evidence, 2026-10-25
+
+The current candidate removes only the redundant outer two-frame wrappers from
+motion-runtime and confirmed-controller launch. It retains the two inner frames
+around engine import, generation guards, runtime-owned readiness, immediate
+scene readiness and all 18 Full Hero frame stages. A shared guarded launcher
+diagnoses any escaping asynchronous rejection.
+
+The current source/unit gate passes with 0 TypeScript errors, 358 strict files,
+56 unit files and 467 passing tests, audit 0 and a 617-component SBOM. Candidate entry SHA-256 is
+`5b99c8bddaf9dd06adddc1040ae8c515d9263e32151c8f9aa0a0ccd19a7570bb`.
+
+One error-free observer records ready/full at 4903/4890ms versus the preserved
+6377/6311ms baseline, and loading at 693/713ms versus 2218/2138ms. The unchanged
+18-stage navigation-to-Hero chain is 3702/3677ms versus 3643/3643ms, so no
+stage-chain speed claim is made and one observation is not stability proof.
+
+The unchanged-timeout functional batch passes 51/51 in 3.1 minutes with the same
+two workers, 45s test timeout and 7.5s assertion timeout. It covers all five
+previously failing identities, three engines, phone/desktop, entry locale and
+FAQ disclosure geometry. The preceding 46/51 candidate and restored-grid runs
+remain historical evidence and are not reclassified.
+
+The fresh canonical nine-run Lighthouse batch passes with zero failures. Home
+median Performance is 98, LCP 2338.9322ms, TBT 58ms and CLS 0; Product is 98,
+2191.65465ms, 0 and 0; Find is 99, 1960.2672ms, 0 and 0. Accessibility, best
+practices and SEO are 100 in all nine audits. Audit build SHA-256 is
+`5a7da20c75465d857d0606a127b5e5cdc1aaf7addeeedb846ed3192d2732db53`,
+distinct from local candidate SHA `5b99…`.
+
+The global CPU×4 `<16ms` gate, complete-frame behavior and physical Safari
+signoff remain open. Main/Pages stay held. Evidence:
+`.tmp/quality-startup-direct-2026-10-25.log`,
+`.tmp/startup-direct-functional-2026-10-25.log`,
+`test-results/lighthouse/summary.json` and
+`.tmp/startup-direct-lighthouse-2026-10-25.log`. See the
+[five-lens review](STARTUP_DIRECT_REVIEW_2026-10-25.md).
+
 ## Service block-flow rollback and causal control — 2026-10-25
 
 The FAQ root block-flow experiment remains rolled back and unpromoted. Current
@@ -583,36 +621,36 @@ cases are independently named fixtures, not because acceptance scope was reduced
 
 ## Historical executed evidence (preceding candidate)
 
-| Gate                              | Status                   | Current evidence                                                                                                                      |
-| --------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Format, lint, strict types        | Passed locally           | Prettier; ESLint zero warnings; Astro Check on 219 files with zero errors, warnings, or hints                                         |
-| Unit tests                        | Passed locally           | 111 tests in 18 files                                                                                                                 |
-| Unit coverage                     | Passed locally           | 100% statements, lines, and functions; 97.31% branches                                                                                |
-| Static build                      | Passed locally           | 47 localized/static pages                                                                                                             |
-| Content, links, budgets           | Passed locally           | Links across all 47 HTML files; 38 validated content records; initial JS/transfer limits pass                                         |
-| Media/font provenance             | Passed locally           | Ten media records; deterministic font subsets and checksums; pinned FFmpeg binary hash                                                |
-| Dependency security               | Passed locally           | Current beebfd7 dependency audit reports no known vulnerabilities                                                                    |
-| Dependency licenses/SBOM          | Passed locally           | Deterministic CycloneDX 1.6 inventory with 617 reviewed components                                                                    |
-| Current rebuild Chromium contract | Passed locally           | Atlas/Compare legacy and focused run: 40 passed; detail matrix, art, fallback, lifecycle, and post-audit boundary runs passed          |
-| Current authored capture journeys | Passed locally           | Fresh desktop and mobile chapter captures, two of two                                                                                 |
-| Firefox                           | Historical baseline only | Must be rerun after Product Atlas/Compare/detail-world art direction settles                                                          |
-| WebKit                            | Historical baseline only | Must be rerun after Product Atlas/Compare/detail-world art direction settles                                                          |
-| Accessibility and reflow          | Passed locally           | Axe WCAG 2.2 AA route matrix, keyboard, focus, 200% text, forced colors, 320 px, and reduced motion                                   |
-| Motion performance                | Historical baseline only | Final candidate requires three independent CPU ×4 journeys with unchanged frame, long-task, and interaction gates                   |
-| Lighthouse median of three        | Prior candidate only     | Recorded October medians 96–99 pass; rerun against the final candidate and record its artifact hash                                   |
-| Sites worker contract             | Passed locally           | Cloudflare-compatible artifact; redirect, headers, caching, and asset binding verified                                                |
-| Public review release             | Passed                   | GitHub Pages baseline release, Quality, Pages, and CodeQL completed successfully before this feature milestone                        |
+| Gate                              | Status                   | Current evidence                                                                                                              |
+| --------------------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| Format, lint, strict types        | Passed locally           | Prettier; ESLint zero warnings; Astro Check on 219 files with zero errors, warnings, or hints                                 |
+| Unit tests                        | Passed locally           | 111 tests in 18 files                                                                                                         |
+| Unit coverage                     | Passed locally           | 100% statements, lines, and functions; 97.31% branches                                                                        |
+| Static build                      | Passed locally           | 47 localized/static pages                                                                                                     |
+| Content, links, budgets           | Passed locally           | Links across all 47 HTML files; 38 validated content records; initial JS/transfer limits pass                                 |
+| Media/font provenance             | Passed locally           | Ten media records; deterministic font subsets and checksums; pinned FFmpeg binary hash                                        |
+| Dependency security               | Passed locally           | Current beebfd7 dependency audit reports no known vulnerabilities                                                             |
+| Dependency licenses/SBOM          | Passed locally           | Deterministic CycloneDX 1.6 inventory with 617 reviewed components                                                            |
+| Current rebuild Chromium contract | Passed locally           | Atlas/Compare legacy and focused run: 40 passed; detail matrix, art, fallback, lifecycle, and post-audit boundary runs passed |
+| Current authored capture journeys | Passed locally           | Fresh desktop and mobile chapter captures, two of two                                                                         |
+| Firefox                           | Historical baseline only | Must be rerun after Product Atlas/Compare/detail-world art direction settles                                                  |
+| WebKit                            | Historical baseline only | Must be rerun after Product Atlas/Compare/detail-world art direction settles                                                  |
+| Accessibility and reflow          | Passed locally           | Axe WCAG 2.2 AA route matrix, keyboard, focus, 200% text, forced colors, 320 px, and reduced motion                           |
+| Motion performance                | Historical baseline only | Final candidate requires three independent CPU ×4 journeys with unchanged frame, long-task, and interaction gates             |
+| Lighthouse median of three        | Prior candidate only     | Recorded October medians 96–99 pass; rerun against the final candidate and record its artifact hash                           |
+| Sites worker contract             | Passed locally           | Cloudflare-compatible artifact; redirect, headers, caching, and asset binding verified                                        |
+| Public review release             | Passed                   | GitHub Pages baseline release, Quality, Pages, and CodeQL completed successfully before this feature milestone                |
 
 The current milestone's dated five-lens evidence and corrective actions are in
 `docs/quality/AWWWARDS_PHASE5_REVIEW_2026-09-09.md`.
 
 ## Performance medians
 
-| Route                    | Performance | Accessibility | Best practices | SEO |      LCP |     CLS |    TBT |
-| ------------------------ | ----------: | ------------: | -------------: | --: | -------: | ------: | -----: |
-| `/uz/`                   |          96 |           100 |            100 | 100 | 2,499 ms |       0 |  99 ms |
-| `/uz/products/original/` |          99 |           100 |            100 | 100 | 2,110 ms |       0 | 8.5 ms |
-| `/uz/find/`              |          99 |           100 |            100 | 100 | 1,889 ms |       0 | 3.5 ms |
+| Route                    | Performance | Accessibility | Best practices | SEO |      LCP | CLS |    TBT |
+| ------------------------ | ----------: | ------------: | -------------: | --: | -------: | --: | -----: |
+| `/uz/`                   |          96 |           100 |            100 | 100 | 2,499 ms |   0 |  99 ms |
+| `/uz/products/original/` |          99 |           100 |            100 | 100 | 2,110 ms |   0 | 8.5 ms |
+| `/uz/find/`              |          99 |           100 |            100 | 100 | 1,889 ms |   0 | 3.5 ms |
 
 The runner built a dedicated artifact with entry SHA-256
 `42bd41cf7dd502bd03c9569f4e96b2f504d533dd0f22d52ca4323cd53e4a07c0`,
