@@ -33,6 +33,7 @@ export async function installNativeEntranceObserver(page: Page): Promise<void> {
             "gorilla-material-film:",
             "gorilla-terminal:",
             "gorilla-home-service:",
+            "gorilla-footer:",
           ].find((value) => this.id.startsWith(value));
           if (prefix === undefined) return;
           const state = observations[prefix] ?? {

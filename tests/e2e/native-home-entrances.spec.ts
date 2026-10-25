@@ -1,4 +1,4 @@
-import { expect, test, type Locator, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 import {
   openConsumerMotionControls,
@@ -9,17 +9,11 @@ import {
   installNativeEntranceObserver,
   readNativeEntranceObservation,
 } from "./support/native-entrance-observer";
-
-const PROPERTIES = [
-  "clip-path",
-  "opacity",
-  "rotate",
-  "scale",
-  "transform",
-  "transform-origin",
-  "translate",
-  "visibility",
-] as const;
+import {
+  countOwnedEntranceEffects as ownedCount,
+  snapshotEntranceInline as snapshot,
+  wheelIntoEntrance as wheelIntoScene,
+} from "./support/native-entrance-lifecycle";
 const SCENES = [
   {
     id: "range-manifesto",
@@ -58,54 +52,6 @@ const VIEWPORTS = [
   { width: 390, height: 844 },
   { width: 1440, height: 900 },
 ] as const;
-const MAX_WHEEL_STEPS = 72;
-const WHEEL_STEP_PX = 320;
-
-async function snapshot(root: Locator, selector: string) {
-  return root.locator(selector).evaluateAll(
-    (elements, properties) =>
-      elements.map((element) => {
-        if (!(element instanceof HTMLElement))
-          throw new Error("An entrance target is not HTML.");
-        return properties.map((property) => ({
-          property,
-          value: element.style.getPropertyValue(property),
-          priority: element.style.getPropertyPriority(property),
-        }));
-      }),
-    PROPERTIES,
-  );
-}
-
-async function wheelIntoScene(page: Page, root: Locator): Promise<void> {
-  for (let step = 0; step < MAX_WHEEL_STEPS; step += 1) {
-    if (
-      await root.evaluate((element) => {
-        const rect = element.getBoundingClientRect();
-        return rect.top < innerHeight / 2 && rect.bottom > innerHeight / 2;
-      })
-    )
-      return;
-    await page.mouse.wheel(0, WHEEL_STEP_PX);
-    await page.evaluate(
-      () =>
-        new Promise<void>((resolve) =>
-          requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
-        ),
-    );
-  }
-  throw new Error("Native wheel did not reach the entrance viewport.");
-}
-
-async function ownedCount(root: Locator, prefix: string): Promise<number> {
-  return root.evaluate(
-    (element, value) =>
-      element
-        .getAnimations({ subtree: true })
-        .filter((animation) => animation.id.startsWith(value)).length,
-    prefix,
-  );
-}
 
 for (const viewport of VIEWPORTS)
   for (const tier of ["full", "lite"] as const) {

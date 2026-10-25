@@ -10,6 +10,7 @@ import {
   setupLocatorScene,
 } from "./editorial";
 import { setupHero } from "./hero";
+import { setupFooterScene } from "./footer-motion";
 import { setupManifesto } from "./manifesto";
 import { setupMaterialFilm } from "./media";
 import { setupNavigation } from "./navigation";
@@ -46,5 +47,5 @@ export const SCENE_SETUPS: Readonly<Record<SceneId, SceneSetup>> = {
   "faq-safety": setupFaqScene,
   "contact-partnership": setupContactScene,
   "contact-switchboard": setupContactSwitchboardScene,
-  footer: setupSignalScene,
+  footer: setupFooterScene,
 };

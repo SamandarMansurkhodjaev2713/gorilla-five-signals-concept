@@ -1,5 +1,73 @@
 # QA status
 
+## Footer-only finite native entrance — 2026-10-25
+
+Footer is now the sixth adapter over the shared finite native player and
+exact-snapshot owner. Its six signal targets retain the original 0/40/80/120/160/200ms
+schedule, 260ms duration, snap easing and 460ms terminal time. Responsible-entry
+and the generic GSAP signal helper are unchanged; unsupported, malformed,
+copy-bearing or custom-inline Footer states keep the scoped GSAP fallback.
+The global scene registry applies this adapter to the shared SiteFooter wherever
+it is rendered; the controlled matrices and hardware traces below exercised the
+homepage instance.
+
+The final post-split source/artifact gate passes formatting, lint, 356 strict
+files, 462 units, coverage of 96.79% statements, 93.95% branches, 97.42%
+functions and 97.67% lines, the 47-page build, artifact verification, the
+617-component SBOM and high-severity dependency audit. The entry-document
+SHA-256 is
+`91962ea9f6c37b9fc748b1381c98277edef073f7b923f09108897ecb18b3d2bb`.
+
+The controlled matrix passes 12 native/GSAP pairs and 24 captures across Chrome,
+Firefox and WebKit, Full/Lite and 390/1440px with zero out-of-budget numeric
+differences. Maximum rect delta is 0.067749px and matrix-linear delta is
+0.0000646678; translation, opacity and clip deltas are zero. Exact
+eight-property inline restoration on both backends and natural cleanup pass
+24/24; font metadata matches and no application or cleanup error is recorded.
+
+Three hardware CPU×4 traces measure the Footer callback at
+7.283/4.623/9.104ms, all below 16ms with zero nested `UpdateLayoutTree`,
+`Layout` or forced-style/layout work. The prior callback was
+24.670/23.119/23.211ms with 11 style updates and five layouts in every run. This
+accepts the bounded callback only: run one still records a later 59.2ms y=8000
+frame with no attributed script, and the page-wide gate remains failed.
+Product-area callbacks remain above 16ms; Manifesto and Culture each breach
+once; FAQ y=6720 frames remain 170.3/206.3/172.8ms.
+
+The initial combined functional batch preserved under
+`.tmp/footer-functional-before-split-2026-10-25/` passed 35/36. Chromium Full at
+1440px reached the unchanged 45-second watchdog after all five entrances and
+the pause completed, during the following Reduced Material style assertion. No
+application or assertion failure was observed before timeout. A tests-only
+scenario split retained every timeout and assertion, then passed 48/48 in 2.8
+minutes with exit 0, no retries and no skips: 12 Footer cases, 12 original
+four-scene cases and 24 entry-paint cases. Evidence:
+`.tmp/footer-functional-split-2026-10-25.log`. This is a harness scheduling fix,
+not an application fix; the production SHA remains unchanged.
+
+The canonical Lighthouse batch passes all nine audits with exit 0 and no
+failures. Its isolated audit entry SHA-256 is
+`b4493037596752fe1c2578574e4a93032c98487e7591dbf758ef968217ac97be`;
+the local production artifact remains the separate unchanged `91962…d2bb` SHA.
+Home Performance is 98/98/98. LCP is 2337.84/2414.34/2334.32ms, with a
+2337.84ms median; TBT is 78/37.5/34.5ms, with a 37.5ms median; CLS is 0.
+Product and Find Performance medians are 99; their LCP medians are 2186.76ms
+and 1959.09ms with 0ms median TBT. Accessibility, best practices and SEO are
+100 in all nine audits. All five secondary-image hints are Low with zero
+promotions in every home run, and the responsible-entry age text remains LCP.
+Evidence: `.tmp/lighthouse-footer-2026-10-25.log`,
+`test-results/lighthouse/summary.json` and
+`.tmp/lighthouse-footer-image-priority-2026-10-25.json`.
+
+The FAQ intrinsic-size CSS control is retained as a rejected production fix: it
+partially lowers some layout samples but does not consistently remove the
+full-document render tail. No production CSS changed. See the
+[FAQ render-tail diagnostic](FAQ_RENDER_DIAGNOSTIC_2026-10-25.md) for the next
+evidence boundary. Complete-journey, physical-device, assistive-technology,
+legal and publication gates remain open; Main/Pages stay held. See the
+[five-lens review](FOOTER_NATIVE_REVIEW_2026-10-25.md) and
+[ADR-0015](../decisions/ADR-0015-footer-native-ownership.md).
+
 ## Native Service and discovery-priority candidate — 2026-10-25
 
 Service Dock is now the fifth adapter over the shared finite native player and
