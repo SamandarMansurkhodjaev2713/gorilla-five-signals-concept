@@ -18,6 +18,7 @@ export default defineConfig({
         "src/features/compare/compare-state.ts",
         "src/features/locator/locator-state.ts",
         "src/features/product-explorer/product-explorer-state.ts",
+        "src/features/flavor-reactor/native/**/*.ts",
         "src/features/site/canonical.ts",
         "src/features/site/localization.ts",
         "src/features/site/reload-scroll.ts",

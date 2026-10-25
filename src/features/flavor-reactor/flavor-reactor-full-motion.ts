@@ -80,12 +80,20 @@ function animateCopy(timeline: SceneTimeline, world: HTMLElement): void {
   const trajectory = trajectoryFor(world);
   timeline.fromTo(
     requireWorldElement(world, REACTOR_MOTION_SELECTOR.copy),
-    { autoAlpha: 0, xPercent: trajectory.copyXPercent, y: trajectory.copyY },
+    // Explicit pixel x prevents parseTransform from retaining the startAt
+    // percentage's resolved pixels as an additional permanent translation.
+    {
+      autoAlpha: 0,
+      x: 0,
+      xPercent: trajectory.copyXPercent,
+      y: trajectory.copyY,
+    },
     {
       autoAlpha: 1,
       duration: MOTION_DURATION_SECONDS.scene,
       ease: MOTION_EASE.enter,
       xPercent: 0,
+      x: 0,
       y: 0,
     },
     0.12,

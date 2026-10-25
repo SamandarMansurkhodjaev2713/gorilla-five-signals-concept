@@ -25,6 +25,7 @@ const VIEWPORTS = [
 ] as const;
 
 interface ReactorOwnershipProbe {
+  largestFrameGapsMs: number[];
   maximumLeaving: number;
   styleMutations: number;
   heldPaintObservations: number;
@@ -82,6 +83,7 @@ async function armAuthoredBaseline(page: Page): Promise<void> {
 async function observeOwnership(reactor: Locator): Promise<void> {
   await reactor.evaluate((root) => {
     const probe: ReactorOwnershipProbe = {
+      largestFrameGapsMs: [],
       maximumLeaving: 0,
       styleMutations: 0,
       heldPaintObservations: 0,
@@ -89,8 +91,17 @@ async function observeOwnership(reactor: Locator): Promise<void> {
     };
     window.__reactorOwnershipProbe = probe;
     let pendingFrame: number | null = null;
+    let lastFrameAt = performance.now();
     function sampleHold(): void {
       pendingFrame = null;
+      const now = performance.now();
+      probe.largestFrameGapsMs.push(now - lastFrameAt);
+      probe.largestFrameGapsMs.sort((left, right) => right - left);
+      probe.largestFrameGapsMs.length = Math.min(
+        probe.largestFrameGapsMs.length,
+        8,
+      );
+      lastFrameAt = now;
       const held = Array.from(
         root.querySelectorAll("[data-reactor-preparing]"),
       );
@@ -175,7 +186,34 @@ async function selectProduct(reactor: Locator, slug: string): Promise<void> {
   ).toBeLessThanOrEqual(1);
 }
 
-test.afterEach(async ({ page }) => {
+test.afterEach(async ({ page }, testInfo) => {
+  if (!page.isClosed() && testInfo.status !== testInfo.expectedStatus) {
+    const presentation = await page
+      .locator("[data-product-explorer]")
+      .evaluate((root) => ({
+        selected: root.getAttribute("data-selected-product"),
+        frameProbe: window.__reactorOwnershipProbe,
+        worlds: Array.from(root.querySelectorAll("[data-reactor-world]")).map(
+          (world) => ({
+            flavor: world.getAttribute("data-flavor"),
+            selected: world.hasAttribute("data-motion-selected"),
+            leaving: world.hasAttribute("data-reactor-leaving"),
+            preparing: world.hasAttribute("data-reactor-preparing"),
+          }),
+        ),
+        animations: root.getAnimations({ subtree: true }).map((animation) => ({
+          id: animation.id,
+          state: animation.playState,
+          currentTime: animation.currentTime,
+          startTime: animation.startTime,
+          pending: animation.pending,
+        })),
+      }));
+    await testInfo.attach("reactor-failed-presentation", {
+      body: JSON.stringify(presentation),
+      contentType: "application/json",
+    });
+  }
   if (!page.isClosed())
     await page.evaluate(() => window.__stopReactorOwnershipProbe?.());
 });
@@ -186,9 +224,9 @@ for (const viewport of VIEWPORTS) {
       page,
     }) => {
       test.info().annotations.push({
-        type: "real-gsap-ownership",
+        type: "real-presentation-ownership",
         description:
-          "An init-script fixture authors important opacity before motion; native selectors, keyboard, history, and preference controls exercise real GSAP. No frame-performance claim.",
+          "An important-opacity fixture exercises GSAP fallback; the remaining worlds must use native effects. Real selectors, keyboard, history and preference controls verify ownership, not frame performance.",
       });
       const errors = await collectRuntimeErrors(page);
       await page.setViewportSize(viewport);
@@ -244,6 +282,22 @@ for (const viewport of VIEWPORTS) {
         const heldBefore = await heldPaintCount(page);
         await selectProduct(reactor, slug);
         await expect(reactor.locator("[data-reactor-leaving]")).toHaveCount(1);
+        if (slug !== "zero") {
+          // Original's important fixture deliberately exercises the fallback;
+          // the remaining unimportant worlds must exercise the native player.
+          await expect
+            .poll(() =>
+              reactor.evaluate(
+                (root) =>
+                  root
+                    .getAnimations({ subtree: true })
+                    .filter((animation) =>
+                      animation.id.startsWith("gorilla-reactor:"),
+                    ).length,
+              ),
+            )
+            .toBeGreaterThan(0);
+        }
         await expectRestored(reactor, original);
         expect(await heldPaintCount(page)).toBeGreaterThan(heldBefore);
       }

@@ -2,10 +2,15 @@ import { runCleanupStack } from "@/motion/cleanup-stack";
 
 import { animateWorld } from "./flavor-reactor-choreography";
 import { captureReactorPresentation } from "./flavor-reactor-presentation";
+import { createNativeReactorPlayer } from "./native/create-native-reactor";
 
 import type { ReactorContext } from "./flavor-reactor-presentation";
+import type { ReactorNativePlayer } from "./native/reactor-native-player";
 
 type AnimationContext = ReturnType<ReactorContext["gsap"]["context"]>;
+type Presentation =
+  | { readonly kind: "gsap"; readonly context: AnimationContext }
+  | { readonly kind: "native"; readonly player: ReactorNativePlayer };
 type SetupOutcome = { kind: "success" } | { kind: "failure"; cause: unknown };
 
 interface TransitionOptions {
@@ -19,7 +24,7 @@ interface TransitionOptions {
 
 /** Own only the current transition's animations and outgoing visibility lease. */
 export class ReactorTransition {
-  private presentation: AnimationContext | null = null;
+  private presentation: Presentation | null = null;
   private closed = false;
   private started = false;
   private readonly previousLeaving: string | null;
@@ -58,6 +63,21 @@ export class ReactorTransition {
   }
 
   private installPresentation(result: { outcome: SetupOutcome }): void {
+    const native = createNativeReactorPlayer({
+      ...this.options,
+      onComplete: (): void => this.complete(),
+      onFailure: (cause): void => this.finish({ kind: "failure", cause }),
+    });
+    if (native !== null) {
+      this.presentation = { kind: "native", player: native };
+      native.play();
+      if (!this.closed) this.restorePreparing();
+      return;
+    }
+    this.installGsapPresentation(result);
+  }
+
+  private installGsapPresentation(result: { outcome: SetupOutcome }): void {
     const presentation = this.options.context.gsap.context((): void => {
       try {
         animateWorld({
@@ -70,7 +90,7 @@ export class ReactorTransition {
       }
     }, this.options.context.root);
     if (!this.closed) {
-      this.presentation = presentation;
+      this.presentation = { kind: "gsap", context: presentation };
       return;
     }
     runCleanupStack(
@@ -116,7 +136,10 @@ export class ReactorTransition {
       this.restorePresentation,
       // GSAP reversion may resolve computed styles during rapid input. Stop only
       // this context, then restore our exact snapshot without a style/layout read.
-      (): void => presentation?.kill(false),
+      (): void => {
+        if (presentation?.kind === "native") presentation.player.destroy();
+        else presentation?.context.kill(false);
+      },
     ];
     try {
       runCleanupStack(cleanups, "Reactor transition cleanup failed.");

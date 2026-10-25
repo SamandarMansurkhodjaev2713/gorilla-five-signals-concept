@@ -1,6 +1,6 @@
 # Reactor native-player experiment
 
-Status: proposed experiment, not the active production backend.
+Status: implemented local candidate; not approved for main/Pages publication.
 
 ## Objective
 
@@ -8,9 +8,11 @@ Remove repeated GSAP CSS style-resolution work without reducing the authored
 Full/Lite experience. Keep the verified transition ownership, visibility holds,
 exact inline restoration, native history and existing release budgets.
 
-The current GSAP implementation remains the baseline and unsupported-engine
-fallback until native parity and performance are proven. A passing capability
-probe alone does not authorize switching the default player.
+The candidate selects the native player only after capability and presentation
+guards; GSAP remains its unsupported-presentation fallback. Public main/Pages
+still use the previous implementation. A passing capability probe or controlled
+pose comparison does not authorize publication: real interruption, resource,
+complete-window performance and release gates remain mandatory.
 
 ## Authoritative schedule
 
@@ -62,7 +64,7 @@ cover the complete Full sequence. Hard 16/50/200ms budgets remain unchanged.
 - All existing ownership, important-priority, Reduced, keyboard, rapid-input and
   native history cases remain green. Explicitly verify the native backend itself,
   not only a silently selected fallback.
-- Probe milestone parity at 0, 120, 280, 640, 800, 1552 and 2256ms. Quantify both
+- Probe milestone parity at 0, 120, 280, 640, 800, 1552, 1900 and 2256ms. Quantify both
   matrix and opacity differences; reject visible jumps or unapproved trajectory
   changes. Test important declarations and native animation cascade interaction.
 - Native CPU×4 traces must show batched style reads, no read after the first
@@ -76,5 +78,41 @@ cover the complete Full sequence. Hard 16/50/200ms budgets remain unchanged.
   verified GSAP path. Any failed parity/performance requirement rejects default
   activation and requires a measured correction, not a weaker test.
 
-The native player is an implementation hypothesis. It does not waive startup,
+The native player remains a measured candidate. It does not waive startup,
 Lighthouse, responsive, accessibility, physical-device or publication gates.
+
+## Local implementation evidence — 2026-10-25
+
+The typed cue plan preserves the complete 2256ms Full choreography and the
+540/380ms Lite variants. A pure 2D transform reader/serializer preserves the
+installed GSAP component order; unsupported transforms, important declarations,
+independent transform properties or word clips select fallback rather than an
+approximation. Sampled CSS `linear()` easings are tested against installed GSAP
+curves. Effects are constructed idle after all reads, share one document clock,
+and cancel without `commitStyles` through the existing exact-snapshot owner.
+
+Controlled Chrome, Firefox and WebKit comparisons each cover 40 paired cases
+(five flavors × Full/Lite × phone/desktop × initial/outgoing) and eight milestones:
+640 backend samples and 80 completed cleanup states per engine. Rect differences
+stay below 0.334px, opacity below 0.000072 and transform translation below 0.061px.
+Firefox's raw clip-string precision differences are retained; a separate strict
+finite inset-edge comparison bounds their actual pixel difference below 0.000012px.
+This controlled seeking/finishing evidence is not natural completion, native
+input, frame-time or physical-device acceptance.
+
+The frozen baseline exposed a real GSAP copy bug: percentage translation was
+also retained as pixel translation, causing a cleanup jump. The fallback now
+explicitly sets copy `x: 0` at both endpoints. Parity compares this corrected
+baseline; the original capture is retained, not silently redefined.
+
+The first natural browser batch passed 56 cases but failed WebKit Lite desktop
+cleanup after rapid keyboard/history changes. Seven isolated diagnostic repeats
+passed without a production change; they do not resolve the original failure.
+The intermittent completion issue, Lighthouse and publication remain open.
+The separate 1000-event synthetic resource stress passes owned-effect/lease
+bounds and cleanup, with stable player counts at three GC checkpoints; total
+heap growth is retained in the review rather than described as zero. The new
+three-session complete-window CPU×4 journey still fails its unchanged limits.
+See the [five-lens review and raw evidence locations](../quality/REACTOR_NATIVE_PLAYER_REVIEW_2026-10-25.md).
+The user explicitly selected publication only after the outstanding problems
+are fixed; no main/Pages update is authorized by these partial results.

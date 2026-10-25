@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import { animateWorld } from "@/features/flavor-reactor/flavor-reactor-choreography";
-import { FLAVOR_MOTION_SLUGS } from "@/features/flavor-reactor/flavor-reactor-motion-spec";
+import {
+  FLAVOR_MOTION_SLUGS,
+  FLAVOR_TRAJECTORIES,
+} from "@/features/flavor-reactor/flavor-reactor-motion-spec";
 import { REACTOR_MOTION_SELECTOR } from "@/features/flavor-reactor/flavor-reactor-presentation";
 
 import {
@@ -23,8 +26,15 @@ interface AuthoredTween {
   readonly targetCount: number;
 }
 
+interface AuthoredFromTo {
+  readonly fromVariables: Readonly<Record<string, unknown>>;
+  readonly targetName: string | null;
+  readonly toVariables: Readonly<Record<string, unknown>>;
+}
+
 class TimelineHarness {
   readonly calls: AuthoredTween[] = [];
+  readonly fromToCalls: AuthoredFromTo[] = [];
   private authoredDuration = 0;
 
   duration(): number {
@@ -41,10 +51,15 @@ class TimelineHarness {
 
   fromTo(
     targets: unknown,
-    _fromVariables: Readonly<Record<string, unknown>>,
+    fromVariables: Readonly<Record<string, unknown>>,
     toVariables: Readonly<Record<string, unknown>>,
     position?: number,
   ): this {
+    this.fromToCalls.push({
+      fromVariables,
+      targetName: this.targetName(targets),
+      toVariables,
+    });
     return this.record("fromTo", targets, toVariables, position);
   }
 
@@ -92,6 +107,12 @@ class TimelineHarness {
       throw new Error(`Expected numeric timeline variable ${name}.`);
     }
     return value;
+  }
+
+  private targetName(target: unknown): string | null {
+    if (typeof target !== "object" || target === null) return null;
+    const name: unknown = Reflect.get(target, "name");
+    return typeof name === "string" ? name : null;
   }
 }
 
@@ -277,6 +298,30 @@ describe("flavor reactor authored timing", () => {
       expectDuration(withoutOutgoing, 380);
       expect(withOutgoing.calls).toHaveLength(4);
       expect(withoutOutgoing.calls).toHaveLength(2);
+    }
+  });
+
+  it("GIVEN every Full flavor WHEN copy fromTo variables are authored THEN explicit pixel x stays zero while its named trajectory is preserved", () => {
+    for (const slug of FLAVOR_MOTION_SLUGS) {
+      const timeline = measureWorld({ kind: "full", outgoing: false, slug });
+      const copy = timeline.fromToCalls.find(
+        ({ targetName }) => targetName === `${slug}-copy`,
+      );
+      if (copy === undefined) throw new Error(`Missing ${slug} copy tween.`);
+      const trajectory = FLAVOR_TRAJECTORIES[slug];
+
+      expect(copy.fromVariables).toMatchObject({
+        autoAlpha: 0,
+        x: 0,
+        xPercent: trajectory.copyXPercent,
+        y: trajectory.copyY,
+      });
+      expect(copy.toVariables).toMatchObject({
+        autoAlpha: 1,
+        x: 0,
+        xPercent: 0,
+        y: 0,
+      });
     }
   });
 

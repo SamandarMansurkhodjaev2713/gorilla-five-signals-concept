@@ -108,7 +108,8 @@ Start with the [concept direction](docs/product/GORILLA_CONCEPT.md),
 Motion lifecycle decisions cover
 [cancellable Hero preparation](docs/decisions/ADR-0008-owned-staged-scene-activation.md),
 [exact Reactor presentation ownership](docs/decisions/ADR-0009-reactor-transition-presentation-owner.md),
-and the [product/route history boundary](docs/decisions/ADR-0010-product-history-route-boundary.md).
+the [product/route history boundary](docs/decisions/ADR-0010-product-history-route-boundary.md),
+and the [guarded native Reactor candidate](docs/decisions/ADR-0011-reactor-native-presentation-player.md).
 Current limitations and measured gates remain in [QA status](docs/quality/QA_STATUS.md).
 `pnpm typecheck` also strictly checks the tiny external browser bootstrap through
 `tsconfig.browser-scripts.json`; it is not excluded merely because it runs before

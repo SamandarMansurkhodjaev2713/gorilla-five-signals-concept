@@ -1,5 +1,37 @@
 # QA status
 
+## Native Reactor presentation candidate — 2026-10-25
+
+The local candidate moves finite Reactor playback to owned native effects after
+a guarded, all-reads-before-writes setup; GSAP remains the unsupported-style/API
+fallback. Full/Lite timing and exact cleanup are preserved. Controlled pose
+comparison passes in Chrome, Firefox and WebKit, including mid-shard motion.
+This is not frame-rate or device acceptance.
+
+Source/artifact checks pass: 309 strict files, strict classic bootstrap, 377 units,
+production build, budgets, fonts, provenance, SBOM and zero candidate advisories.
+The first real browser batch passed 56 cases and failed one WebKit Lite desktop
+cleanup after rapid keyboard/history input. Seven isolated repetitions then
+passed without a production change; the original intermittent failure remains
+open, with diagnostic evidence retained rather than reclassified as success.
+
+The user explicitly chose to update the public site only after the outstanding
+smoothness and Lighthouse issues are fixed. Main/Pages are unchanged. The new
+complete-window CPU×4 journey still fails: cold-scroll application work peaks at
+23.2/12.4/44.9ms and selection at 9.4/12.8/24.8ms; run 3 also reaches a 224ms
+interaction and 144ms long task. Independent hardware callback attribution also
+exceeds 16ms. A separate 1000-event synthetic resource stress stays within 12
+owned effects, naturally clears effects/leases and shows constant player counts
+at three GC checkpoints; it does not prove zero total heap growth or frame rate.
+Nine public-readiness Lighthouse audits fail the homepage gate: median
+Performance 90 and LCP 3475ms. Product/find medians are 98/99, but a product run
+also records a 797.6ms TBT outlier; stability is not declared solved. All audited
+accessibility/best-practices/SEO scores are 100. Final release/device acceptance
+remains open. See the
+[five-lens review and measurement scope](REACTOR_NATIVE_PLAYER_REVIEW_2026-10-25.md),
+[candidate design and acceptance plan](../motion/REACTOR_NATIVE_PLAYER_PLAN.md)
+and [ADR-0011](../decisions/ADR-0011-reactor-native-presentation-player.md).
+
 ## Reactor presentation and native history ownership — 2026-10-25
 
 Flavor transitions now restore exact authored declarations/priorities, stop only
@@ -20,7 +52,8 @@ work exceed 16ms, as do two selection runs. Selection Event Timing maxima were
 128/152/112ms in that lab run, not a real-user INP guarantee. Observation now
 includes 2500ms rather than truncating the 2256ms Full choreography at 960ms.
 Native-player work is an explicitly
-[unimplemented measured experiment](../motion/REACTOR_NATIVE_PLAYER_PLAN.md).
+[measured candidate](../motion/REACTOR_NATIVE_PLAYER_PLAN.md); the newer section
+above records its current incomplete acceptance.
 Lighthouse, full device/release acceptance and main/Pages publication remain open.
 
 ## Owned target-level Hero preparation — 2026-10-25
