@@ -10,7 +10,25 @@ export async function openConsumerMotionControls(page: Page): Promise<Locator> {
   await expect(header.locator(":scope > .site-header__signal")).toHaveCount(0);
   const menu = header.locator("[data-motion-menu]");
   if ((await menu.getAttribute("open")) === null) {
-    await menu.locator(":scope > summary").click();
+    const summary = menu.locator(":scope > summary");
+    const visible = await summary.evaluate((element) => {
+      const bounds = element.getBoundingClientRect();
+      return (
+        bounds.top >= 0 &&
+        bounds.left >= 0 &&
+        bounds.bottom <= innerHeight &&
+        bounds.right <= innerWidth
+      );
+    });
+    if (!visible) await summary.scrollIntoViewIfNeeded();
+    await expect(summary).toBeInViewport();
+    const bounds = await summary.boundingBox();
+    if (bounds === null)
+      throw new Error("The visible menu trigger must have painted geometry.");
+    await page.mouse.click(
+      bounds.x + bounds.width / 2,
+      bounds.y + bounds.height / 2,
+    );
   }
   await expect(menu).toHaveAttribute("open", "");
   const toggle = menu.locator(".menu-motion-console [data-motion-toggle]");

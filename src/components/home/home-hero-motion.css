@@ -16,7 +16,7 @@
       .hero-ghost-can
     ) {
     animation-duration: 1ms;
-    animation-fill-mode: both;
+    animation-fill-mode: forwards;
     animation-timing-function: linear;
     animation-timeline: --hero-exit;
     animation-range: exit 0% exit 100%;

@@ -1,5 +1,18 @@
 # QA status
 
+## Native exit and reload-position hardening — 2026-10-25
+
+Hero exit no longer applies backwards fill before its range; paired desktop
+geometry is unchanged, with a modest/noisy timing improvement rather than a
+performance cure. Reload uses a validated one-use same-path session handoff,
+bounded cancellable restoration and one actual-layout-ready correction. Menu
+focus preserves background position. Source quality passes 270 strict files,
+248 units, build/artifact checks and audit. Forty-one targeted browser cases
+pass; four pre-existing route cases remain explicitly skipped. See
+[evidence, failed iterations and scope](HERO_EXIT_RELOAD_REVIEW_2026-10-25.md)
+and [ADR-0007](../decisions/ADR-0007-reload-scroll-ownership.md).
+No public deployment or full performance/release acceptance is implied.
+
 ## Hero style ownership and failed-setup rollback — 2026-10-25
 
 Full/Lite teardown now restores the Hero's original inline declarations after

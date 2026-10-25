@@ -116,14 +116,14 @@ export function createAccessibleMenu(
     panel.removeAttribute("role");
 
     if (!menu.open) {
-      summary.focus();
+      summary.focus({ preventScroll: true });
       return;
     }
 
     background = makeBackgroundInert(backgroundElements(root, menu));
     panel.setAttribute("aria-modal", "true");
     panel.setAttribute("role", "dialog");
-    close.focus();
+    close.focus({ preventScroll: true });
   };
   const handleKeydown = (event: Event): void => {
     if (!(event instanceof KeyboardEvent) || !menu.open) {
