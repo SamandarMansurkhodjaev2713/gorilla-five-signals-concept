@@ -67,6 +67,8 @@ comments explain the current owner rather than proposing empty layers.
 │   │   ├── create-scene.ts, scene-contract.ts, scene-registry.ts
 │   │   ├── owned-scene-resources.ts, owned-scene-context.ts
 │   │   ├── cleanup-stack.ts, diagnostics.ts, motion-engine.ts, tokens.ts
+│   │   ├── native-easing.ts        # sampled, tested GSAP-compatible curves
+│   │   ├── native/                 # finite shared-clock WAAPI ownership
 │   │   ├── runtime/                # render gate, scene/capability ownership
 │   │   └── scene-setups/           # application choreography adapters
 │   ├── assets/brand/               # approved tracked build inputs
@@ -115,6 +117,12 @@ runtime imports no feature internals” inaccurately described that registry.
 Keep feature knowledge in explicit application adapters, not the generic core.
 Do not share state through feature-to-feature internal imports; promote a real
 shared contract only when a concrete consumer requires it.
+
+Reactor and Material Film are two concrete consumers of the finite native player
+and sampled easing. The neutral player owns no feature selectors, cue schedule
+or product data; adapters supply typed effects, namespace and lifecycle callbacks.
+Each adapter retains its verified GSAP fallback and its own presentation guard.
+See [ADR-0012](../decisions/ADR-0012-shared-finite-native-entrances.md).
 
 There is no generic `Infrastructure` folder because browser effects are named and
 owned: `compare-location-store.ts`, `compare-clipboard.ts`,

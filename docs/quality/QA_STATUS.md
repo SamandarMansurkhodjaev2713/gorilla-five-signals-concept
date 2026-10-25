@@ -1,5 +1,34 @@
 # QA status
 
+## Entry paint and native Material Film — 2026-10-25
+
+The opaque responsible-entry checkpoint now excludes its occluded page siblings
+from painting without collapsing layout. Continue restores visibility in the
+same task; no-JS explicitly restores content despite SSR `open`. All 24 new
+cross-engine cases pass without retries/skips, including focus, native route
+navigation, reload, locale, geometry and no-JS. Phone/desktop visual captures
+preserve the approved composition.
+
+Material Film now uses the shared finite native player with its complete ten-cue
+640ms Full/Lite schedule. Twelve controlled cross-engine comparisons pass, with
+natural completion and exact cleanup. Hardware CPU×4 callback costs improve
+from 46.453/33.141/29.696ms to 12.269/4.324/5.463ms; repeated style/layout reads
+fall from nine/eight to zero/zero. All three callbacks pass 16ms. Sixteen existing
+ownership/history/lower-home cases also pass; two older engine exclusions remain
+unchanged. Source/artifact checks pass 317 strict files, strict bootstrap, 396
+units, 47-page build, budgets/provenance/fonts/SBOM and candidate audit.
+
+Complete-journey acceptance remains failed: other cold scenes and selection
+callbacks exceed 16ms; startup/selection still record long tasks. Nine new
+Lighthouse audits yield home Performance 91 / LCP 3472ms, product 99 and find 99
+(three-run medians). All audited accessibility/best-practices/SEO scores are 100.
+The visible entry text now correctly becomes LCP, but local observed paint does
+not waive the failed canonical mobile simulation. The previous intermittent
+WebKit fallback failure is not declared fixed merely because this batch passed.
+Main/Pages remain held under the user's explicit publication condition.
+See the [five-lens review and measurement scope](ENTRY_PAINT_MATERIAL_REVIEW_2026-10-25.md)
+and [ADR-0012](../decisions/ADR-0012-shared-finite-native-entrances.md).
+
 ## Native Reactor presentation candidate — 2026-10-25
 
 The local candidate moves finite Reactor playback to owned native effects after

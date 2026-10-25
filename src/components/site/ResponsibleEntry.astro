@@ -140,6 +140,11 @@ const motionCopy = getMotionChromeCopy(locale);
     .responsible-entry {
       display: none;
     }
+
+    body:has(> dialog.responsible-entry[open])
+      > :is(.skip-link, .site-header, main[data-route-content], .site-footer) {
+      visibility: visible;
+    }
   </style>
   <aside class="responsible-fallback" aria-label={copy.age}>
     <p class="type-label">{copy.age}</p>
@@ -168,6 +173,15 @@ const motionCopy = getMotionChromeCopy(locale);
 
   :global(body:has(.responsible-entry:modal)) {
     overflow: hidden;
+  }
+
+  /* The opaque entry owns the screen; keep occluded content in layout, not paint.
+     Closing the dialog releases this synchronously, without a JS hiding state. */
+  :global(
+    body:has(> dialog.responsible-entry[open])
+      > :is(.skip-link, .site-header, main[data-route-content], .site-footer)
+  ) {
+    visibility: hidden;
   }
 
   .responsible-entry::backdrop {

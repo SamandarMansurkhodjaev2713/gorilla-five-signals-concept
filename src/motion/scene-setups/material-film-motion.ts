@@ -1,47 +1,20 @@
 import type { SceneSetup, SceneSetupContext } from "../create-scene";
-import { MOTION_DURATION_SECONDS, MOTION_EASE } from "../tokens";
+import { publishMotionDiagnostic } from "../diagnostics";
+import { MOTION_EASE } from "../tokens";
+import { MaterialFilmEntranceOwner } from "./material-film-entrance-owner";
+import { MATERIAL_FILM_TIMING_SECONDS } from "./material-film-motion-spec";
+import {
+  MATERIAL_CALIBRATION_SELECTOR,
+  MATERIAL_COPY_SELECTOR,
+  MATERIAL_CROSSHAIR_SELECTOR,
+  MATERIAL_STAGE_SELECTOR,
+} from "./material-film-native";
 import { playOnceWhenVisible } from "./shared";
-
-const COPY_SELECTOR = ".home-material-film__copy-inner";
-const STAGE_SELECTOR = ".home-material-film__stage";
-const CALIBRATION_SELECTOR = ".home-material-film__calibration span";
-const CROSSHAIR_SELECTOR = ".home-material-film__crosshair > *";
-const PRESENTATION_SELECTOR = [
-  COPY_SELECTOR,
-  STAGE_SELECTOR,
-  CALIBRATION_SELECTOR,
-  CROSSHAIR_SELECTOR,
-].join(", ");
-const PRESENTATION_PROPERTIES = [
-  "clip-path",
-  "opacity",
-  "scale",
-  "transform",
-  "translate",
-  "visibility",
-] as const;
-const CALIBRATION_STAGGER_SECONDS = 0.04;
-
 type SetupContext = Parameters<SceneSetup>[0];
 type SceneTimeline = ReturnType<SceneSetupContext["gsap"]["timeline"]>;
 
-function clearPresentation(root: HTMLElement): void {
-  root
-    .querySelectorAll<HTMLElement>(PRESENTATION_SELECTOR)
-    .forEach((element): void => {
-      for (const property of PRESENTATION_PROPERTIES) {
-        element.style.removeProperty(property);
-      }
-    });
-}
-
-function clearAfterContextRevert(root: HTMLElement): void {
-  clearPresentation(root);
-  queueMicrotask((): void => clearPresentation(root));
-}
-
 function animateStage(context: SetupContext, timeline: SceneTimeline): void {
-  const stage = context.query<HTMLElement>(STAGE_SELECTOR);
+  const stage = context.query<HTMLElement>(MATERIAL_STAGE_SELECTOR);
   timeline.from(
     stage,
     {
@@ -50,7 +23,7 @@ function animateStage(context: SetupContext, timeline: SceneTimeline): void {
         context.capability.kind === "full"
           ? "inset(6% 4% 6% 4%)"
           : "inset(2% 0 2% 0)",
-      duration: MOTION_DURATION_SECONDS.scene,
+      duration: MATERIAL_FILM_TIMING_SECONDS.sceneDuration,
       ease: MOTION_EASE.material,
     },
     0,
@@ -59,38 +32,40 @@ function animateStage(context: SetupContext, timeline: SceneTimeline): void {
 
 function animateOverlay(context: SetupContext, timeline: SceneTimeline): void {
   timeline.from(
-    context.queryAll<HTMLElement>(CALIBRATION_SELECTOR),
+    context.queryAll<HTMLElement>(MATERIAL_CALIBRATION_SELECTOR),
     {
       autoAlpha: 0,
       clipPath: "inset(0 0 100% 0)",
-      duration: MOTION_DURATION_SECONDS.standard,
+      duration: MATERIAL_FILM_TIMING_SECONDS.standardDuration,
       ease: MOTION_EASE.enter,
-      stagger: CALIBRATION_STAGGER_SECONDS,
+      stagger: MATERIAL_FILM_TIMING_SECONDS.itemStagger,
     },
-    0.18,
+    MATERIAL_FILM_TIMING_SECONDS.calibrationDelay,
   );
   timeline.from(
-    context.queryAll<HTMLElement>(CROSSHAIR_SELECTOR),
+    context.queryAll<HTMLElement>(MATERIAL_CROSSHAIR_SELECTOR),
     {
       autoAlpha: 0,
       clipPath: "inset(100% 0 0 0)",
-      duration: MOTION_DURATION_SECONDS.standard,
+      duration: MATERIAL_FILM_TIMING_SECONDS.standardDuration,
       ease: MOTION_EASE.enter,
-      stagger: CALIBRATION_STAGGER_SECONDS,
+      stagger: MATERIAL_FILM_TIMING_SECONDS.itemStagger,
     },
-    0.24,
+    MATERIAL_FILM_TIMING_SECONDS.crosshairDelay,
   );
 }
 
-function createMaterialEntrance(context: SetupContext): void {
-  const clear = (): void => clearPresentation(context.root);
-  const timeline = context.gsap.timeline({ onComplete: clear });
+function createMaterialEntrance(
+  context: SetupContext,
+  onComplete: () => void,
+): void {
+  const timeline = context.gsap.timeline({ onComplete });
   timeline.from(
-    context.query<HTMLElement>(COPY_SELECTOR),
+    context.query<HTMLElement>(MATERIAL_COPY_SELECTOR),
     {
       autoAlpha: 0,
       clipPath: "inset(0 0 100% 0)",
-      duration: MOTION_DURATION_SECONDS.scene,
+      duration: MATERIAL_FILM_TIMING_SECONDS.sceneDuration,
       ease: MOTION_EASE.enter,
     },
     0,
@@ -99,9 +74,25 @@ function createMaterialEntrance(context: SetupContext): void {
   animateOverlay(context, timeline);
 }
 
+function reportEntranceFailure(context: SetupContext, error: unknown): void {
+  const windowValue = context.root.ownerDocument.defaultView;
+  if (windowValue === null) return;
+  publishMotionDiagnostic(windowValue, {
+    code: "scene-mount-failed",
+    sceneId: "material-film",
+    message: error instanceof Error ? error.message : String(error),
+  });
+}
+
 export function mountMaterialFilmMotion(context: SetupContext): void {
-  context.onCleanup((): void => clearAfterContextRevert(context.root));
-  if (context.capability.kind !== "reduced") {
-    playOnceWhenVisible(context, (): void => createMaterialEntrance(context));
-  }
+  const owner = new MaterialFilmEntranceOwner({
+    context,
+    onFailure: (error): void => reportEntranceFailure(context, error),
+    playFallback: (onComplete): void => {
+      createMaterialEntrance(context, onComplete);
+    },
+  });
+  context.onCleanup((): void => owner.destroy());
+  if (context.capability.kind === "reduced") return;
+  playOnceWhenVisible(context, (): void => owner.start());
 }

@@ -1,4 +1,4 @@
-import { REACTOR_NATIVE_EASING } from "./reactor-easing";
+import { supportsFiniteAnimationPlayer } from "@/motion/native/finite-animation-player";
 import { createReactorNativePlan } from "./reactor-native-plan";
 import { ReactorNativePlayer } from "./reactor-native-player";
 import { readReactorWorld } from "./reactor-native-read";
@@ -6,36 +6,13 @@ import { UnsupportedReactorPresentation } from "./reactor-native-types";
 
 import type { ReactorContext } from "../flavor-reactor-presentation";
 
-const support = new WeakMap<Window, boolean>();
-
 function supportsNativePlayer(
   windowValue: Window & typeof globalThis,
 ): boolean {
-  const known = support.get(windowValue);
-  if (known !== undefined) return known;
-  let supported = false;
-  if (
-    typeof windowValue.KeyframeEffect === "function" &&
-    typeof windowValue.Animation === "function" &&
+  return (
     typeof windowValue.DOMMatrixReadOnly === "function" &&
-    typeof windowValue.CSS?.supports === "function" &&
-    windowValue.CSS.supports(
-      "animation-timing-function",
-      REACTOR_NATIVE_EASING.material,
-    )
-  ) {
-    try {
-      new windowValue.KeyframeEffect(null, [{ opacity: 0 }, { opacity: 1 }], {
-        duration: 1,
-        easing: REACTOR_NATIVE_EASING.material,
-      });
-      supported = true;
-    } catch (error: unknown) {
-      if (!(error instanceof windowValue.TypeError)) throw error;
-    }
-  }
-  support.set(windowValue, supported);
-  return supported;
+    supportsFiniteAnimationPlayer(windowValue)
+  );
 }
 
 /** Unsupported presentation uses the verified GSAP path; unexpected errors propagate. */
