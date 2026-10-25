@@ -128,3 +128,50 @@ audit. The strengthened browser batch passes **93/93** cases: 45 landscape,
 engines. Four final UZ viewport images at 768/769/844/1024 all have only the 2px
 border after content; `Shakarsiz` is whole. No full-suite or release approval is
 inferred. Initial/final images remain private in `.tmp/compare-landscape-*`.
+
+## Full-motion failure attribution on `47cd8b2`
+
+The formerly ambiguous boolean failure is now traced to presentation cleanup,
+not image geometry or loading. A bounded three-case WebKit run with one worker
+passes at 1024/1440/1920, taking 5.4/5.5/21.1 seconds overall. This is not smooth
+animation evidence. One subsequent trace-on run with the ordinary two workers
+fails at 1024/1440 and passes at 1920. Trace recording and concurrency differ,
+so the pair does not isolate a concurrency cause.
+
+| Viewport | Cleanup poll duration | Trace-on result |
+| --- | ---: | --- |
+| 1024 | 7499.7ms | Failed |
+| 1440 | 7507.8ms | Failed |
+| 1920 | 2122.9ms | Passed |
+
+The failed snapshots show selected Original/Zero/Extra still progressing through
+their entrance: visual opacity reaches 0.9798 with translation -0.4858px; a
+description retains 30.4721% clipping and opacity 0.6953; an action retains
+82.1927% clipping and opacity 0.1781. Earlier snapshots show monotonic progress,
+not just final styles left behind after playback. The nominal longest entrance
+track is approximately 0.68s. The evidence points to severely delayed playback,
+not a missing product image or a demonstrated cleanup-callback defect.
+
+The installed GSAP source has its normal 500ms lag threshold and 33ms adjusted
+lag; the application has no ticker/lag-smoothing override. These defaults are
+not proof of the precise native scheduling/paint cause. Do not disable lag
+smoothing, force completion, weaken the 7.5s assertion, or downgrade Full to
+manufacture a pass. A native-compositor entrance is only a prospective measured
+experiment, not an adopted engine replacement or a claimed fix.
+
+The test's cleanup assertion now reports each remaining property/value together
+with its product, selected state and target, while requiring the same seven
+properties to be empty. Missing targets throw rather than pass vacuously.
+
+Five review lenses: retain the exact cleanup condition and timeout; centralize
+typed test-only measurement without production hooks; preserve Full/Lite/Reduced
+and visible content; distinguish long playback from a leak and retain both
+passed/failed results; keep dedicated trace output outside the reusable test
+directory. No production UI/motion code changes in this diagnostic follow-up.
+
+Six new cross-engine diagnostic cases pass, including real target/value
+reporting, restoration and missing-target rejection. Formatting, lint and strict
+diagnostics on 256 files pass. The 177-unit/47-page/audit evidence remains tied
+to the preceding unchanged application build; a full suite was not rerun. The
+two failing traced Full cases remain open. Evidence is retained privately in
+`.tmp/compare-full-motion-concurrency-47cd8b2/` and dedicated diagnostic folders.

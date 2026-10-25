@@ -6,6 +6,7 @@ import {
   closeConsumerMotionControls,
   openConsumerMotionControls,
 } from "./support/consumer-motion-controls";
+import { readComparePresentationResidue } from "./support/compare-presentation";
 
 import { expectPaintedTargets } from "./support/painted-targets";
 import {
@@ -29,15 +30,6 @@ const VIEWPORTS = [
 const ROOT = "[data-compare-root]";
 const SELECTED = "[data-compare-product]:not([hidden])";
 const SELECTED_PRODUCTS = ["original", "zero", "extra"] as const;
-const PRESENTATION_PROPERTIES = [
-  "clip-path",
-  "opacity",
-  "rotate",
-  "scale",
-  "transform",
-  "translate",
-  "visibility",
-] as const;
 
 async function openDuel(page: Page, suffix: string): Promise<void> {
   await page.addInitScript(() => {
@@ -65,21 +57,7 @@ function intersects(
 }
 
 async function expectPresentationReleased(page: Page): Promise<void> {
-  await expect
-    .poll(() =>
-      page.locator(ROOT).evaluate((root, properties) => {
-        return Array.from(
-          root.querySelectorAll<HTMLElement>(
-            "[data-motion-product], .signal-channel__copy > *",
-          ),
-        ).every((element) =>
-          properties.every(
-            (property) => element.style.getPropertyValue(property) === "",
-          ),
-        );
-      }, PRESENTATION_PROPERTIES),
-    )
-    .toBe(true);
+  await expect.poll(() => readComparePresentationResidue(page)).toEqual([]);
 }
 
 async function expectArenaTextNotToOverlap(page: Page): Promise<void> {
