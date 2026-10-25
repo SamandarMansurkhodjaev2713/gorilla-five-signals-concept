@@ -105,6 +105,15 @@ Start with the [concept direction](docs/product/GORILLA_CONCEPT.md),
 [engineering standard](docs/quality/ENGINEERING_STANDARD.md), and
 [asset provenance ledger](docs/content/ASSET_PROVENANCE.md).
 
+Motion lifecycle decisions cover
+[cancellable Hero preparation](docs/decisions/ADR-0008-owned-staged-scene-activation.md),
+[exact Reactor presentation ownership](docs/decisions/ADR-0009-reactor-transition-presentation-owner.md),
+and the [product/route history boundary](docs/decisions/ADR-0010-product-history-route-boundary.md).
+Current limitations and measured gates remain in [QA status](docs/quality/QA_STATUS.md).
+`pnpm typecheck` also strictly checks the tiny external browser bootstrap through
+`tsconfig.browser-scripts.json`; it is not excluded merely because it runs before
+the framework modules.
+
 ## Deployment
 
 Every push to `main` builds a fresh public artifact and deploys it with the

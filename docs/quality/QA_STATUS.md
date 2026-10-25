@@ -1,5 +1,28 @@
 # QA status
 
+## Reactor presentation and native history ownership — 2026-10-25
+
+Flavor transitions now restore exact authored declarations/priorities, stop only
+owned work and preserve visible outgoing content during preparation. Native
+product back/forward no longer replaces the home DOM or resets scroll; actual
+route navigation remains Astro-owned. The early external history bridge keeps
+the self-only script CSP and has its own strict browser-script check.
+
+Final source/artifact checks pass: 296 strict files, the classic-bootstrap type
+check, 315 units, production build, provenance/SBOM/budgets and candidate audit.
+All 57 executed focused browser cases pass without retries, including fifteen
+cross-engine ownership/history cases and forty-two existing Chromium functional
+contracts. Existing non-Chromium exclusions are recorded, not newly introduced.
+See [five-lens review, rejected prototypes and evidence](REACTOR_TRANSITION_REVIEW_2026-10-25.md).
+
+The complete-window CPU×4 journey remains failed: startup and cold-scroll app
+work exceed 16ms, as do two selection runs. Selection Event Timing maxima were
+128/152/112ms in that lab run, not a real-user INP guarantee. Observation now
+includes 2500ms rather than truncating the 2256ms Full choreography at 960ms.
+Native-player work is an explicitly
+[unimplemented measured experiment](../motion/REACTOR_NATIVE_PLAYER_PLAN.md).
+Lighthouse, full device/release acceptance and main/Pages publication remain open.
+
 ## Owned target-level Hero preparation — 2026-10-25
 
 Full Hero preparation now executes one target per cancellable frame while

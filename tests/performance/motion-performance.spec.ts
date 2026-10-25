@@ -12,7 +12,10 @@ import {
 } from "@playwright/test";
 import { z } from "zod";
 
-import { MOTION_PERFORMANCE_PROFILE } from "./support/performance-profile";
+import {
+  MOTION_PERFORMANCE_PROFILE,
+  MOTION_PERFORMANCE_SETTLE_MS,
+} from "./support/performance-profile";
 import { readBrowserRenderingEnvironment } from "./support/rendering-environment";
 
 const RUN_COUNT = MOTION_PERFORMANCE_PROFILE.sessions;
@@ -21,7 +24,7 @@ const CPU_THROTTLING_RATE = MOTION_PERFORMANCE_PROFILE.cpuThrottleRate;
 const FRAME_WORK_LIMIT_MS = MOTION_PERFORMANCE_PROFILE.frameWorkMs;
 const LONG_TASK_LIMIT_MS = MOTION_PERFORMANCE_PROFILE.longTaskMs;
 const INTERACTION_LIMIT_MS = MOTION_PERFORMANCE_PROFILE.interactionMs;
-const MOTION_SETTLE_MS = 960;
+const MOTION_SETTLE_MS = MOTION_PERFORMANCE_SETTLE_MS;
 const SCROLL_STEP_PX = 320;
 const MAX_SCROLL_STEPS = 72;
 const MOTION_PREFERENCE_KEY = "gorilla:motion-preference:v1";

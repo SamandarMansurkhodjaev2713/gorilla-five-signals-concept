@@ -1,4 +1,5 @@
 import type { SceneSetup } from "@/motion/create-scene";
+import { captureInlineStyles } from "@/motion/inline-style-snapshot";
 
 import { getFlavorTrajectory } from "./flavor-reactor-motion-spec";
 import type { FlavorTrajectory } from "./flavor-reactor-motion-spec";
@@ -15,12 +16,15 @@ export const REACTOR_MOTION_SELECTOR = Object.freeze({
   world: "[data-reactor-world]",
 });
 
+export type ReactorContext = Parameters<SceneSetup>[0];
+
 const PRESENTATION_PROPERTIES = [
   "clip-path",
   "opacity",
   "rotate",
   "scale",
   "transform",
+  "transform-origin",
   "translate",
   "visibility",
 ] as const;
@@ -33,7 +37,18 @@ const ANIMATED_TARGETS = [
   REACTOR_MOTION_SELECTOR.shard,
 ].join(", ");
 
-export type ReactorContext = Parameters<SceneSetup>[0];
+/** Preserve only the two participating worlds, including declaration priorities. */
+export function captureReactorPresentation(
+  incoming: HTMLElement,
+  outgoing: HTMLElement | null,
+): () => void {
+  const worlds = new Set(outgoing === null ? [incoming] : [incoming, outgoing]);
+  const targets = [...worlds].flatMap((world) => [
+    world,
+    ...world.querySelectorAll<HTMLElement>(ANIMATED_TARGETS),
+  ]);
+  return captureInlineStyles(targets, PRESENTATION_PROPERTIES);
+}
 
 export function selectedWorld(context: ReactorContext): HTMLElement | null {
   return context.query<HTMLElement>(REACTOR_MOTION_SELECTOR.selected);
@@ -62,43 +77,7 @@ export function updateProgress(
   const index = worlds.indexOf(world);
   const current = context.query<HTMLElement>(REACTOR_MOTION_SELECTOR.current);
   if (current !== null && index >= 0) {
-    current.textContent = String(index + 1).padStart(2, "0");
+    const label = String(index + 1).padStart(2, "0");
+    if (current.textContent !== label) current.textContent = label;
   }
-}
-
-export function resetWorldPresentation(world: HTMLElement): void {
-  const targets = [
-    world,
-    ...world.querySelectorAll<HTMLElement>(ANIMATED_TARGETS),
-  ];
-  for (const target of targets) {
-    for (const property of PRESENTATION_PROPERTIES) {
-      target.style.removeProperty(property);
-    }
-  }
-}
-
-export function normalizeWorlds(context: ReactorContext): void {
-  for (const world of context.queryAll<HTMLElement>(
-    REACTOR_MOTION_SELECTOR.world,
-  )) {
-    world.removeAttribute("data-reactor-leaving");
-    resetWorldPresentation(world);
-  }
-}
-
-export function prepareWorlds(
-  context: ReactorContext,
-  outgoing: HTMLElement | null,
-): void {
-  normalizeWorlds(context);
-  if (outgoing !== null) {
-    outgoing.setAttribute("data-reactor-leaving", "");
-  }
-}
-
-export function settleOutgoing(outgoing: HTMLElement | null): void {
-  if (outgoing === null) return;
-  outgoing.removeAttribute("data-reactor-leaving");
-  resetWorldPresentation(outgoing);
 }

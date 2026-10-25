@@ -233,6 +233,7 @@
 
 .reactor-stage {
   position: relative;
+  contain: layout paint;
   z-index: var(--z-base);
   grid-row: 2;
   min-block-size: var(--reactor-stage-min);
@@ -282,6 +283,13 @@
   z-index: calc(var(--z-content) - 1);
   visibility: visible;
   opacity: 1;
+  pointer-events: none;
+}
+
+/* Keep the outgoing world visible until the incoming entrance pose is installed. */
+.flavor-reactor[data-enhanced="true"]
+  .reactor-world[data-motion-selected][data-reactor-preparing] {
+  opacity: 0;
   pointer-events: none;
 }
 

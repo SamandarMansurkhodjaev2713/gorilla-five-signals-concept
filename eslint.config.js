@@ -36,6 +36,10 @@ export default [
   eslint.configs.recommended,
   ...astro.configs.recommended,
   {
+    files: ["public/scripts/**/*.js"],
+    languageOptions: { globals: globals.browser },
+  },
+  {
     files: ["**/*.{ts,mts,cts}"],
     languageOptions: {
       globals: globals.browser,

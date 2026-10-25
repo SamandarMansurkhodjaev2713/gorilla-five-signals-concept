@@ -1,68 +1,80 @@
 import type { SceneSetup } from "@/motion/create-scene";
+import { publishMotionDiagnostic } from "@/motion/diagnostics";
 import {
   markSceneReady,
   playOnceWhenVisible,
 } from "@/motion/scene-setups/shared";
 
-import { animateWorld } from "./flavor-reactor-choreography";
-import {
-  normalizeWorlds,
-  selectedWorld,
-  settleOutgoing,
-  updateProgress,
-} from "./flavor-reactor-presentation";
+import { selectedWorld, updateProgress } from "./flavor-reactor-presentation";
+import { ReactorTransition } from "./flavor-reactor-transition";
 
-type ReactorContext = Parameters<SceneSetup>[0];
-type SceneTimeline = ReturnType<ReactorContext["gsap"]["timeline"]>;
+function reportTransitionFailure(
+  context: Parameters<SceneSetup>[0],
+  error: unknown,
+): void {
+  const windowValue = context.root.ownerDocument.defaultView;
+  if (windowValue === null) return;
+  publishMotionDiagnostic(windowValue, {
+    code: "scene-mount-failed",
+    sceneId: "flavor-explorer",
+    message: error instanceof Error ? error.message : String(error),
+  });
+}
 
 export const setupFlavorReactor: SceneSetup = (context): (() => void) => {
-  let timeline: SceneTimeline | null = null;
+  let transition: ReactorTransition | null = null;
   let activeWorld: HTMLElement | null = null;
-  let leavingWorld: HTMLElement | null = null;
   let cancelFrame: (() => void) | null = null;
   let intent = 0;
   const cleanupReady = markSceneReady(context);
 
-  const renderSelection = (): void => {
-    const activeIntent = ++intent;
-    settleOutgoing(leavingWorld);
-    leavingWorld = null;
-    const queuedWorld = selectedWorld(context);
-    if (activeWorld !== null && activeWorld !== queuedWorld) {
-      activeWorld.setAttribute("data-reactor-leaving", "");
-      leavingWorld = activeWorld;
-    }
-    cancelFrame?.();
+  const queuePresentation = (
+    next: ReactorTransition,
+    activeIntent: number,
+    outgoing: HTMLElement | null,
+  ): void => {
+    // Let selection mutations paint before GSAP resolves computed styles.
     cancelFrame = context.requestFrame((): void => {
-      cancelFrame = null;
       if (activeIntent !== intent) return;
-      const world = selectedWorld(context);
-      if (world === null) return;
-
-      updateProgress(context, world);
-      timeline?.kill();
-      settleOutgoing(leavingWorld);
-      const outgoing = activeWorld === world ? null : activeWorld;
-      activeWorld = world;
-      if (context.capability.kind === "reduced") {
-        normalizeWorlds(context);
-        timeline = null;
+      if (outgoing === null) {
+        cancelFrame = null;
+        next.play();
         return;
       }
-
-      leavingWorld = outgoing;
-      timeline = animateWorld({
-        context,
-        incoming: world,
-        onComplete: (): void => {
-          if (activeIntent !== intent) return;
-          settleOutgoing(outgoing);
-          leavingWorld = null;
-          timeline = null;
-        },
-        outgoing,
+      cancelFrame = context.requestFrame((): void => {
+        if (activeIntent !== intent) return;
+        cancelFrame = null;
+        next.play();
       });
     });
+  };
+
+  const renderSelection = (): void => {
+    const activeIntent = ++intent;
+    cancelFrame?.();
+    cancelFrame = null;
+    transition?.destroy();
+    transition = null;
+    const incoming = selectedWorld(context);
+    if (incoming === null) {
+      activeWorld = null;
+      return;
+    }
+    const outgoing = activeWorld === incoming ? null : activeWorld;
+    activeWorld = incoming;
+    updateProgress(context, incoming);
+    if (context.capability.kind === "reduced") return;
+    const next = new ReactorTransition({
+      context,
+      incoming,
+      outgoing,
+      onComplete: (): void => {
+        if (activeIntent === intent) transition = null;
+      },
+      onFailure: (error): void => reportTransitionFailure(context, error),
+    });
+    transition = next;
+    queuePresentation(next, activeIntent, outgoing);
   };
 
   playOnceWhenVisible(context, renderSelection);
@@ -70,12 +82,10 @@ export const setupFlavorReactor: SceneSetup = (context): (() => void) => {
   context.onCleanup((): void => {
     intent += 1;
     cancelFrame?.();
-    timeline?.kill();
-    settleOutgoing(leavingWorld);
+    transition?.destroy();
     cancelFrame = null;
-    leavingWorld = null;
     activeWorld = null;
-    timeline = null;
+    transition = null;
   });
 
   return cleanupReady;

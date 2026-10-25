@@ -8,7 +8,6 @@ import {
   FLAVOR_TIMELINE_POSITION,
 } from "./flavor-reactor-motion-spec";
 import {
-  prepareWorlds,
   REACTOR_MOTION_SELECTOR,
   requireWorldElement,
   trajectoryFor,
@@ -104,9 +103,10 @@ export function animateWorld(options: {
   readonly outgoing: HTMLElement | null;
 }): SceneTimeline {
   const { context, incoming, onComplete, outgoing } = options;
-  prepareWorlds(context, outgoing);
   const timeline = context.gsap.timeline({
-    defaults: { overwrite: true },
+    // Snapshot restoration does not mutate GSAP internals. Re-read the authored
+    // CSS transform at each new tween instead of reusing a previous world pose.
+    defaults: { overwrite: true, parseTransform: true },
     onComplete,
   });
   if (outgoing !== null) {
