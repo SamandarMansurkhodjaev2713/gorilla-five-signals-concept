@@ -8,6 +8,7 @@ interface SceneHarness {
   readonly eventTarget: EventTarget;
   readonly flushFrame: () => void;
   readonly ownedCallback: ReturnType<typeof vi.fn>;
+  readonly contextReturned: ReturnType<typeof vi.fn>;
   readonly root: HTMLElement;
 }
 
@@ -15,6 +16,7 @@ function createSceneHarness(cleanupOrder: string[]): SceneHarness {
   let pendingFrame: FrameRequestCallback | null = null;
   const eventTarget = new EventTarget();
   const ownedCallback = vi.fn((callback: () => void): void => callback());
+  const contextReturned = vi.fn();
   const context = {
     add: ownedCallback,
     revert: (): void => {
@@ -38,6 +40,7 @@ function createSceneHarness(cleanupOrder: string[]): SceneHarness {
     gsap: {
       context: (callback: () => void): typeof context => {
         callback();
+        contextReturned();
         return context;
       },
       matchMedia: (): { revert(): void } => ({
@@ -65,6 +68,7 @@ function createSceneHarness(cleanupOrder: string[]): SceneHarness {
       callback?.(16);
     },
     ownedCallback,
+    contextReturned,
   };
 }
 
@@ -158,7 +162,8 @@ describe("createOwnedScene", () => {
     });
     expect(signals[0]?.aborted).toBe(true);
     expect(animate).not.toHaveBeenCalled();
-    expect(cleanupOrder).toEqual(["feature", "media"]);
+    expect(harness.contextReturned).toHaveBeenCalledTimes(1);
+    expect(cleanupOrder).toEqual(["feature", "media", "context"]);
   });
 
   it("GIVEN failed setup and failed cleanup WHEN rollback runs THEN both errors survive and remaining resources release", () => {
@@ -196,8 +201,30 @@ describe("createOwnedScene", () => {
       message: "One or more emergency scene resources failed to clean up.",
       errors: [cleanupError],
     });
-    expect(cleanupOrder).toEqual(["throwing", "first", "media"]);
+    expect(cleanupOrder).toEqual(["throwing", "first", "media", "context"]);
   });
+
+  it.each([undefined, null, 0])(
+    "GIVEN setup throws %s WHEN rollback runs THEN falsy causes are preserved and the assigned context reverts",
+    (cause: unknown) => {
+      const cleanupOrder: string[] = [];
+      const harness = createSceneHarness(cleanupOrder);
+      const error = captureFailure(() =>
+        createOwnedScene({
+          capability: { kind: "full", reason: "user-enabled" },
+          engine: harness.engine,
+          id: "hero",
+          root: harness.root,
+          setup: (): never => {
+            throw cause;
+          },
+        }),
+      );
+      expect(error).toMatchObject({ cause });
+      expect(harness.contextReturned).toHaveBeenCalledTimes(1);
+      expect(cleanupOrder).toEqual(["media", "context"]);
+    },
+  );
 
   it("GIVEN a throwing cleanup WHEN destroyed THEN all other resources release and repeated destroy stays inert", () => {
     const cleanupOrder: string[] = [];

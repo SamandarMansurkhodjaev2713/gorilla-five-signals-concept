@@ -1,4 +1,5 @@
 import type { SceneSetup } from "../create-scene";
+import { captureInlineStyles } from "../inline-style-snapshot";
 import {
   HERO_COMPACT_MEDIA_QUERY,
   resolveHeroCanEntrySpec,
@@ -25,6 +26,28 @@ const POINTER_ORBIT_X_PX = 16;
 const SUPPORT_ENTRY_Y_PX = 18;
 const SUPPORT_STAGGER_SECONDS = 0.05;
 const TITLE_ENTRY_Y_PERCENT = 104;
+type HeroPresentationContext = ReturnType<
+  Parameters<SceneSetup>[0]["gsap"]["context"]
+>;
+const HERO_PRESENTATION_PROPERTIES = [
+  "clip-path",
+  "opacity",
+  "rotate",
+  "scale",
+  "transform",
+  "transform-origin",
+  "translate",
+  "visibility",
+] as const;
+const HERO_PRESENTATION_SELECTOR = [
+  FREQUENCY_SELECTOR,
+  GHOST_CAN_SELECTOR,
+  ORBIT_SELECTOR,
+  PRIMARY_CAN_SELECTOR,
+  SIGNAL_PLATE_SELECTOR,
+  SUPPORT_SELECTOR,
+  TITLE_SELECTOR,
+].join(", ");
 
 function animateSignalBoot(context: Parameters<SceneSetup>[0]): void {
   const entry = resolveHeroCanEntrySpec({
@@ -164,15 +187,32 @@ function mountPointerDepth(context: Parameters<SceneSetup>[0]): void {
   context.onCleanup(reset);
 }
 
-export const setupHero: SceneSetup = (context): (() => void) => {
+export const setupHero: SceneSetup = (context): void => {
   const cleanupReady = markSceneReady(context);
-  if (context.capability.kind === "reduced") return cleanupReady;
-  if (context.capability.kind === "lite") {
-    animateLiteSignalBoot(context);
-    return cleanupReady;
-  }
-
-  animateSignalBoot(context);
-  mountPointerDepth(context);
-  return cleanupReady;
+  context.onCleanup(cleanupReady);
+  if (context.capability.kind === "reduced") return;
+  const targets = context.queryAll<HTMLElement>(HERO_PRESENTATION_SELECTOR);
+  const restoreStyles = captureInlineStyles(
+    targets,
+    HERO_PRESENTATION_PROPERTIES,
+  );
+  const presentation: HeroPresentationContext = context.gsap.context(() => {
+    return (): void => {
+      try {
+        // Invalidate GSAP's normalized transforms before restoring responsive CSS.
+        presentation.ignore(() =>
+          context.gsap.set(targets, { clearProps: "transform" }),
+        );
+      } finally {
+        restoreStyles();
+      }
+    };
+  }, context.root);
+  presentation.add((): void => {
+    if (context.capability.kind === "lite") animateLiteSignalBoot(context);
+    else {
+      animateSignalBoot(context);
+      mountPointerDepth(context);
+    }
+  });
 };

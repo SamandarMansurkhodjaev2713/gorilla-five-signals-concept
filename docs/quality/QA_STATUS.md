@@ -1,5 +1,17 @@
 # QA status
 
+## Hero style ownership and failed-setup rollback — 2026-10-25
+
+Full/Lite teardown now restores the Hero's original inline declarations after
+GSAP reversion and invalidates normalized transform caches. Partial scene setup
+also obtains a registered context before rollback; readiness/styles are owned
+before initialization can fail. Source checks pass 264 strict files, 197 units,
+47-page build/artifact verification and dependency audit. Twenty-one focused
+cases pass across three engines, covering capability cycles, resize, injected
+setup errors and menu mouse/touch activation. See [scope, five review lenses
+and limitations](HERO_STYLE_OWNERSHIP_REVIEW_2026-10-25.md).
+Full release and performance acceptance remain open; this is not a deployment.
+
 ## Native menu activation correction — 2026-10-25
 
 Fixed a real pressed-target displacement: menu entrance cleanup moved the pause

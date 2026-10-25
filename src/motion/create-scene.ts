@@ -44,6 +44,7 @@ export interface SceneSetupContext {
 }
 
 export type SceneSetup = (context: SceneSetupContext) => void | Cleanup;
+type SetupOutcome = { kind: "success" } | { kind: "failure"; cause: unknown };
 
 interface OwnedSceneOptions {
   readonly id: SceneId;
@@ -80,12 +81,19 @@ function runSceneSetup(
   resources: SceneResources,
 ): void {
   const setupContext = createSceneSetupContext({ ...options, resources });
+  const result: { outcome: SetupOutcome } = { outcome: { kind: "success" } };
   try {
     const context = options.engine.gsap.context((): void => {
-      const cleanup = options.setup(setupContext);
-      if (cleanup) resources.addCleanup(cleanup);
+      try {
+        const cleanup = options.setup(setupContext);
+        if (cleanup) resources.addCleanup(cleanup);
+      } catch (cause: unknown) {
+        // Let GSAP restore its ambient context before rolling back owned work.
+        result.outcome = { kind: "failure", cause };
+      }
     }, options.root);
     resources.assignContext(context);
+    if (result.outcome.kind === "failure") throw result.outcome.cause;
   } catch (setupError: unknown) {
     rollbackSetup(resources, options.id, setupError);
   }
