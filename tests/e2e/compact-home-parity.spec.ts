@@ -24,6 +24,7 @@ const COMPACT_CONTEXTS = [
   { name: "short-landscape", width: 320, height: 240 },
 ] as const;
 const CONTENT_MODES = ["reduced", "no-js"] as const;
+const PACKSHOT_COMPRESSION_RATIO = 0.5;
 
 for (const locale of LOCALES) {
   for (const viewport of COMPACT_CONTEXTS) {
@@ -104,8 +105,11 @@ test("GIVEN compressed packshot width WHEN parity is measured THEN native aspect
   await expectSemanticPage(page, "uz", "?motion=static");
   await waitForCompactFonts(page);
   await verifyCompactHomeParity(page);
+  const imageWidth = await page
+    .locator(".hero-primary-can img")
+    .evaluate((image) => Number.parseFloat(getComputedStyle(image).width));
   await page.addStyleTag({
-    content: ".hero-primary-can { inline-size: 50% !important; }",
+    content: `.hero-primary-can { inline-size: ${String(imageWidth * PACKSHOT_COMPRESSION_RATIO)}px !important; }`,
   });
   await expect(verifyCompactHomeParity(page)).rejects.toThrow(
     "Native packshot aspect",

@@ -19,7 +19,7 @@
         )
     );
     --hero-compact-can-height: min(
-      48svh,
+      40svh,
       25rem,
       var(--hero-compact-can-width-cap)
     );
@@ -28,7 +28,7 @@
     display: flow-root;
     min-block-size: calc(
       (var(--hero-compact-can-height) * var(--hero-can-scale-envelope)) +
-        (2 * var(--hero-can-entry-travel)) + (2 * var(--space-5))
+        (2 * var(--hero-can-entry-travel)) + (2 * var(--space-4))
     );
     padding-block: var(--space-4);
     isolation: isolate;

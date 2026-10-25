@@ -1,3 +1,10 @@
+@media (min-width: 48rem) {
+  .hero-copydeck,
+  .hero-scroll-cue {
+    margin-block-end: var(--space-7);
+  }
+}
+
 @media (min-width: 64rem) {
   html[data-motion-tier="full"]:not([data-motion-static]) .hero {
     min-block-size: 142svh;
@@ -32,7 +39,12 @@
 @media (max-width: 47.99rem) {
   .hero,
   .hero-frame {
-    min-block-size: max(43rem, calc(100svh - var(--size-header)));
+    --hero-first-fold-clearance: calc(var(--space-8) + var(--space-4));
+
+    min-block-size: max(
+      43rem,
+      calc(100svh - var(--size-header) - var(--hero-first-fold-clearance))
+    );
   }
 
   .hero-frame {
@@ -64,7 +76,7 @@
   }
 
   .hero-heading h1 {
-    gap: clamp(8rem, 25svh, 12.5rem);
+    gap: clamp(8rem, 20svh, 10rem);
     font-size: clamp(4.8rem, 24vw, 7.2rem);
     line-height: 0.74;
   }

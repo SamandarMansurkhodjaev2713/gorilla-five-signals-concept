@@ -1,5 +1,18 @@
 # QA status
 
+## Hero first-fold availability — 2026-10-25
+
+Corrected clipped primary actions on ordinary phone/desktop viewports without
+reducing display typography or removing the warning. Actions no longer inherit
+the entry support animation's hidden state. Native Chrome screenshots confirm
+the corrected 320/390/1440 layouts; a separate design-agent review found no new
+cropping. Source quality passes 271 strict files, 248 units, 47-page build,
+artifact checks and audit. Browser coverage: 125 initial passes and six focused
+confirmation passes, covering 129 distinct cases across three engines; the four
+initial failures and their resolution remain documented. See
+[five-lens review and exact evidence](HERO_FIRST_FOLD_REVIEW_2026-10-25.md).
+Full motion/performance acceptance and main/Pages publication remain open.
+
 ## Native exit and reload-position hardening — 2026-10-25
 
 Hero exit no longer applies backwards fill before its range; paired desktop
