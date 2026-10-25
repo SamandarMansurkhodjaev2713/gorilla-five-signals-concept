@@ -7,9 +7,20 @@ import type { SceneSetupContext } from "../create-scene";
 
 type TweenVars = Parameters<SceneSetupContext["gsap"]["to"]>[1];
 
+/** Entry configuration describes poses, never engine callbacks or playback timing. */
+export interface ProductWorldEntryPose {
+  readonly x?: number;
+  readonly y?: number;
+  readonly rotate?: number;
+  readonly scale?: number;
+  readonly scaleX?: number;
+  readonly scaleY?: number;
+  readonly transformOrigin?: "left center" | "center center";
+}
+
 interface ProductWorldEntrySpec {
-  readonly field: TweenVars;
-  readonly media: TweenVars;
+  readonly field: ProductWorldEntryPose;
+  readonly media: ProductWorldEntryPose;
 }
 
 interface ProductWorldScrollSpec {

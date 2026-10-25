@@ -1,5 +1,13 @@
 # QA status
 
+## Native entry experiment — 2026-10-25
+
+The four-case GSAP/native-driver comparison does not prove smoother playback;
+the prototype remains private and is not adopted. Entry configuration is now
+geometry-only and the emitted runtime/product page remain byte-identical.
+Four new unit contracts bring the passing source count to 181. See the
+[experiment, five review lenses and limitations](NATIVE_ENTRY_DRIVER_REVIEW_2026-10-25.md).
+
 ## Latest comparison cleanup — 2026-10-25
 
 Removed pseudo-technical comparison labels and corrected FAQ guidance. Fixed the
