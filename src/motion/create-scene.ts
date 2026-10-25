@@ -1,8 +1,12 @@
-import { createSceneSetupContext } from "./owned-scene-context";
 import {
   createSceneResources,
   type SceneResources,
 } from "./owned-scene-resources";
+import {
+  activateSetupStages,
+  createSetupRegistration,
+} from "./scene-setup-activation";
+import type { SetupStage } from "./setup-stage-queue";
 
 import type { Cleanup } from "./cleanup-stack";
 import type { MotionEngine } from "./motion-engine";
@@ -22,6 +26,8 @@ function describeError(error: unknown): string {
 }
 
 export interface SceneSetupContext {
+  /** Register finite initialization work during synchronous setup only. */
+  stage(callback: SetupStage): void;
   readonly root: HTMLElement;
   readonly capability: MotionCapability;
   readonly gsap: MotionEngine["gsap"];
@@ -79,8 +85,8 @@ function rollbackSetup(
 function runSceneSetup(
   options: OwnedSceneOptions,
   resources: SceneResources,
+  setupContext: SceneSetupContext,
 ): void {
-  const setupContext = createSceneSetupContext({ ...options, resources });
   const result: { outcome: SetupOutcome } = { outcome: { kind: "success" } };
   try {
     const context = options.engine.gsap.context((): void => {
@@ -102,9 +108,21 @@ function runSceneSetup(
 function createSceneHandle(
   options: OwnedSceneOptions,
   resources: SceneResources,
+  activation: Promise<void>,
+  initialPhase: ScenePhase,
 ): SceneHandle {
-  let phase: ScenePhase = "active";
+  let phase: ScenePhase = initialPhase;
+  const ready = activation.then(
+    (): void => {
+      if (phase === "mounting") phase = "active";
+    },
+    (error: unknown): never => {
+      phase = "destroyed";
+      throw error;
+    },
+  );
   return {
+    ready,
     id: options.id,
     capability: options.capability,
     getPhase: (): ScenePhase => phase,
@@ -131,6 +149,22 @@ export function createOwnedScene(options: OwnedSceneOptions): SceneHandle {
     throw new Error(`Scene "${options.id}" has no owning window.`);
   }
   const resources = createSceneResources({ ...options, windowValue });
-  runSceneSetup(options, resources);
-  return createSceneHandle(options, resources);
+  const registration = createSetupRegistration({ ...options, resources });
+  try {
+    runSceneSetup(options, resources, registration.context);
+  } finally {
+    registration.close();
+  }
+  const activation = activateSetupStages({
+    stages: registration.stages,
+    resources,
+    windowValue,
+    onFailure: (error): never => rollbackSetup(resources, options.id, error),
+  });
+  return createSceneHandle(
+    options,
+    resources,
+    activation,
+    registration.stages.length === 0 ? "active" : "mounting",
+  );
 }

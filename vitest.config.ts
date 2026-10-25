@@ -23,6 +23,8 @@ export default defineConfig({
         "src/features/site/reload-scroll.ts",
         "src/motion/capability-policy.ts",
         "src/motion/scene-registry.ts",
+        "src/motion/setup-stage-queue.ts",
+        "src/motion/runtime/scene-environment-owner.ts",
         "src/motion/scroll-restoration.ts",
       ],
       provider: "v8",

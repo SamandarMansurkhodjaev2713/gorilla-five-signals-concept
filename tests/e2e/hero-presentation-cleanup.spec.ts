@@ -1,49 +1,18 @@
-import { expect, test, type Locator } from "@playwright/test";
+import { expect, test } from "@playwright/test";
+import {
+  HERO_PRESENTATION_TARGETS as TARGETS,
+  snapshotHeroPresentation as snapshot,
+} from "./support/hero-presentation";
 
 import {
   closeConsumerMotionControls,
   openConsumerMotionControls,
 } from "./support/consumer-motion-controls";
 
-const PROPERTIES = [
-  "clip-path",
-  "opacity",
-  "rotate",
-  "scale",
-  "transform",
-  "transform-origin",
-  "translate",
-  "visibility",
-] as const;
-const TARGETS = [
-  "[data-motion-hero-frequency]",
-  "[data-hero-ghost]",
-  "[data-motion-hero-orbit]",
-  "[data-hero-primary-can]",
-  "[data-motion-hero-band]",
-  "[data-motion-hero-support]",
-  "[data-motion-hero-title]",
-].join(", ");
 const VIEWPORTS = [
   { width: 390, height: 844 },
   { width: 1440, height: 900 },
 ] as const;
-
-async function snapshot(targets: Locator) {
-  return targets.evaluateAll(
-    (elements, properties) =>
-      elements.map((element) => {
-        if (!(element instanceof HTMLElement))
-          throw new Error("Hero motion target is not HTML.");
-        return properties.map((property) => ({
-          property,
-          value: element.style.getPropertyValue(property),
-          priority: element.style.getPropertyPriority(property),
-        }));
-      }),
-    PROPERTIES,
-  );
-}
 
 for (const viewport of VIEWPORTS) {
   for (const preference of ["full", "lite"] as const) {
@@ -105,6 +74,16 @@ test("GIVEN interrupted Hero setup WHEN pointer initialization fails THEN styles
   await page.setViewportSize(VIEWPORTS[1]);
   await page.addInitScript(() => {
     localStorage.setItem("gorilla:motion-preference:v1", "full");
+    window.addEventListener("gorilla:motion-runtime-ready", (event) => {
+      const html = document.documentElement;
+      const detail: unknown =
+        event instanceof CustomEvent ? event.detail : null;
+      if (detail === "ready" && html.dataset.motionTier === "full") {
+        html.dataset.testHeroFullReadyCount = String(
+          Number(html.dataset.testHeroFullReadyCount ?? "0") + 1,
+        );
+      }
+    });
     const nativeAdd: unknown = Reflect.get(
       EventTarget.prototype,
       "addEventListener",
@@ -139,6 +118,9 @@ test("GIVEN interrupted Hero setup WHEN pointer initialization fails THEN styles
   });
   const targets = hero.locator(TARGETS);
   const original = await snapshot(targets);
+  await page.evaluate(() => {
+    document.documentElement.dataset.testHeroFullReadyCount = "0";
+  });
   await page.locator("[data-responsible-continue]").click();
   await expect(page.locator("html")).toHaveAttribute(
     "data-test-hero-setup-failure",
@@ -146,9 +128,17 @@ test("GIVEN interrupted Hero setup WHEN pointer initialization fails THEN styles
   );
   await expect(page.locator("html")).toHaveAttribute(
     "data-motion-runtime-state",
-    "ready",
+    "fallback",
   );
-  await expect(hero).not.toHaveAttribute("data-motion-ready", /.+/u);
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-motion-tier",
+    "reduced",
+  );
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-test-hero-full-ready-count",
+    "0",
+  );
+  await expect(hero).toHaveAttribute("data-motion-ready", "reduced");
   expect(await snapshot(targets)).toEqual(original);
   const pause = await openConsumerMotionControls(page);
   await pause.click();

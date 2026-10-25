@@ -2,6 +2,7 @@ import type { SceneSetupContext } from "./create-scene";
 import type { MotionEngine } from "./motion-engine";
 import type { SceneResources } from "./owned-scene-resources";
 import type { MotionCapability } from "./scene-contract";
+import type { SetupStage } from "./setup-stage-queue";
 
 function listenOwned(options: {
   readonly resources: SceneResources;
@@ -22,6 +23,7 @@ function listenOwned(options: {
 }
 
 export function createSceneSetupContext(options: {
+  readonly stage: (callback: SetupStage) => void;
   readonly root: HTMLElement;
   readonly capability: MotionCapability;
   readonly engine: MotionEngine;
@@ -49,5 +51,6 @@ export function createSceneSetupContext(options: {
     },
     requestFrame: resources.requestFrame,
     runOwned: resources.runOwned,
+    stage: options.stage,
   };
 }

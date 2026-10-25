@@ -11,6 +11,7 @@ import {
 } from "../preference-controller";
 import type { MotionCapability } from "../scene-contract";
 import { waitForCriticalRender } from "./critical-render";
+import { createEnhancedEnvironmentBuilder } from "./enhanced-environment-builder";
 import {
   MOTION_RUNTIME_READY_EVENT,
   type MotionRuntime,
@@ -24,7 +25,6 @@ import {
   sameCapability,
 } from "./runtime-support";
 import {
-  createEnhancedEnvironment,
   createReducedEnvironment,
   type MotionSceneEnvironment,
 } from "./scene-environment";
@@ -39,6 +39,7 @@ export class MotionRuntimeCoordinator implements MotionRuntime {
   private readonly preferenceController: MotionPreferenceController;
   private readonly capabilityController: CapabilityController;
   private environment: MotionSceneEnvironment | null = null;
+  private readonly environmentBuilder = createEnhancedEnvironmentBuilder();
   private capability = INITIAL_CAPABILITY;
   private preference: UserMotionPreference = "system";
   private generation = 0;
@@ -140,6 +141,7 @@ export class MotionRuntimeCoordinator implements MotionRuntime {
   }
 
   private releaseEnvironment(): void {
+    this.environmentBuilder.cancel();
     const previous = this.environment;
     this.environment = null;
     try {
@@ -177,8 +179,10 @@ export class MotionRuntimeCoordinator implements MotionRuntime {
     }
   }
 
-  private async rebuild(next: MotionCapability): Promise<void> {
-    const activeGeneration = ++this.generation;
+  private async rebuild(
+    next: MotionCapability,
+    activeGeneration: number,
+  ): Promise<void> {
     this.setRuntimeState("loading");
     this.setTier(next);
     this.releaseEnvironment();
@@ -195,7 +199,7 @@ export class MotionRuntimeCoordinator implements MotionRuntime {
     if (!engine || this.isStale(activeGeneration)) {
       return;
     }
-    const nextEnvironment = await createEnhancedEnvironment({
+    const nextEnvironment = await this.environmentBuilder.build({
       documentValue: this.documentValue,
       capability: next,
       engine,
@@ -210,10 +214,14 @@ export class MotionRuntimeCoordinator implements MotionRuntime {
   }
 
   private async rebuildSafely(next: MotionCapability): Promise<void> {
+    const activeGeneration = ++this.generation;
     try {
-      await this.rebuild(next);
+      await this.rebuild(next, activeGeneration);
     } catch (error: unknown) {
-      if (!this.destroyed && sameCapability(next, this.capability)) {
+      if (
+        !this.isStale(activeGeneration) &&
+        sameCapability(next, this.capability)
+      ) {
         this.applyFallback(error);
       }
     }

@@ -352,3 +352,25 @@ ID are rejected and diagnosed because ownership would otherwise be ambiguous.
 Scene code queries only below its supplied root. Document-wide root and
 preference-control discovery occurs only in the lifecycle orchestrator, never
 inside feature choreography.
+
+## Cancellable preparation contract
+
+Immediate scenes may register finite synchronous setup stages. Their handles are
+owned before `ready` is awaited; one stage runs per native animation frame and
+scene abort cancels pending work. Global Full readiness follows successful
+activation of every immediate scene, not merely creation of its handle. Current
+generation startup failure selects Reduced fallback; obsolete failures cannot
+replace a newer environment.
+
+Full Hero prepares sixteen individual tween targets, then pointer depth, then
+playback. Preparation must restore the SSR pose before each paint; no hidden
+heading, frequency bar or normalized orbit transform may leak between stages.
+Playback preserves the authored 1.665-second timeline. Partial cleanup invalidates
+only touched caches and restores all original inline declarations/priorities.
+Lite and Reduced retain their existing content and interaction contracts.
+
+This contract does not waive startup or frame budgets. Direct native callback
+tracing is required alongside LoAF attribution because a callback exceeding 16ms
+can occur in a frame shorter than the LoAF reporting threshold. See
+[ADR-0008](../decisions/ADR-0008-owned-staged-scene-activation.md) and the
+[staged Hero review](../quality/STAGED_HERO_REVIEW_2026-10-25.md).

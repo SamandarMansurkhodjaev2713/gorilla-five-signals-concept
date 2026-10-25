@@ -1,5 +1,19 @@
 # QA status
 
+## Owned target-level Hero preparation — 2026-10-25
+
+Full Hero preparation now executes one target per cancellable frame while
+preserving SSR poses until playback. Fixed false Full readiness after startup
+failure and obsolete-generation fallback; teardown invalidates only touched
+caches and restores exact original declarations. Source checks pass 289 strict
+files, 282 unit tests, production build, artifact checks and dependency audit.
+All 42 targeted lifecycle/preparation/native-scroll cases pass without retries
+across Chromium, Firefox and WebKit. See the
+[five-lens review, unsuccessful iterations and scope](STAGED_HERO_REVIEW_2026-10-25.md)
+and [ADR-0008](../decisions/ADR-0008-owned-staged-scene-activation.md).
+Complete motion performance, mobile visual/device QA and Lighthouse gates remain
+open. Main/Pages publication remains held; this correction is not release approval.
+
 ## Consumer typography and mobile action fit — 2026-10-25
 
 Removed the untranslated range calibration eyebrow and restored its full-row

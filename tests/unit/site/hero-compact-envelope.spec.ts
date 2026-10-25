@@ -21,7 +21,7 @@ const INVALID_DIMENSIONS = [
 describe("compact hero native framing contract", () => {
   it("GIVEN authored motion WHEN framing is derived THEN actual entry and rest use the shared specification", async () => {
     const [hero, product, compact, markup] = await Promise.all([
-      readFile("src/motion/scene-setups/hero.ts", "utf8"),
+      readFile("src/motion/scene-setups/hero-full-boot.ts", "utf8"),
       readFile("src/components/home/home-hero-product.css", "utf8"),
       readFile("src/components/home/home-hero-compact.css", "utf8"),
       readFile("src/components/home/HomeHero.astro", "utf8"),

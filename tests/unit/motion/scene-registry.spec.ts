@@ -9,6 +9,7 @@ function buildHandle(
   destroy: SceneHandle["destroy"] = vi.fn(),
 ): SceneHandle {
   return {
+    ready: Promise.resolve(),
     capability: { kind: "full", reason: "capable-fine-pointer" },
     destroy,
     getPhase: () => "active",

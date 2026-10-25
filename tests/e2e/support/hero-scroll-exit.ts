@@ -34,6 +34,11 @@ export async function scrollAndPaint(page: Page, top: number): Promise<void> {
       page.evaluate((position) => Math.abs(scrollY - position), target),
     )
     .toBeLessThanOrEqual(1);
+  await paintNativeFrames(page);
+}
+
+/** Sample native timelines after style association and two browser paint opportunities. */
+async function paintNativeFrames(page: Page): Promise<void> {
   await page.evaluate(async () => {
     await new Promise<void>((resolve) =>
       requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
@@ -43,6 +48,7 @@ export async function scrollAndPaint(page: Page, top: number): Promise<void> {
 
 /** Read the actual native Hero exit animation and its painted product bounds. */
 export async function readExit(page: Page) {
+  await paintNativeFrames(page);
   return page.locator("[data-hero-primary-can]").evaluate((element) => {
     const animations = element
       .getAnimations()
