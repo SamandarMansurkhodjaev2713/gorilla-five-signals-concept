@@ -154,6 +154,22 @@ No median or individual run is discarded to obtain a pass. The runner exits 1.
 Summary and raw traces/reports: `test-results/lighthouse/`; command log:
 `.tmp/lighthouse-native-reactor-2026-10-25.log`. Public deployment remains held.
 
+LCP attribution selects the same eager, high-priority 320w Original can in all
+three homepage runs. Its observed request finishes within 63–104ms; observed
+render delay dominates its load duration. Fresh audit profiles have not confirmed
+responsible entry, so the runtime exits before loading GSAP: Hero staged boot
+cannot explain this particular cold-entry LCP. Confirmed startup performance is
+still independently failed by the journey above.
+
+The next narrow control is to inspect whether content obscured by the open entry
+dialog should be excluded from painting, preserving the existing composition,
+no-JS access and confirmed-session behavior. That is a hypothesis, not an applied
+fix or permission to hide visible product content for a score. Compare fresh and
+confirmed entry separately before adoption. A correctly sized smaller can
+derivative is a separate asset-only control, not a reason to alter discovery or
+the required early history bridge. No production gate or image change was made
+from this attribution alone.
+
 ## 5. Maintainability, documentation and release readiness
 
 ADR-0011 documents native/fallback ownership and rejection boundaries. The plan,
