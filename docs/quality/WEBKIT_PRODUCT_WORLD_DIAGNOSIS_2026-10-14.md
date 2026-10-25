@@ -1,5 +1,10 @@
 # WebKit product-world rendering investigation
 
+Clarification, 2026-10-25: the installed Windows WebKit default disables
+accelerated compositing. These historical local measurements are software-path
+evidence, not measurements of accelerated Safari on Apple hardware. Functional
+failures are not waived. See `BROWSER_MEASUREMENT_CONTEXT_2026-10-25.md`.
+
 Date: 2026-10-14. Status: unresolved performance gate, not a release pass.
 
 ## Acceptance boundary

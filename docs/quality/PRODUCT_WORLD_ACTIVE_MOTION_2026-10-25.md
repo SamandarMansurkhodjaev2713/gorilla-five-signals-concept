@@ -1,5 +1,11 @@
 # Product-world active motion — 2026-10-25
 
+Environment clarification: the Windows WebKit measurements below use a process
+whose installed default disables accelerated compositing. Preserve the raw
+software-path failures; they neither establish nor refute accelerated
+Safari/iPhone performance. Chromium/Lighthouse and physical-device gates remain
+separate. See [actual launch and GPU evidence](BROWSER_MEASUREMENT_CONTEXT_2026-10-25.md).
+
 ## Current-artifact diagnosis
 
 The ownership correction in `fa830ff` prevents entrance and scroll-scrub from

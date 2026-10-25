@@ -108,6 +108,21 @@ Render/presentation duration stays in the evidence for diagnosis but is not
 mislabelled as application work. The gate requires browser support for all
 three observer types and fails closed when evidence is malformed.
 
+The frozen performance profile is shared with unit contracts. Each session
+records the requested CPU rate and successful protocol acknowledgment, actual
+browser/platform/GPU rendering metadata, viewport/DPR and the served homepage
+digest matched to the build. Acknowledgment is not an independent measurement
+of the physical CPU multiplier; renderer metadata is not a hardware eligibility
+pass. Missing GPU metadata fails closed.
+
+Windows WebKit's installed default launch explicitly disables accelerated
+compositing. Preserve its functional checks, but do not interpret those software
+frame timings as accelerated Safari/iPhone measurements or remove the default
+flag to manufacture acceptance. Playwright WebKit is not branded Safari;
+[official guidance](https://playwright.dev/docs/browsers#webkit) identifies macOS
+as the closer platform. Physical-device gates remain necessary. See
+[measured rendering context](BROWSER_MEASUREMENT_CONTEXT_2026-10-25.md).
+
 Command:
 
 ```text

@@ -1,5 +1,12 @@
 # Native entry-driver experiment — 2026-10-25
 
+Environment clarification: the actual Windows WebKit process disables
+accelerated compositing by default. Its results below describe that software
+path, not hardware-backed Safari/iPhone playback. The prototype remains
+unadopted because benefit and full lifecycle are unproven; this is not a general
+conclusion about native Web Animations. See
+[the environment audit](BROWSER_MEASUREMENT_CONTEXT_2026-10-25.md).
+
 ## Question and scope
 
 Can native Web Animations playback improve the product-world entrance without

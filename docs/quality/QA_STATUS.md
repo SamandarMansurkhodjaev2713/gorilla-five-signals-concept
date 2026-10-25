@@ -1,5 +1,17 @@
 # QA status
 
+## Measurement correction — 2026-10-25
+
+The motion harness now requests its documented CPU ×4 instead of ×1, records
+validated rendering/build context and owns preview in the foreground. Three
+complete sessions failed existing frame/long-task limits; their Chromium
+renderer was SwiftShader software, not the separate Chrome Lighthouse GPU
+environment. Windows Playwright WebKit also explicitly disables accelerated
+compositing. Neither result proves physical Safari performance, nor excuses
+functional failures. See [evidence and interpretation boundaries](BROWSER_MEASUREMENT_CONTEXT_2026-10-25.md).
+The current Lighthouse and full release gates remain open; no production
+acceptance or public deployment is implied by the harness correction.
+
 ## Native entry experiment — 2026-10-25
 
 The four-case GSAP/native-driver comparison does not prove smoother playback;
