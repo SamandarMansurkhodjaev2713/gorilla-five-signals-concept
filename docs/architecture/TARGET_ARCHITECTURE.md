@@ -118,17 +118,19 @@ Keep feature knowledge in explicit application adapters, not the generic core.
 Do not share state through feature-to-feature internal imports; promote a real
 shared contract only when a concrete consumer requires it.
 
-Reactor, Material Film, Manifesto and Terminal are concrete consumers of the finite
-native player and adaptive sampled easing. The neutral player owns no feature
-selectors, cue schedule or product data; adapters supply typed effects, namespace
-and lifecycle callbacks.
+Reactor, Material Film, Manifesto, Terminal and Service Dock are concrete
+consumers of the finite native player and adaptive sampled easing. The neutral
+player owns no feature selectors, cue schedule or product data; adapters supply
+typed effects, namespace and lifecycle callbacks.
 Each adapter retains its GSAP fallback and presentation guard. One-shot entrance
 adapters share `native/finite-entrance-owner.ts`, which stops owned fallback work
 before restoring the exact inline snapshot. Equal effects may be copied only
 within one construction batch; no target/effect cache outlives that operation.
-See [ADR-0012](../decisions/ADR-0012-shared-finite-native-entrances.md) and
-[ADR-0013](../decisions/ADR-0013-native-home-entrances.md). Cross-engine and
-performance acceptance remain separate from this responsibility map.
+See [ADR-0012](../decisions/ADR-0012-shared-finite-native-entrances.md),
+[ADR-0013](../decisions/ADR-0013-native-home-entrances.md) and
+[ADR-0014](../decisions/ADR-0014-native-service-and-discovery-priority.md).
+Cross-engine and performance acceptance remain separate from this
+responsibility map.
 
 There is no generic `Infrastructure` folder because browser effects are named and
 owned: `compare-location-store.ts`, `compare-clipboard.ts`,

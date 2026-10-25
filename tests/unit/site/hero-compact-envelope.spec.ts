@@ -50,6 +50,25 @@ describe("compact hero native framing contract", () => {
     );
   });
 
+  it("GIVEN home packshots WHEN discovery attributes are emitted THEN only the primary Hero image is eager and high priority", async () => {
+    const [hero, manifesto] = await Promise.all([
+      readFile("src/components/home/HomeHero.astro", "utf8"),
+      readFile("src/components/home/HomeManifesto.astro", "utf8"),
+    ]);
+    const heroMarkup = hero.replace(/\s+/gu, " ");
+    const manifestoMarkup = manifesto.replace(/\s+/gu, " ");
+
+    expect(heroMarkup).toMatch(
+      /src=\{primaryProduct\.imagePath\} srcset=\{primaryProduct\.imageSrcSet\} sizes=\{primaryImageLayout\.sizes\} width=\{primaryProduct\.width\} height=\{primaryProduct\.height\} alt="" fetchpriority="high" loading="eager" decoding="sync"/u,
+    );
+    expect(heroMarkup).toMatch(
+      /src=\{product\.imagePath\} srcset=\{product\.imageSrcSet\} sizes="\(min-width: 48rem\) min\(11\.28svh, 7\.39rem\), min\(8\.95svh, 4\.28rem\)" width=\{product\.width\} height=\{product\.height\} alt="" fetchpriority="low" loading="lazy" decoding="async"/u,
+    );
+    expect(manifestoMarkup).toMatch(
+      /src=\{carrier\.imagePath\} srcset=\{carrier\.imageSrcSet\} sizes="\(min-width: 64rem\) 24rem, 13rem" width=\{carrier\.width\} height=\{carrier\.height\} alt="" fetchpriority="low" loading="lazy" decoding="async"/u,
+    );
+  });
+
   it("GIVEN native product dimensions WHEN sizes is generated THEN compact and general landscape precede regular branches", () => {
     const layout = createHeroImageLayout(NATIVE_DIMENSIONS);
     expect(layout.aspect).toBe(

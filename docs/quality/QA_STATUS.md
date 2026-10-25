@@ -1,5 +1,59 @@
 # QA status
 
+## Native Service and discovery-priority candidate — 2026-10-25
+
+Service Dock is now the fifth adapter over the shared finite native player and
+exact-snapshot entrance owner. Its existing Full/Lite choreography remains in
+the feature adapter and GSAP remains the guarded fallback. Separately, the four
+lazy Hero ghost products and below-fold Manifesto carrier declare explicit Low
+fetch priority; the primary Hero product remains eager/high.
+
+The frozen source/artifact gate passes formatting, lint, 344 strict files, 449
+units, coverage, the 47-page production build, budgets, content, provenance,
+licenses, the 617-component SBOM and high-severity dependency audit. The build
+entry-document SHA-256 is
+`184868e03ac73b881af12367bcfb5122403f6f78d1a150f1618afdd1cea36668`.
+
+The canonical nine-run Lighthouse batch passes on audit entry SHA-256
+`377c5c4ef5e93d4a304bceed2de84b11a07898814da5d6f03c04d90ed196f6a5`.
+Home Performance is 97/98/98, LCP is 2340.865/2258.804/2337.968ms, median TBT
+is 69ms and CLS is 0. Product and Find Performance medians are 98 and 99; their
+LCP medians are 2190.923 and 1961.197ms, with 0ms median TBT. Accessibility,
+best practices and SEO are 100 in all nine audits. All five targeted images now
+begin Low with an explicit Low hint and record zero promotions before LCP in all
+three home runs; the preserved baseline pattern was 5/0/5. Home median LCP moves
+from 3472.275ms to 2337.968ms. This is bounded canonical Lighthouse evidence,
+not INP, frame-rate, physical-device or complete-journey acceptance.
+
+The controlled Service matrix passes 12 native/GSAP pairs and 24 captures across
+three engines, Full/Lite and 390/1440px. Natural cleanup and exact eight-property
+inline restoration pass 24/24, font metadata is equal, and application/cleanup
+errors are zero. Maximum rect/matrix deltas are zero, opacity delta is 0.000064
+and clip delta is 0.029357px under unchanged budgets. The capture process saved
+the successful matrix before an obsolete Terminal-only reporter exited 1; the
+standalone JSON comparator passed the saved artifact with exit 0. That harness
+defect is recorded rather than misreported as an application failure.
+
+Three hardware CPU×4 traces measure the Service callback at
+10.005/9.007/11.388ms, passing 16ms in all runs with zero nested style-tree,
+layout or forced-style/layout work. Its median changes from 29.193ms to
+10.005ms. This accepts the bounded callback, not the frame: containing frames
+remain 155.2/106.9/112.8ms with 93.8/46.5/56.0ms blocking work and long render
+and style/layout tails. Footer, a Product-labelled boundary and one Manifesto
+run also remain over budget. Exact Product ownership is not inferred from the
+boundary label.
+
+The unchanged artifact passes all 36 combined functional cases with exit 0 and
+no retries or skips: 12 extended native-home cases covering all four scenes and
+24 entry-paint cases across all three engines, Full/Lite, 390/1440px, pause,
+Reduced, exact inline cleanup, entry reload, route/back, no-JS and locale.
+
+The independent Footer callback and wider journey remain open. INP, physical
+device and release gates are not implied by the bounded passes. Main/Pages stay
+held under the user's publication condition. See the
+[five-lens review](SERVICE_PRIORITY_REVIEW_2026-10-25.md) and
+[ADR-0014](../decisions/ADR-0014-native-service-and-discovery-priority.md).
+
 ## Adaptive native home entrances — 2026-10-25
 
 Manifesto and Tashkent Terminal now join Reactor and Material Film on the shared

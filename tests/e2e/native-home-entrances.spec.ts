@@ -45,6 +45,14 @@ const SCENES = [
     targets:
       ".tashkent-terminal__copy > *, .tashkent-terminal__field, .tashkent-terminal__word, .tashkent-terminal__coordinate, .tashkent-terminal__route, .tashkent-terminal__route i, .tashkent-terminal__locator, .tashkent-terminal__locator > :not(.tashkent-terminal__grid):not(.tashkent-terminal__marker), .tashkent-terminal__grid, .tashkent-terminal__marker",
   },
+  {
+    id: "faq-safety",
+    prefix: "gorilla-home-service:",
+    full: 12,
+    lite: 6,
+    targets:
+      ".home-service-dock__index header, .home-service-dock__questions details, .home-service-dock__questions > .control, .home-service-dock__contact, .home-service-dock__contact-word, .home-service-dock__contact > :is(.type-label, strong, small, b, i)",
+  },
 ] as const;
 const VIEWPORTS = [
   { width: 390, height: 844 },

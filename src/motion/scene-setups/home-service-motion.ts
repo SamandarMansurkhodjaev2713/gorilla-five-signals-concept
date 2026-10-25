@@ -1,5 +1,16 @@
 import type { SceneSetup, SceneSetupContext } from "../create-scene";
-import { MOTION_DURATION_SECONDS, MOTION_EASE } from "../tokens";
+import { publishMotionDiagnostic } from "../diagnostics";
+import { MOTION_EASE } from "../tokens";
+import { HomeServiceEntranceOwner } from "./home-service-entrance-owner";
+import {
+  SERVICE_ACTION_SELECTOR,
+  SERVICE_CONTACT_COPY_SELECTOR,
+  SERVICE_CONTACT_SELECTOR,
+  SERVICE_CONTACT_WORD_SELECTOR,
+  SERVICE_HEADER_SELECTOR,
+  SERVICE_ROW_SELECTOR,
+} from "./home-service-motion-contract";
+import { HOME_SERVICE_TIMING_SECONDS } from "./home-service-motion-spec";
 import {
   createFiniteReveal,
   markSceneReady,
@@ -7,73 +18,64 @@ import {
 } from "./shared";
 
 const HOME_SERVICE_CLASS = "home-service-dock";
-const FAQ_HEADER_SELECTOR = ".home-service-dock__index header";
-const FAQ_ROW_SELECTOR = ".home-service-dock__questions details";
-const FAQ_ACTION_SELECTOR = ".home-service-dock__questions > .control";
-const CONTACT_ROOT_SELECTOR = ".home-service-dock__contact";
-const CONTACT_WORD_SELECTOR = ".home-service-dock__contact-word";
-const CONTACT_COPY_SELECTOR = [
-  ".home-service-dock__contact > .type-label",
-  ".home-service-dock__contact > strong",
-  ".home-service-dock__contact > small",
-  ".home-service-dock__contact > b",
-  ".home-service-dock__contact > i",
-].join(", ");
-const PRESENTATION_SELECTOR = [
-  FAQ_HEADER_SELECTOR,
-  FAQ_ROW_SELECTOR,
-  FAQ_ACTION_SELECTOR,
-  CONTACT_ROOT_SELECTOR,
-  CONTACT_WORD_SELECTOR,
-  CONTACT_COPY_SELECTOR,
-].join(", ");
-const PRESENTATION_PROPERTIES = ["clip-path", "opacity"] as const;
-const SERVICE_STAGGER_SECONDS = 0.055;
 
 type SetupContext = Parameters<SceneSetup>[0];
 type SceneTimeline = ReturnType<SceneSetupContext["gsap"]["timeline"]>;
 
-function clearPresentation(root: HTMLElement): void {
-  root
-    .querySelectorAll<HTMLElement>(PRESENTATION_SELECTOR)
-    .forEach((element): void => {
-      for (const property of PRESENTATION_PROPERTIES) {
-        element.style.removeProperty(property);
-      }
-    });
-}
-
-function clearAfterContextRevert(root: HTMLElement): void {
-  clearPresentation(root);
-  queueMicrotask((): void => clearPresentation(root));
-}
-
 function animateFaqIndex(context: SetupContext, timeline: SceneTimeline): void {
-  timeline.from(context.query<HTMLElement>(FAQ_HEADER_SELECTOR), {
+  const timing = HOME_SERVICE_TIMING_SECONDS;
+  timeline.from(context.query<HTMLElement>(SERVICE_HEADER_SELECTOR), {
     opacity: 0,
     clipPath: "inset(0 0 100% 0)",
-    duration: MOTION_DURATION_SECONDS.scene,
+    duration: timing.sceneDuration,
     ease: MOTION_EASE.enter,
   });
   timeline.from(
-    context.queryAll<HTMLElement>(FAQ_ROW_SELECTOR),
+    context.queryAll<HTMLElement>(SERVICE_ROW_SELECTOR),
     {
       opacity: 0,
       clipPath: "inset(0 100% 0 0)",
-      duration: MOTION_DURATION_SECONDS.standard,
+      duration: timing.standardDuration,
       ease: MOTION_EASE.enter,
-      stagger: SERVICE_STAGGER_SECONDS,
+      stagger: timing.stagger,
     },
-    0.12,
+    timing.rowDelay,
   );
   timeline.from(
-    context.query<HTMLElement>(FAQ_ACTION_SELECTOR),
+    context.query<HTMLElement>(SERVICE_ACTION_SELECTOR),
     {
       opacity: 0,
-      duration: MOTION_DURATION_SECONDS.standard,
+      duration: timing.standardDuration,
       ease: MOTION_EASE.enter,
     },
-    0.26,
+    timing.actionDelay,
+  );
+}
+
+function animateFullContact(
+  context: SetupContext,
+  timeline: SceneTimeline,
+): void {
+  const timing = HOME_SERVICE_TIMING_SECONDS;
+  timeline.from(
+    context.query<HTMLElement>(SERVICE_CONTACT_WORD_SELECTOR),
+    {
+      opacity: 0,
+      duration: timing.sceneDuration,
+      ease: MOTION_EASE.material,
+    },
+    timing.contactWordDelay,
+  );
+  timeline.from(
+    context.queryAll<HTMLElement>(SERVICE_CONTACT_COPY_SELECTOR),
+    {
+      opacity: 0,
+      clipPath: "inset(0 0 100% 0)",
+      duration: timing.standardDuration,
+      ease: MOTION_EASE.enter,
+      stagger: timing.stagger,
+    },
+    timing.contactCopyDelay,
   );
 }
 
@@ -81,51 +83,50 @@ function animateContactHandoff(
   context: SetupContext,
   timeline: SceneTimeline,
 ): void {
+  const timing = HOME_SERVICE_TIMING_SECONDS;
   timeline.from(
-    context.query<HTMLElement>(CONTACT_ROOT_SELECTOR),
+    context.query<HTMLElement>(SERVICE_CONTACT_SELECTOR),
     {
       opacity: 0,
       clipPath: "inset(8% 0 8% 0)",
-      duration: MOTION_DURATION_SECONDS.scene,
+      duration: timing.sceneDuration,
       ease: MOTION_EASE.material,
     },
-    0.3,
+    timing.contactDelay,
   );
-  if (context.capability.kind !== "full") return;
-  timeline.from(
-    context.query<HTMLElement>(CONTACT_WORD_SELECTOR),
-    {
-      opacity: 0,
-      duration: MOTION_DURATION_SECONDS.scene,
-      ease: MOTION_EASE.material,
-    },
-    0.36,
-  );
-  timeline.from(
-    context.queryAll<HTMLElement>(CONTACT_COPY_SELECTOR),
-    {
-      opacity: 0,
-      clipPath: "inset(0 0 100% 0)",
-      duration: MOTION_DURATION_SECONDS.standard,
-      ease: MOTION_EASE.enter,
-      stagger: SERVICE_STAGGER_SECONDS,
-    },
-    0.44,
-  );
+  if (context.capability.kind === "full") animateFullContact(context, timeline);
 }
 
-function createServiceHandoff(context: SetupContext): void {
-  const clear = (): void => clearPresentation(context.root);
-  const timeline = context.gsap.timeline({ onComplete: clear });
+function createServiceHandoff(
+  context: SetupContext,
+  onComplete: () => void,
+): void {
+  const timeline = context.gsap.timeline({ onComplete });
   animateFaqIndex(context, timeline);
   animateContactHandoff(context, timeline);
 }
 
+function reportEntranceFailure(context: SetupContext, error: unknown): void {
+  const windowValue = context.root.ownerDocument.defaultView;
+  if (windowValue === null) return;
+  publishMotionDiagnostic(windowValue, {
+    code: "scene-mount-failed",
+    sceneId: "faq-safety",
+    message: error instanceof Error ? error.message : String(error),
+  });
+}
+
 function setupHomeService(context: SetupContext): () => void {
   const cleanupReady = markSceneReady(context);
-  context.onCleanup((): void => clearAfterContextRevert(context.root));
+  const owner = new HomeServiceEntranceOwner({
+    context,
+    onFailure: (error): void => reportEntranceFailure(context, error),
+    playFallback: (onComplete): void =>
+      createServiceHandoff(context, onComplete),
+  });
+  context.onCleanup((): void => owner.destroy());
   if (context.capability.kind !== "reduced") {
-    playOnceWhenVisible(context, (): void => createServiceHandoff(context));
+    playOnceWhenVisible(context, (): void => owner.start());
   }
   return cleanupReady;
 }

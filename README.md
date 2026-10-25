@@ -18,9 +18,10 @@ and finite motion.
 
 The public Pages build is a stable review baseline. The active feature branch
 adds the authored Product Atlas, Signal Duel, and five distinct product-detail
-worlds; final cross-engine, Lighthouse, physical-device, and legal screenshot
-sign-off remain open. The concept is not presented as a finished commercial
-release.
+worlds. The latest candidate passes the canonical nine-run Lighthouse gate;
+complete-journey frame performance, physical-device and legal screenshot sign-off
+remain open. Pages is held until those release conditions are met. The concept
+is not presented as a finished commercial release.
 
 ## Experience
 
