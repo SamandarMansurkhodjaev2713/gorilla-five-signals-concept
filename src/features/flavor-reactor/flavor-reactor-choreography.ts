@@ -104,7 +104,7 @@ export function animateWorld(options: {
   readonly outgoing: HTMLElement | null;
 }): SceneTimeline {
   const { context, incoming, onComplete, outgoing } = options;
-  prepareWorlds(context, incoming, outgoing);
+  prepareWorlds(context, outgoing);
   const timeline = context.gsap.timeline({
     defaults: { overwrite: true },
     onComplete,

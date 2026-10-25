@@ -66,8 +66,13 @@ export function setupNavigationMenuMotion(
       )
     : [];
   let timeline: SceneTimeline | null = null;
+  let activePointer: number | null = null;
+  let cancelSettlement: (() => void) | null = null;
 
   const settle = (): void => {
+    cancelSettlement?.();
+    cancelSettlement = null;
+    activePointer = null;
     timeline?.kill();
     timeline = null;
     clearMenuMotion(context, targets);
@@ -80,11 +85,31 @@ export function setupNavigationMenuMotion(
     context.root.dataset.menuMotion = "running";
     timeline = createMenuTimeline(context, targets, settle);
   };
+  const finishPointer = (event: Event): void => {
+    if (!(event instanceof PointerEvent) || event.pointerId !== activePointer)
+      return;
+    activePointer = null;
+    // Preserve the pressed hit target through pointerup and native click dispatch.
+    cancelSettlement = context.requestFrame((): void => {
+      cancelSettlement = null;
+      settle();
+    });
+  };
 
   if (menu && panel && context.capability.kind !== "reduced") {
     context.listen(menu, "toggle", synchronize);
-    context.listen(panel, "focusin", settle);
-    context.listen(panel, "pointerdown", settle);
+    context.listen(panel, "focusin", (): void => {
+      if (activePointer === null && cancelSettlement === null) settle();
+    });
+    context.listen(panel, "pointerdown", (event): void => {
+      if (!(event instanceof PointerEvent)) return;
+      cancelSettlement?.();
+      cancelSettlement = null;
+      activePointer ??= event.pointerId;
+      timeline?.pause();
+    });
+    context.listen(panel.ownerDocument, "pointerup", finishPointer);
+    context.listen(panel.ownerDocument, "pointercancel", finishPointer);
   }
   return settle;
 }

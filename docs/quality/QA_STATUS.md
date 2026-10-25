@@ -1,5 +1,20 @@
 # QA status
 
+## Native menu activation correction — 2026-10-25
+
+Fixed a real pressed-target displacement: menu entrance cleanup moved the pause
+button between pointer press/release, causing a click on its surrounding
+fieldset. Preserve geometry during activation and settle through owned work.
+All six new mouse/touch cases pass across three engines; six existing Chromium
+navigation/interruption/Lite regressions also pass. Source quality passes
+261 strict files, 190 units, build/artifact checks and dependency audit.
+See [native input evidence and five review lenses](MENU_POINTER_ACTIVATION_REVIEW_2026-10-25.md).
+
+Removed duplicate reactor preparation resets; 42 existing Chromium catalog
+contracts pass. The final unchanged CPU ×4 gate still fails across three
+sessions, so smoother playback and production readiness are not established.
+See [measured scope and remaining performance work](REACTOR_PREPARATION_REVIEW_2026-10-25.md).
+
 ## Measurement correction — 2026-10-25
 
 The motion harness now requests its documented CPU ×4 instead of ×1, records

@@ -89,11 +89,8 @@ export function normalizeWorlds(context: ReactorContext): void {
 
 export function prepareWorlds(
   context: ReactorContext,
-  active: HTMLElement,
   outgoing: HTMLElement | null,
 ): void {
-  resetWorldPresentation(active);
-  if (outgoing !== null) resetWorldPresentation(outgoing);
   normalizeWorlds(context);
   if (outgoing !== null) {
     outgoing.setAttribute("data-reactor-leaving", "");
