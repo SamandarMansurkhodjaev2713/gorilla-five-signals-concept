@@ -1,8 +1,14 @@
 # Release review — 2026-08-10
 
-This is the current five-lens review required by `AGENTS.md`. It supersedes the
-2026-07-28 release conclusions for the redesigned experience; historical
-records remain useful only for provenance.
+This is a historical five-lens review required by `AGENTS.md`. At the time it
+superseded the 2026-07-28 release conclusions for the redesigned experience.
+Current acceptance is recorded in `QA_STATUS.md`.
+
+Correction, 2026-10-25: the committed motion-journey harness applied CPU ×1,
+although Pass 4 below claims three CPU ×4 journeys. No authorizing ×1 exception
+was found. That historical ×4 claim is unverified without separately bound run
+artifacts and must not be used as release evidence. The profile is now restored
+to ×4; see `BROWSER_MEASUREMENT_CONTEXT_2026-10-25.md` for current scope.
 
 ## 1. Correctness and edge cases
 

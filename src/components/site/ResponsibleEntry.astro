@@ -36,7 +36,6 @@ const motionCopy = getMotionChromeCopy(locale);
       <p class="entry-frequency" aria-hidden="true">
         <span></span><span></span><span></span><span></span><span></span>
       </p>
-      <p class="type-label">ENTRY SIGNAL</p>
     </header>
 
     <div class="entry-age" aria-hidden="true">
@@ -50,23 +49,26 @@ const motionCopy = getMotionChromeCopy(locale);
       </h2>
       <p class="entry-warning" id="responsible-entry-warning">{warning}</p>
 
-      <fieldset class="entry-motion">
-        <legend>{motionCopy.title}</legend>
-        <p>{motionCopy.entryDescription}</p>
-        <div>
-          {
-            MOTION_PREFERENCES.map((preference) => (
-              <button
-                type="button"
-                aria-pressed={preference === "system" ? "true" : "false"}
-                data-motion-preference={preference}
-              >
-                {motionCopy.preferenceLabels[preference]}
-              </button>
-            ))
-          }
-        </div>
-      </fieldset>
+      <details class="entry-motion-options">
+        <summary>{motionCopy.title}</summary>
+        <fieldset class="entry-motion">
+          <legend>{motionCopy.title}</legend>
+          <p>{motionCopy.entryDescription}</p>
+          <div>
+            {
+              MOTION_PREFERENCES.map((preference) => (
+                <button
+                  type="button"
+                  aria-pressed={preference === "system" ? "true" : "false"}
+                  data-motion-preference={preference}
+                >
+                  {motionCopy.preferenceLabels[preference]}
+                </button>
+              ))
+            }
+          </div>
+        </fieldset>
+      </details>
 
       <nav class="entry-language" aria-label={copy.language}>
         <span class="type-label">{copy.language}</span>
@@ -93,7 +95,6 @@ const motionCopy = getMotionChromeCopy(locale);
           class="control control--primary"
           type="button"
           data-responsible-continue
-          autofocus
         >
           {copy.responsibleContinue}
         </button>
@@ -139,6 +140,11 @@ const motionCopy = getMotionChromeCopy(locale);
     .responsible-entry {
       display: none;
     }
+
+    body:has(> dialog.responsible-entry[open])
+      > :is(.skip-link, .site-header, main[data-route-content], .site-footer) {
+      visibility: visible;
+    }
   </style>
   <aside class="responsible-fallback" aria-label={copy.age}>
     <p class="type-label">{copy.age}</p>
@@ -165,8 +171,17 @@ const motionCopy = getMotionChromeCopy(locale);
     background: var(--color-ink-950);
   }
 
-  :global(body:has(.responsible-entry[open])) {
+  :global(body:has(.responsible-entry:modal)) {
     overflow: hidden;
+  }
+
+  /* The opaque entry owns the screen; keep occluded content in layout, not paint.
+     Closing the dialog releases this synchronously, without a JS hiding state. */
+  :global(
+    body:has(> dialog.responsible-entry[open])
+      > :is(.skip-link, .site-header, main[data-route-content], .site-footer)
+  ) {
+    visibility: hidden;
   }
 
   .responsible-entry::backdrop {
@@ -220,15 +235,11 @@ const motionCopy = getMotionChromeCopy(locale);
   .entry-header {
     display: grid;
     grid-area: header;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
     gap: var(--space-5);
     padding-block-end: var(--space-4);
     border-block-end: var(--size-rule-hairline) solid var(--color-border-strong);
-  }
-
-  .entry-header > :last-child {
-    text-align: end;
   }
 
   .entry-frequency {
@@ -318,6 +329,20 @@ const motionCopy = getMotionChromeCopy(locale);
     margin: 0;
     border: 0;
     border-block: var(--size-rule-hairline) solid var(--color-border-subtle);
+  }
+
+  .entry-motion-options > summary {
+    display: flex;
+    min-block-size: var(--size-control-min);
+    align-items: center;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-sm);
+  }
+
+  .entry-motion-options > summary:focus-visible {
+    outline: var(--size-rule-strong) solid var(--color-focus-on-dark);
+    outline-offset: var(--space-1);
   }
 
   .entry-motion legend {
@@ -499,6 +524,18 @@ const motionCopy = getMotionChromeCopy(locale);
     font-weight: 700;
   }
 
+  @media (max-width: 22rem) {
+    .responsible-marker {
+      flex-wrap: wrap;
+    }
+
+    .responsible-marker > * {
+      min-inline-size: 0;
+      max-inline-size: 100%;
+      overflow-wrap: anywhere;
+    }
+  }
+
   @media (max-width: 64rem) {
     .entry-shell {
       grid-template:
@@ -561,14 +598,6 @@ const motionCopy = getMotionChromeCopy(locale);
         max(var(--space-4), env(safe-area-inset-right))
         max(var(--space-3), env(safe-area-inset-bottom))
         max(var(--space-4), env(safe-area-inset-left));
-    }
-
-    .entry-header {
-      grid-template-columns: 1fr auto;
-    }
-
-    .entry-header > :last-child {
-      display: none;
     }
 
     .entry-frequency {

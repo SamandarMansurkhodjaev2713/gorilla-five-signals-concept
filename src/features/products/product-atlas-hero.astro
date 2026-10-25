@@ -1,0 +1,44 @@
+---
+import type { ProductAtlasViewModel } from "./product-atlas-view-model";
+
+interface Props {
+  atlas: ProductAtlasViewModel;
+}
+
+const { atlas } = Astro.props;
+---
+
+<header class="archive-hero material-grain">
+  <div class="archive-hero__meta" data-motion-reveal>
+    <p class="type-label">
+      <span class="archive-hero__range">01—05</span> / {atlas.text.currentRange}
+    </p>
+  </div>
+
+  <div class="archive-hero__title" data-motion-reveal>
+    <p class="archive-hero__mark" aria-hidden="true">05</p>
+    <h1>
+      <span>{atlas.text.five}</span>
+      <span>{atlas.text.frequencies}</span>
+    </h1>
+    <p class="archive-hero__stamp type-data" aria-hidden="true">
+      TASHKENT / UZ
+    </p>
+  </div>
+
+  <div class="archive-hero__brief" data-motion-copy>
+    <p class="type-label">{atlas.text.frequencyArchive}</p>
+    <p class="type-body-lg">{atlas.copy.rangeIntro}</p>
+    <p>{atlas.text.archiveBrief}</p>
+  </div>
+
+  <div class="archive-spectrum" aria-hidden="true">
+    {
+      atlas.products.map((product, index) => (
+        <span data-flavor={product.slug}>
+          {String(index + 1).padStart(2, "0")}
+        </span>
+      ))
+    }
+  </div>
+</header>

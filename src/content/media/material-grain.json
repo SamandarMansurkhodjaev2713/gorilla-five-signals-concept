@@ -1,0 +1,12 @@
+{
+  "alt": null,
+  "checksumSha256": "c32ae0815b89870f194330c274b5e8cd455c1f73152ad5d259016a4c2414ae52",
+  "decorative": true,
+  "kind": "image",
+  "license": "Project-owned original procedural artwork; repository LICENSE applies",
+  "mediaId": "media-material-grain",
+  "owner": "Project owner",
+  "path": "/media/generated/material/material-grain-v1.png",
+  "permissionEvidence": "PERM-PUBLIC-2026-08-26; original deterministic RGBA generator scripts/material-grain-core.mjs and scripts/build-material-grain.mjs; no third-party artwork inputs",
+  "territories": ["UZ"]
+}

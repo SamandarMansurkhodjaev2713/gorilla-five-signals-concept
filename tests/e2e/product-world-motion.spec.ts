@@ -1,5 +1,6 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
+import { expectMotionFrameState } from "./support/motion-frame";
 import { localizedPath, PRODUCT_SLUGS } from "./support/site";
 
 const DESKTOP_VIEWPORT = { height: 900, width: 1440 } as const;
@@ -10,12 +11,18 @@ const MOTION_READY_TIMEOUT_MS = 15_000;
 async function openFullMotionWorld(page: Page, slug: string): Promise<Locator> {
   await page.goto(localizedPath("uz", `/products/${slug}`));
   const world = page.locator("[data-product-world]");
-  await expect(world).toHaveAttribute("data-motion-ready", "full", {
-    timeout: MOTION_READY_TIMEOUT_MS,
-  });
-  await expect(world).toHaveAttribute("data-world-entrance-ready", "animated", {
-    timeout: MOTION_READY_TIMEOUT_MS,
-  });
+  const completion = await page.waitForFunction(
+    () => {
+      const root = document.querySelector("[data-product-world]");
+      return (
+        root?.getAttribute("data-motion-ready") === "full" &&
+        root.getAttribute("data-world-entrance-ready") === "animated"
+      );
+    },
+    undefined,
+    { polling: "raf", timeout: MOTION_READY_TIMEOUT_MS },
+  );
+  await completion.dispose();
   return world;
 }
 
@@ -55,15 +62,17 @@ async function scrubHero(page: Page, world: Locator): Promise<void> {
 test.describe("product-world physical motion", () => {
   test.beforeEach(async ({ page }) => {
     await page.setViewportSize(DESKTOP_VIEWPORT);
-    await page.addInitScript((preferenceKey) => {
+    await page.addInitScript(() => {
       sessionStorage.setItem("gorilla-responsible-entry-confirmed", "true");
-      localStorage.setItem(preferenceKey, "full");
-    }, MOTION_PREFERENCE_KEY);
+    });
   });
 
   test("GIVEN five full-motion worlds WHEN their heroes scrub THEN every physical response is distinct", async ({
     page,
   }) => {
+    await page.addInitScript((preferenceKey) => {
+      localStorage.setItem(preferenceKey, "full");
+    }, MOTION_PREFERENCE_KEY);
     const signatures = new Set<string>();
 
     for (const slug of PRODUCT_SLUGS) {
@@ -88,7 +97,10 @@ test.describe("product-world physical motion", () => {
     }, MOTION_PREFERENCE_KEY);
     await page.goto(localizedPath("uz", "/products/lychee-pear"));
     const world = page.locator("[data-product-world]");
-    await expect(world).toHaveAttribute("data-world-entrance-ready", "static", {
+    await expectMotionFrameState(page, {
+      selector: "[data-product-world]",
+      attribute: "data-world-entrance-ready",
+      value: "static",
       timeout: MOTION_READY_TIMEOUT_MS,
     });
     const initialSignature = await motionSignature(world);

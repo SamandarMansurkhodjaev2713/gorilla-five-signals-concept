@@ -1,8 +1,14 @@
 ---
 import type { SupportedLocale } from "@/config/site";
 import type { ProductView } from "@/features/site/catalog";
+import { createHeroImageLayout } from "@/features/site/hero-image-layout";
 import type { SiteCopy } from "@/features/site/copy";
 import { localePath } from "@/features/site/localization";
+import {
+  HERO_CAN_COMPACT_ENTRY_SPEC,
+  HERO_CAN_ENVELOPE,
+  HERO_CAN_ENTRY_SPEC,
+} from "@/motion/hero-can-spec";
 
 import "./home-hero.css";
 import "./home-hero-fallbacks.css";
@@ -10,6 +16,7 @@ import "./home-hero-interface.css";
 import "./home-hero-motion.css";
 import "./home-hero-product.css";
 import "./home-hero-responsive.css";
+import "./home-hero-compact.css";
 
 interface Props {
   copy: SiteCopy;
@@ -45,6 +52,7 @@ if (primaryProduct === undefined) {
   throw new Error("Home hero requires a primary product.");
 }
 const ghostProducts = products.slice(1);
+const primaryImageLayout = createHeroImageLayout(primaryProduct);
 ---
 
 <section
@@ -53,72 +61,88 @@ const ghostProducts = products.slice(1);
   data-flavor="original"
 >
   <div class="hero-frame" data-motion-hero-frame>
-    <div class="hero-frequency-field" aria-hidden="true">
-      <span data-motion-hero-frequency></span>
-      <span data-motion-hero-frequency></span>
-      <span data-motion-hero-frequency></span>
-      <span data-motion-hero-frequency></span>
-      <span data-motion-hero-frequency></span>
-    </div>
+    <div
+      class="hero-artstage"
+      style={{
+        "--hero-primary-aspect-ratio": primaryImageLayout.aspect,
+        "--hero-primary-projected-width-ratio":
+          primaryImageLayout.projectedWidth,
+        "--hero-can-scale-envelope": HERO_CAN_ENVELOPE.scale,
+        "--hero-can-entry-travel-desktop": `${String(HERO_CAN_ENVELOPE.travelY)}px`,
+        "--hero-can-entry-travel-compact": `${String(HERO_CAN_COMPACT_ENTRY_SPEC.travelY)}px`,
+        "--hero-can-rest-rotation": `${String(HERO_CAN_ENTRY_SPEC.restRotationDegrees)}deg`,
+      }}
+    >
+      <div class="hero-frequency-field" aria-hidden="true">
+        <span data-motion-hero-frequency></span>
+        <span data-motion-hero-frequency></span>
+        <span data-motion-hero-frequency></span>
+        <span data-motion-hero-frequency></span>
+        <span data-motion-hero-frequency></span>
+      </div>
 
-    <p class="hero-kicker type-label" data-motion-hero-support>
-      Gorilla Energy · Uzbekistan · 01—05
-    </p>
-
-    <div class="hero-heading">
-      <h1 tabindex="-1">
-        <span data-motion-hero-title>{heroCopy.headline[0]}</span>
-        <span data-motion-hero-title>{heroCopy.headline[1]}</span>
-      </h1>
-      <p class="hero-signal-plate" data-motion-hero-band>
-        {heroCopy.signal}
+      <p class="hero-kicker type-label" data-motion-hero-support>
+        <span class="hero-kicker__group">Gorilla Energy</span>{" · "}
+        <span class="hero-kicker__group">Uzbekistan</span>{" · "}
+        <span class="hero-kicker__group">01—05</span>
       </p>
+
+      <div class="hero-heading">
+        <h1 tabindex="-1">
+          <span data-motion-hero-title>{heroCopy.headline[0]}</span>
+          <span data-motion-hero-title>{heroCopy.headline[1]}</span>
+        </h1>
+        <p class="hero-signal-plate" data-motion-hero-band>
+          {heroCopy.signal}
+        </p>
+      </div>
+
+      <div class="hero-product-stage" aria-hidden="true">
+        <span class="hero-orbit" data-motion-hero-orbit></span>
+        <figure
+          class="hero-primary-can"
+          data-hero-can
+          data-hero-primary-can
+          data-flavor={primaryProduct.slug}
+        >
+          <img
+            src={primaryProduct.imagePath}
+            srcset={primaryProduct.imageSrcSet}
+            sizes={primaryImageLayout.sizes}
+            width={primaryProduct.width}
+            height={primaryProduct.height}
+            alt=""
+            fetchpriority="high"
+            loading="eager"
+            decoding="sync"
+          />
+        </figure>
+        {
+          ghostProducts.map((product) => (
+            <figure
+              class="hero-ghost-can"
+              data-hero-ghost
+              data-flavor={product.slug}
+            >
+              <img
+                src={product.imagePath}
+                srcset={product.imageSrcSet}
+                sizes="(min-width: 48rem) min(11.28svh, 7.39rem), min(8.95svh, 4.28rem)"
+                width={product.width}
+                height={product.height}
+                alt=""
+                fetchpriority="low"
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+          ))
+        }
+      </div>
     </div>
 
-    <div class="hero-product-stage" aria-hidden="true">
-      <span class="hero-orbit" data-motion-hero-orbit></span>
-      <figure
-        class="hero-primary-can"
-        data-hero-can
-        data-hero-primary-can
-        data-flavor={primaryProduct.slug}
-      >
-        <img
-          src={primaryProduct.imagePath}
-          srcset={primaryProduct.imageSrcSet}
-          sizes="(min-width: 64rem) 31rem, (min-width: 48rem) 24rem, 17rem"
-          width={primaryProduct.width}
-          height={primaryProduct.height}
-          alt=""
-          fetchpriority="high"
-          loading="eager"
-          decoding="sync"
-        />
-      </figure>
-      {
-        ghostProducts.map((product) => (
-          <figure
-            class="hero-ghost-can"
-            data-hero-ghost
-            data-flavor={product.slug}
-          >
-            <img
-              src={product.imagePath}
-              srcset={product.imageSrcSet}
-              sizes="(min-width: 64rem) 12rem, 7rem"
-              width={product.width}
-              height={product.height}
-              alt=""
-              loading="lazy"
-              decoding="async"
-            />
-          </figure>
-        ))
-      }
-    </div>
-
-    <div class="hero-copydeck" data-motion-hero-support>
-      <p class="type-body-lg">{copy.homeIntro}</p>
+    <div class="hero-copydeck">
+      <p class="type-body-lg" data-motion-hero-support>{copy.homeIntro}</p>
       <div class="hero-actions">
         <a
           class="control hero-primary-action"

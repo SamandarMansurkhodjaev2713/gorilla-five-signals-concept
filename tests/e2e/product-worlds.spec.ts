@@ -1,5 +1,6 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
+import { expectMotionFrameState } from "./support/motion-frame";
 import {
   expectNoHorizontalOverflow,
   localizedPath,
@@ -60,11 +61,12 @@ test.describe("five product-detail worlds", () => {
 
     for (const slug of PRODUCT_SLUGS) {
       const world = await openWorld(page, slug);
-      await expect(world).toHaveAttribute(
-        "data-motion-path",
-        MOTION_PATHS.get(slug) ?? "missing",
-        { timeout: MOTION_READY_TIMEOUT_MS },
-      );
+      await expectMotionFrameState(page, {
+        selector: "[data-product-world]",
+        attribute: "data-motion-path",
+        value: MOTION_PATHS.get(slug) ?? "missing",
+        timeout: MOTION_READY_TIMEOUT_MS,
+      });
       const signature = await world.evaluate((root) => {
         const heading = root.querySelector<HTMLElement>(".product-heading");
         const can = root.querySelector<HTMLElement>(".can-stage");

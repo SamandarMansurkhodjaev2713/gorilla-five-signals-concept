@@ -1,12 +1,19 @@
 import { synchronizeLocaleProductLinks } from "../features/product-explorer/product-explorer-url";
+import {
+  ROUTE_HISTORY_SCROLL_FIELD,
+  RELOAD_SCROLL_STORAGE_KEY,
+  parseReloadScrollHandoff,
+  readInitialReloadScroll,
+} from "../features/site/reload-scroll";
 import { createRouteTransitionController } from "../motion/route-transition";
+import { MOTION_RUNTIME_READY_EVENT } from "../motion/runtime/runtime-contract";
+import { createScrollRestoration } from "../motion/scroll-restoration";
 
 const ROUTE_FOCUS_REQUEST_KEY = "gorilla:route-focus-requested:v1";
-const ASTRO_HISTORY_SCROLL_FIELD = "scrollY";
-const HISTORY_SCROLL_FIELD = "gorillaScrollY";
 const HTTP_PROTOCOLS = new Set(["http:", "https:"]);
 const SCROLL_RESTORE_FRAME_COUNT = 12;
 const SCROLL_RESTORE_TOLERANCE_PX = 12;
+const SCROLL_RESTORE_STABLE_FRAMES = 2;
 
 function reportRouteLifecycleError(error: unknown): void {
   window.dispatchEvent(
@@ -57,8 +64,6 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-type ScrollCaptureMode = "router-state" | "viewport";
-
 function readScrollField(
   state: Record<string, unknown>,
   field: string,
@@ -69,18 +74,17 @@ function readScrollField(
     : null;
 }
 
-function storeRouteScroll(mode: ScrollCaptureMode = "viewport"): void {
+function updateRouteHistory(fields: Readonly<Record<string, number>>): void {
+  const currentState: unknown = history.state;
+  const nextState = isRecord(currentState)
+    ? { ...currentState, ...fields }
+    : fields;
+  history.replaceState(nextState, "", location.href);
+}
+
+function storeRouteScroll(): void {
   try {
-    const currentState: unknown = history.state;
-    const routerScrollY =
-      mode === "router-state" && isRecord(currentState)
-        ? readScrollField(currentState, ASTRO_HISTORY_SCROLL_FIELD)
-        : null;
-    const capturedScrollY = routerScrollY ?? Math.round(scrollY);
-    const nextState = isRecord(currentState)
-      ? { ...currentState, [HISTORY_SCROLL_FIELD]: capturedScrollY }
-      : { [HISTORY_SCROLL_FIELD]: capturedScrollY };
-    history.replaceState(nextState, "", location.href);
+    updateRouteHistory({ [ROUTE_HISTORY_SCROLL_FIELD]: Math.round(scrollY) });
   } catch (error: unknown) {
     reportRouteLifecycleError(error);
   }
@@ -91,28 +95,52 @@ function readRouteScroll(): number | null {
   if (!isRecord(currentState)) {
     return null;
   }
-  return readScrollField(currentState, HISTORY_SCROLL_FIELD);
+  return readScrollField(currentState, ROUTE_HISTORY_SCROLL_FIELD);
+}
+
+function storeReloadScroll(): void {
+  try {
+    const menuOpen =
+      document.querySelector("[data-motion-menu][open]") !== null;
+    const preservedPosition = menuOpen ? readRouteScroll() : null;
+    const position = preservedPosition ?? Math.max(0, Math.round(scrollY));
+    sessionStorage.setItem(
+      RELOAD_SCROLL_STORAGE_KEY,
+      JSON.stringify({ path: location.pathname, position }),
+    );
+  } catch (error: unknown) {
+    reportRouteLifecycleError(error);
+  }
+}
+
+function consumeReloadHandoff(): number | null {
+  try {
+    const serialized = sessionStorage.getItem(RELOAD_SCROLL_STORAGE_KEY);
+    sessionStorage.removeItem(RELOAD_SCROLL_STORAGE_KEY);
+    const handoff = parseReloadScrollHandoff({
+      serialized,
+      path: location.pathname,
+    });
+    if (handoff.kind === "captured") return handoff.position;
+    if (handoff.kind === "discarded" && handoff.reason !== "different-route")
+      reportRouteLifecycleError(
+        new Error(`Reload scroll handoff rejected: ${handoff.reason}`),
+      );
+    return null;
+  } catch (error: unknown) {
+    reportRouteLifecycleError(error);
+    return null;
+  }
 }
 
 function restoreStoredScroll(): void {
-  const expectedScrollY = readRouteScroll();
+  const expectedScrollY = pendingReloadScroll ?? readRouteScroll();
+  pendingReloadScroll = null;
   if (expectedScrollY === null) {
     return;
   }
 
-  let framesRemaining = SCROLL_RESTORE_FRAME_COUNT;
-  const restore = (): void => {
-    const delta = Math.abs(scrollY - expectedScrollY);
-    if (delta > SCROLL_RESTORE_TOLERANCE_PX) {
-      scrollTo(0, expectedScrollY);
-    }
-
-    framesRemaining -= 1;
-    if (framesRemaining > 0) {
-      requestAnimationFrame(restore);
-    }
-  };
-  requestAnimationFrame(restore);
+  scrollRestoration.restore(expectedScrollY);
 }
 
 function isPlainPrimaryClick(event: MouseEvent): boolean {
@@ -202,13 +230,78 @@ function restoreRouteLifecycle(): void {
   requestAnimationFrame(focusRouteHeading);
 }
 
+const initialNavigation = performance.getEntriesByType("navigation")[0];
+const initialHistoryState: unknown = history.state;
+let pendingReloadScroll = readInitialReloadScroll({
+  navigationType:
+    initialNavigation === undefined
+      ? undefined
+      : Reflect.get(initialNavigation, "type"),
+  historyState: initialHistoryState,
+  handoffPosition: consumeReloadHandoff(),
+});
+const initialRuntimeState = document.documentElement.dataset.motionRuntimeState;
+let pendingReloadLayoutScroll =
+  initialRuntimeState === "ready" || initialRuntimeState === "fallback"
+    ? null
+    : pendingReloadScroll;
+
 const routeTransitionController = createRouteTransitionController(
   document,
   window,
 );
+const scrollRestoration = createScrollRestoration({
+  maximumFrames: SCROLL_RESTORE_FRAME_COUNT,
+  stableFrames: SCROLL_RESTORE_STABLE_FRAMES,
+  tolerancePx: SCROLL_RESTORE_TOLERANCE_PX,
+  port: {
+    currentY: () => scrollY,
+    writeY: (position) => scrollTo(0, position),
+    requestFrame: (callback) => requestAnimationFrame(callback),
+    cancelFrame: (handle) => cancelAnimationFrame(handle),
+  },
+});
+const scrollIntentController = new AbortController();
+const cancelScrollRestoration = (): void => {
+  pendingReloadScroll = null;
+  pendingReloadLayoutScroll = null;
+  scrollRestoration.cancel();
+};
+for (const eventType of [
+  "wheel",
+  "touchstart",
+  "pointerdown",
+  "keydown",
+  "hashchange",
+  "popstate",
+]) {
+  window.addEventListener(eventType, cancelScrollRestoration, {
+    capture: true,
+    passive: true,
+    signal: scrollIntentController.signal,
+  });
+}
+document.addEventListener("astro:before-preparation", cancelScrollRestoration, {
+  signal: scrollIntentController.signal,
+});
+window.addEventListener(
+  MOTION_RUNTIME_READY_EVENT,
+  (event): void => {
+    if (!(event instanceof CustomEvent)) return;
+    const state: unknown = event.detail;
+    if (state !== "ready" && state !== "fallback") return;
+    const expectedScrollY = pendingReloadLayoutScroll;
+    pendingReloadLayoutScroll = null;
+    if (expectedScrollY !== null) scrollRestoration.restore(expectedScrollY);
+  },
+  { signal: scrollIntentController.signal },
+);
 
 window.addEventListener("pagehide", (event): void => {
+  cancelScrollRestoration();
   if (!event.persisted) {
+    storeReloadScroll();
+    scrollIntentController.abort();
     routeTransitionController.destroy();
   }
 });
@@ -219,10 +312,13 @@ document.addEventListener(
     if (!(event instanceof MouseEvent)) {
       return;
     }
-    if (isMenuSummaryClick(event)) {
+    if (
+      isMenuSummaryClick(event) &&
+      document.querySelector("[data-motion-menu][open]") === null
+    ) {
       // The menu's scroll lock can move the visual viewport to zero. Capture
       // the route position before the summary's default toggle runs.
-      storeRouteScroll("router-state");
+      storeRouteScroll();
     }
     const destination = routeFocusDestination(event);
     if (destination !== null) {

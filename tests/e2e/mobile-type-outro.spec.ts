@@ -1,5 +1,8 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
+import { waitForCompactFonts } from "./support/compact-fonts";
+import { clickNativeSummary } from "./support/native-summary";
+
 import {
   acceptResponsibleEntry,
   expectNoHorizontalOverflow,
@@ -43,6 +46,7 @@ async function readTextMetrics(locator: Locator): Promise<TextMetrics> {
 async function openAcceptedHome(page: Page): Promise<void> {
   await page.goto(localizedPath("uz"), { waitUntil: "domcontentloaded" });
   await acceptResponsibleEntry(page);
+  await waitForCompactFonts(page);
 }
 
 async function expectMobileTypeIntegrity(page: Page): Promise<void> {
@@ -76,6 +80,7 @@ async function expectMobileTypeIntegrity(page: Page): Promise<void> {
   expect(terminal.lineHeightRatio).toBeGreaterThanOrEqual(0.85);
   expect(terminal.narrowestLineRatio).toBeGreaterThan(0.28);
   expect(locator.inlineOverflow).toBeLessThanOrEqual(1);
+  expect(locator.lineHeightRatio).toBeGreaterThanOrEqual(0.949);
   expect(locator.lineCount).toBeLessThanOrEqual(2);
   expect(locator.narrowestLineRatio).toBeGreaterThan(0.42);
   expect(contact.inlineOverflow).toBeLessThanOrEqual(1);
@@ -97,9 +102,11 @@ async function expectMobileManifestoAndOutro(page: Page): Promise<void> {
     );
   const footer = page.locator("footer.site-footer");
   await footer.scrollIntoViewIfNeeded();
-  const footerHeight = await footer.evaluate(
-    (element) => element.getBoundingClientRect().height,
-  );
+  await expect
+    .poll(() =>
+      footer.evaluate((element) => element.getBoundingClientRect().height),
+    )
+    .toBeLessThanOrEqual(800);
 
   await expect(manifesto.locator(".manifesto-carrier img")).toBeVisible();
   await expect(manifesto.locator(".manifesto-rail")).toHaveCount(0);
@@ -109,7 +116,6 @@ async function expectMobileManifestoAndOutro(page: Page): Promise<void> {
   for (const line of lineMetrics) {
     expect(line.scrollWidth).toBeLessThanOrEqual(line.clientWidth + 1);
   }
-  expect(footerHeight).toBeLessThanOrEqual(800);
 }
 
 for (const reducedMotion of ["no-preference", "reduce"] as const) {
@@ -147,17 +153,22 @@ test.describe("mobile outro without JavaScript", () => {
   }) => {
     await page.setViewportSize(AUDIT_VIEWPORTS[0]);
     await page.goto(localizedPath("uz"), { waitUntil: "domcontentloaded" });
+    await waitForCompactFonts(page);
 
     const footer = page.locator("footer.site-footer");
+    await footer.scrollIntoViewIfNeeded();
+    await expect(footer).toBeInViewport();
     const disclosure = footer.locator(".footer-notes-disclosure");
     await expect(footer.locator("nav a")).toHaveCount(11);
     await expect(footer.locator(".motion-console")).toBeHidden();
     const products = footer.locator(".footer-products");
-    await products.locator("summary").click();
+    await clickNativeSummary(page, products.locator("summary"));
+    await expect(products).toHaveAttribute("open", "");
     await expect(products.locator("nav a")).toHaveCount(5);
     await expect(disclosure).toBeVisible();
     await expect(disclosure.locator(".footer-notes")).toBeHidden();
-    await disclosure.locator("summary").click();
+    await clickNativeSummary(page, disclosure.locator("summary"));
+    await expect(disclosure).toHaveAttribute("open", "");
     await expect(disclosure.locator(".footer-notes")).toBeVisible();
     await expect(page.locator(".manifesto-carrier img")).toBeVisible();
     await expect(page.locator(".manifesto-rail")).toHaveCount(0);

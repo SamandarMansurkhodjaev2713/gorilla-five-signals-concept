@@ -1,0 +1,22 @@
+---
+interface Props {
+  indexLabel: string;
+}
+
+const { indexLabel } = Astro.props;
+---
+
+<div
+  class="product-world-art product-world-art--extra"
+  data-detail-art="extra"
+  data-world-geometry="forward-overdrive"
+  aria-hidden="true"
+>
+  <div class="extra-pressure" data-world-material-primary>
+    <span class="extra-pressure__cage extra-pressure__cage--outer"></span>
+    <span class="extra-pressure__cage extra-pressure__cage--inner"></span>
+    <span class="extra-pressure__trace"></span>
+    <span class="extra-pressure__core"></span>
+  </div>
+  <span class="world-art-index">{indexLabel}</span>
+</div>

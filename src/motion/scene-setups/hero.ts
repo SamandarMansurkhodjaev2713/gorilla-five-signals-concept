@@ -1,166 +1,123 @@
-import type { SceneSetup } from "../create-scene";
-import { MOTION_DURATION_SECONDS, MOTION_EASE } from "../tokens";
+import { captureInlineStyles } from "../inline-style-snapshot";
+import { createFullHeroBoot } from "./hero-full-boot";
+import { HERO_HOOKS, HERO_PRESENTATION_SELECTOR } from "./hero-hooks";
+import { animateLiteSignalBoot } from "./hero-lite";
+import { mountPointerDepth } from "./hero-pointer-depth";
 import { markSceneReady } from "./shared";
 
-const FREQUENCY_SELECTOR = "[data-motion-hero-frequency]";
-const GHOST_CAN_SELECTOR = "[data-hero-ghost]";
-const ORBIT_SELECTOR = "[data-motion-hero-orbit]";
-const PRIMARY_CAN_SELECTOR = "[data-hero-primary-can]";
-const SIGNAL_PLATE_SELECTOR = "[data-motion-hero-band]";
-const SUPPORT_SELECTOR = "[data-motion-hero-support]";
-const TITLE_SELECTOR = "[data-motion-hero-title]";
-const FINE_POINTER_QUERY = "(hover: hover) and (pointer: fine)";
-const CAN_ENTRY_ROTATION_DEGREES = -7;
-const CAN_ENTRY_SCALE = 0.76;
-const CAN_ENTRY_Y_PX = 112;
-const FREQUENCY_STAGGER_SECONDS = 0.045;
-const GHOST_ENTRY_SCALE = 0.82;
-const GHOST_ENTRY_X_PX = 44;
-const GHOST_STAGGER_SECONDS = 0.04;
-const POINTER_CAN_ROTATION_DEGREES = 2.2;
-const POINTER_CAN_X_PX = 10;
-const POINTER_ORBIT_X_PX = 16;
-const SUPPORT_ENTRY_Y_PX = 18;
-const SUPPORT_STAGGER_SECONDS = 0.05;
-const TITLE_ENTRY_Y_PERCENT = 104;
+import type { SceneSetup, SceneSetupContext } from "../create-scene";
+import type { Cleanup } from "../cleanup-stack";
+import type { SetupStage } from "../setup-stage-queue";
+import type { HeroBootStage } from "./hero-full-boot";
 
-function animateSignalBoot(context: Parameters<SceneSetup>[0]): void {
-  const primaryCan = context.query<HTMLElement>(PRIMARY_CAN_SELECTOR);
-  const signalPlate = context.query<HTMLElement>(SIGNAL_PLATE_SELECTOR);
-  const timeline = context.gsap.timeline();
+type HeroPresentationContext = ReturnType<SceneSetupContext["gsap"]["context"]>;
+const HERO_PRESENTATION_PROPERTIES = [
+  "clip-path",
+  "opacity",
+  "rotate",
+  "scale",
+  "transform",
+  "transform-origin",
+  "translate",
+  "visibility",
+] as const;
 
-  timeline
-    .from(context.queryAll(FREQUENCY_SELECTOR), {
-      duration: MOTION_DURATION_SECONDS.standard,
-      ease: MOTION_EASE.material,
-      scaleY: 0,
-      stagger: FREQUENCY_STAGGER_SECONDS,
-      transformOrigin: "top center",
-    })
-    .from(
-      context.queryAll(TITLE_SELECTOR),
-      {
-        clipPath: "inset(0 0 100% 0)",
-        duration: MOTION_DURATION_SECONDS.scene,
-        ease: MOTION_EASE.enter,
-        stagger: FREQUENCY_STAGGER_SECONDS,
-        yPercent: TITLE_ENTRY_Y_PERCENT,
-      },
-      "-=0.12",
-    );
-
-  if (primaryCan !== null) {
-    timeline.from(
-      primaryCan,
-      {
-        duration: MOTION_DURATION_SECONDS.entranceMax,
-        ease: MOTION_EASE.settle,
-        rotate: CAN_ENTRY_ROTATION_DEGREES,
-        scale: CAN_ENTRY_SCALE,
-        y: CAN_ENTRY_Y_PX,
-      },
-      "-=0.58",
-    );
-  }
-
-  if (signalPlate !== null) {
-    timeline.from(
-      signalPlate,
-      {
-        clipPath: "inset(0 100% 0 0)",
-        duration: MOTION_DURATION_SECONDS.scene,
-        ease: MOTION_EASE.material,
-      },
-      "-=0.54",
-    );
-  }
-
-  timeline
-    .from(
-      context.queryAll(GHOST_CAN_SELECTOR),
-      {
-        autoAlpha: 0,
-        duration: MOTION_DURATION_SECONDS.standard,
-        ease: MOTION_EASE.enter,
-        scale: GHOST_ENTRY_SCALE,
-        stagger: GHOST_STAGGER_SECONDS,
-        x: GHOST_ENTRY_X_PX,
-      },
-      "-=0.3",
-    )
-    .from(
-      context.queryAll(SUPPORT_SELECTOR),
-      {
-        autoAlpha: 0,
-        duration: MOTION_DURATION_SECONDS.standard,
-        ease: MOTION_EASE.enter,
-        stagger: SUPPORT_STAGGER_SECONDS,
-        y: SUPPORT_ENTRY_Y_PX,
-      },
-      "-=0.18",
-    );
+function createPresentation(
+  context: SceneSetupContext,
+  touched: ReadonlySet<HTMLElement>,
+): HeroPresentationContext {
+  const targets = context.queryAll<HTMLElement>(HERO_PRESENTATION_SELECTOR);
+  const restoreStyles = captureInlineStyles(
+    targets,
+    HERO_PRESENTATION_PROPERTIES,
+  );
+  const presentation: HeroPresentationContext = context.gsap.context(() => {
+    return (): void => {
+      try {
+        if (touched.size > 0)
+          presentation.ignore(() =>
+            context.gsap.set([...touched], { clearProps: "transform" }),
+          );
+      } finally {
+        restoreStyles();
+      }
+    };
+  }, context.root);
+  return presentation;
 }
 
-function mountPointerDepth(context: Parameters<SceneSetup>[0]): void {
-  const windowValue = context.root.ownerDocument.defaultView;
-  const primaryCan = context.query<HTMLElement>(PRIMARY_CAN_SELECTOR);
-  const orbit = context.query<HTMLElement>(ORBIT_SELECTOR);
-  if (
-    windowValue === null ||
-    primaryCan === null ||
-    !windowValue.matchMedia(FINE_POINTER_QUERY).matches
-  ) {
+function preparePresentationStage(
+  stage: HeroBootStage,
+  touched: Set<HTMLElement>,
+): Cleanup {
+  const targets = stage.targets;
+  const restoreRest = captureInlineStyles(
+    targets,
+    HERO_PRESENTATION_PROPERTIES,
+  );
+  for (const target of targets) touched.add(target);
+  try {
+    stage.run();
+    return captureInlineStyles(targets, HERO_PRESENTATION_PROPERTIES);
+  } finally {
+    // Cached animation setup is retained; visitors keep the unchanged SSR pose.
+    restoreRest();
+  }
+}
+
+function queueFullBoot(
+  context: SceneSetupContext,
+  presentation: HeroPresentationContext,
+  touched: Set<HTMLElement>,
+): void {
+  const boot = createFullHeroBoot(context);
+  const startPoses: Cleanup[] = [];
+  const enqueue = (stage: SetupStage): void => {
+    context.stage((): void => {
+      presentation.add(stage);
+    });
+  };
+  for (const stage of boot.stages) {
+    enqueue((): void => {
+      startPoses.push(preparePresentationStage(stage, touched));
+    });
+  }
+  enqueue((): void => {
+    // quickSetter folds the orbit's CSS translate into its transform cache.
+    startPoses.push(
+      preparePresentationStage(
+        {
+          targets: context.queryAll<HTMLElement>(HERO_HOOKS.orbit),
+          run: (): void => mountPointerDepth(context),
+        },
+        touched,
+      ),
+    );
+  });
+  enqueue((): void => {
+    for (const applyStartPose of startPoses) applyStartPose();
+    boot.play();
+    context.onCleanup(markSceneReady(context));
+  });
+}
+
+export const setupHero: SceneSetup = (context): void => {
+  if (context.capability.kind === "reduced") {
+    context.onCleanup(markSceneReady(context));
     return;
   }
-
-  const canRotation = context.gsap.quickSetter(primaryCan, "rotateY", "deg");
-  const canX = context.gsap.quickSetter(primaryCan, "x", "px");
-  const orbitX =
-    orbit === null ? null : context.gsap.quickSetter(orbit, "x", "px");
-  let bounds: DOMRect | null = null;
-  let pendingEvent: PointerEvent | null = null;
-  let pendingFrame = false;
-
-  const reset = (): void => {
-    Reflect.apply(canRotation, undefined, [0]);
-    Reflect.apply(canX, undefined, [0]);
-    if (orbitX !== null) Reflect.apply(orbitX, undefined, [0]);
-  };
-  const render = (): void => {
-    pendingFrame = false;
-    const event = pendingEvent;
-    pendingEvent = null;
-    const frame = bounds ?? context.root.getBoundingClientRect();
-    bounds = frame;
-    if (event === null || frame.width <= 0) return;
-    const ratio = (event.clientX - frame.left) / frame.width - 0.5;
-    Reflect.apply(canRotation, undefined, [
-      ratio * POINTER_CAN_ROTATION_DEGREES,
-    ]);
-    Reflect.apply(canX, undefined, [ratio * POINTER_CAN_X_PX]);
-    if (orbitX !== null)
-      Reflect.apply(orbitX, undefined, [-ratio * POINTER_ORBIT_X_PX]);
-  };
-
-  context.listen(context.root, "pointermove", (event): void => {
-    if (!(event instanceof PointerEvent)) return;
-    pendingEvent = event;
-    if (pendingFrame) return;
-    pendingFrame = true;
-    context.requestFrame(render);
+  const touched = new Set<HTMLElement>();
+  const presentation = createPresentation(context, touched);
+  presentation.add((): void => {
+    if (context.capability.kind === "lite") {
+      for (const target of context.queryAll<HTMLElement>(
+        [HERO_HOOKS.title, HERO_HOOKS.primary, HERO_HOOKS.plate].join(", "),
+      ))
+        touched.add(target);
+      animateLiteSignalBoot(context);
+      context.onCleanup(markSceneReady(context));
+    } else {
+      queueFullBoot(context, presentation, touched);
+    }
   });
-  context.listen(context.root, "pointerleave", reset);
-  context.listen(windowValue, "resize", (): void => {
-    bounds = null;
-  });
-  context.onCleanup(reset);
-}
-
-export const setupHero: SceneSetup = (context): (() => void) => {
-  const cleanupReady = markSceneReady(context);
-  if (context.capability.kind !== "full") return cleanupReady;
-
-  animateSignalBoot(context);
-  mountPointerDepth(context);
-  return cleanupReady;
 };

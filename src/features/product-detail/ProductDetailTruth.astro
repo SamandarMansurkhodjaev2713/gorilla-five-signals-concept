@@ -1,0 +1,38 @@
+---
+import WarningPanel from "@/components/site/WarningPanel.astro";
+import type { ProductView } from "@/features/site/catalog";
+import type { SiteCopy } from "@/features/site/copy";
+
+interface Props {
+  copy: SiteCopy;
+  product: ProductView;
+}
+
+const { copy, product } = Astro.props;
+---
+
+<section class="product-information surface-paper" data-world-information>
+  <div class="facts" data-motion-reveal>
+    <p class="type-label">{copy.productInfo}</p>
+    <h2 class="type-title-sm">{product.flavorNotes.join(" · ")}</h2>
+    <p>{product.description}</p>
+    <dl>
+      <div>
+        <dt>{copy.market}</dt>
+        <dd class="type-data">UZ</dd>
+      </div>
+      {
+        product.sku !== null && (
+          <div>
+            <dt>SKU</dt>
+            <dd class="type-data">{product.sku}</dd>
+          </div>
+        )
+      }
+    </dl>
+  </div>
+  <div class="truth" data-motion-reveal>
+    <WarningPanel label={copy.warning} text={product.warningText} />
+    <p class="type-body-lg">{copy.productInfoUnavailable}</p>
+  </div>
+</section>

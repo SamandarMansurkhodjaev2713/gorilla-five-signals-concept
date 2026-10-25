@@ -1,6 +1,10 @@
 import { expect, test, type Page } from "@playwright/test";
 
 import { expectNoHorizontalOverflow } from "./support/site";
+import {
+  closeConsumerMotionControls,
+  openConsumerMotionControls,
+} from "./support/consumer-motion-controls";
 
 const CONFIRMATION_KEY = "gorilla-responsible-entry-confirmed";
 const PREFERENCE_KEY = "gorilla:motion-preference:v1";
@@ -29,7 +33,7 @@ async function openConfirmedPage(page: Page, path = "/uz/"): Promise<void> {
 test.describe("mobile chrome art direction and resilience", () => {
   test.skip(({ browserName }) => browserName !== "chromium");
 
-  test("GIVEN the mobile and tablet matrix WHEN chrome renders THEN status, safe geometry, targets, and the compact outro remain intact", async ({
+  test("GIVEN the mobile and tablet matrix WHEN consumer chrome renders THEN only navigation occupies the header and motion remains accessible in the menu", async ({
     page,
   }) => {
     for (const viewport of CHROME_VIEWPORTS) {
@@ -40,11 +44,11 @@ test.describe("mobile chrome art direction and resilience", () => {
       const menu = header.locator(".mobile-navigation > summary");
       const footer = page.locator("footer.site-footer");
 
-      await expect(motionStatus).toBeVisible();
+      await expect(motionStatus).toHaveCount(0);
       await expect(menu).toBeVisible();
       const geometry = await page
         .locator(
-          ".site-header .brand, .site-header > [data-motion-toggle], .site-header .mobile-navigation > summary",
+          ".site-header .brand, .site-header .mobile-navigation > summary",
         )
         .evaluateAll((elements) =>
           elements.map((element) => {
@@ -52,18 +56,26 @@ test.describe("mobile chrome art direction and resilience", () => {
             return { height: rectangle.height, width: rectangle.width };
           }),
         );
+      expect(geometry).toHaveLength(2);
       expect(
         geometry.every(
           (rectangle) => Math.min(rectangle.height, rectangle.width) >= 44,
         ),
       ).toBe(true);
       await expectNoHorizontalOverflow(page);
+      const motionControl = await openConsumerMotionControls(page);
+      await expect(motionControl).toHaveAttribute("aria-pressed", "false");
+      await expect(
+        header.locator('.menu-motion-console [data-motion-preference="full"]'),
+      ).toHaveAttribute("aria-pressed", "true");
+      await closeConsumerMotionControls(page);
 
       await footer.scrollIntoViewIfNeeded();
-      const footerHeight = await footer.evaluate(
-        (element) => element.getBoundingClientRect().height,
-      );
-      expect(footerHeight).toBeLessThanOrEqual(800);
+      await expect
+        .poll(() =>
+          footer.evaluate((element) => element.getBoundingClientRect().height),
+        )
+        .toBeLessThanOrEqual(800);
       await expect(
         footer.locator(".motion-console > summary strong"),
       ).toHaveText("To‘liq");

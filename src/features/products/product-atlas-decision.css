@@ -1,0 +1,48 @@
+.archive-decision {
+  position: relative;
+  display: grid;
+  min-block-size: max(34rem, 72svh);
+  place-content: center;
+  gap: var(--space-7);
+  overflow: hidden;
+  padding: var(--space-8) var(--space-gutter);
+  color: var(--color-text-on-paper);
+  background: var(--color-brand-lime);
+  text-align: center;
+}
+
+.archive-decision::before {
+  position: absolute;
+  inset: -20% 58% -20% -12%;
+  border: clamp(4rem, 9vw, 10rem) solid rgb(5 6 5 / 12%);
+  border-radius: 50%;
+  content: "";
+}
+
+.archive-decision > div {
+  position: relative;
+  z-index: var(--z-content);
+}
+
+.archive-decision > div:first-child {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.archive-decision > div:first-child > p:last-child {
+  max-inline-size: 11ch;
+  font-size: clamp(4rem, 11vw, 10rem);
+  line-height: 0.8;
+}
+
+.archive-decision__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5);
+}
+
+.archive-decision .text-link {
+  color: var(--color-text-on-paper);
+}

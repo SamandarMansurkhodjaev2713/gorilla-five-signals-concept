@@ -1,0 +1,41 @@
+---
+import type { ProductView } from "@/features/site/catalog";
+import type { SiteCopy } from "@/features/site/copy";
+
+import type { CompareUi } from "./compare-ui";
+
+interface Props {
+  copy: SiteCopy;
+  products: readonly ProductView[];
+  ui: CompareUi;
+}
+
+const { copy, products, ui } = Astro.props;
+---
+
+<fieldset class="selector-panel">
+  <div class="selector-panel__heading">
+    <legend class="type-title-sm">{ui.selectorLegend}</legend>
+    <p>{copy.compareIntro}</p>
+  </div>
+  <div class="slot-grid">
+    {
+      ui.slots.map((label) => (
+        <label data-compare-slot-wrapper>
+          <span class="slot-grid__label">{label}</span>
+          <select
+            class="field"
+            data-compare-slot
+            data-motion-select
+            aria-controls="compare-selected-products"
+          >
+            <option value="">{ui.none}</option>
+            {products.map((product) => (
+              <option value={product.slug}>{product.name}</option>
+            ))}
+          </select>
+        </label>
+      ))
+    }
+  </div>
+</fieldset>

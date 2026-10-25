@@ -60,7 +60,10 @@
 }
 
 .routing-copy {
+  --routing-heading-max: 4rem;
+
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   align-content: start;
   gap: var(--space-4);
   color: var(--color-text-on-paper);
@@ -70,7 +73,7 @@
   max-inline-size: 100%;
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(3.25rem, 5vw, 4.75rem);
+  font-size: clamp(2.75rem, 5vw, var(--routing-heading-max));
   letter-spacing: -0.055em;
   line-height: 0.82;
   text-transform: uppercase;
@@ -105,7 +108,7 @@
 
 .routing-list strong {
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 2.3vw, 2.25rem);
+  font-size: clamp(1.25rem, 2.3vw, 2.25rem);
   line-height: 1;
   text-transform: uppercase;
 }
@@ -142,6 +145,7 @@
 .routing-endpoint :where(.control, .text-link) {
   position: relative;
   z-index: 1;
+  min-inline-size: var(--size-control-min);
 }
 
 .switchboard-close {
@@ -170,6 +174,21 @@
 
 @media (min-width: 64rem) {
   .routing-board {
+    grid-template-columns: minmax(0, 5fr) minmax(16rem, 3fr);
+    align-items: start;
+  }
+
+  .routing-copy {
+    grid-column: 1 / -1;
+  }
+
+  .routing-endpoint {
+    align-self: center;
+  }
+}
+
+@media (min-width: 90rem) {
+  .routing-board {
     grid-template-columns: minmax(18rem, 4fr) minmax(30rem, 5fr) minmax(
         18rem,
         3fr
@@ -178,6 +197,7 @@
   }
 
   .routing-copy {
+    grid-column: auto;
     position: sticky;
     inset-block-start: calc(var(--size-header) + var(--space-5));
   }

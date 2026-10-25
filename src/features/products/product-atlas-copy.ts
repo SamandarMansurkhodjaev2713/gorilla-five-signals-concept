@@ -9,50 +9,44 @@ export interface ProductAtlasCopy {
   readonly five: string;
   readonly frequencies: string;
   readonly frequencyArchive: string;
-  readonly scan: string;
   readonly scrollToScan: string;
 }
 
 const PRODUCT_ATLAS_COPY: Readonly<Record<SupportedLocale, ProductAtlasCopy>> =
   {
     en: {
-      activeFrequency: "Active frequency",
+      activeFrequency: "Selected flavor",
       archiveBrief:
-        "A vertical record of the approved Uzbekistan range. Every product remains visible; scroll changes the scan, never the collection.",
-      chapter: "Frequency record",
-      collectionWall: "Five-can collection wall",
-      currentRange: "Current Uzbekistan range",
+        "Explore five Gorilla products. Choose a flavor and compare it with another.",
+      chapter: "Product",
+      collectionWall: "Choose your flavor",
+      currentRange: "Gorilla range",
       five: "Five",
-      frequencies: "frequencies",
-      frequencyArchive: "Tashkent frequency archive",
-      scan: "live scan",
-      scrollToScan: "Scroll to scan the archive",
+      frequencies: "flavors",
+      frequencyArchive: "Find your flavor",
+      scrollToScan: "Explore the flavors",
     },
     ru: {
-      activeFrequency: "Активная частота",
-      archiveBrief:
-        "Вертикальная запись одобренной линейки Узбекистана. Каждый продукт остаётся в поле; скролл меняет сканирование, а не коллекцию.",
-      chapter: "Запись частоты",
-      collectionWall: "Стена коллекции из пяти банок",
-      currentRange: "Актуальная линейка Узбекистана",
+      activeFrequency: "Выбранный вкус",
+      archiveBrief: "Выберите свой вкус Gorilla и сравните его с другими.",
+      chapter: "Продукт",
+      collectionWall: "Выберите свой вкус",
+      currentRange: "Линейка Gorilla",
       five: "Пять",
-      frequencies: "частот",
-      frequencyArchive: "Архив частот Ташкента",
-      scan: "сканирование",
-      scrollToScan: "Прокрутите, чтобы сканировать архив",
+      frequencies: "вкусов",
+      frequencyArchive: "Найди свой вкус",
+      scrollToScan: "Листайте вкусы",
     },
     uz: {
-      activeFrequency: "Faol chastota",
-      archiveBrief:
-        "O‘zbekiston uchun tasdiqlangan qatorning vertikal yozuvi. Har bir mahsulot ko‘rinishda qoladi; skroll kolleksiyani emas, skan holatini o‘zgartiradi.",
-      chapter: "Chastota yozuvi",
-      collectionWall: "Besh banka kolleksiya devori",
-      currentRange: "O‘zbekistonning joriy qatori",
+      activeFrequency: "Tanlangan ta’m",
+      archiveBrief: "Gorilla ta’mlarini ko‘ring va yoqqanlarini taqqoslang.",
+      chapter: "Mahsulot",
+      collectionWall: "Ta’mingizni tanlang",
+      currentRange: "Gorilla mahsulotlari",
       five: "Besh",
-      frequencies: "chastota",
-      frequencyArchive: "Toshkent chastotalar arxivi",
-      scan: "jonli skan",
-      scrollToScan: "Arxivni skan qilish uchun aylantiring",
+      frequencies: "ta’m",
+      frequencyArchive: "Ta’mingizni tanlang",
+      scrollToScan: "Ta’mlarni ko‘ring",
     },
   };
 

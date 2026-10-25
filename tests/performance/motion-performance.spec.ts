@@ -1,21 +1,30 @@
 import { Buffer } from "node:buffer";
+import { createHash } from "node:crypto";
+import { readFile } from "node:fs/promises";
 
 import {
   expect,
   test,
   type Browser,
+  type BrowserContext,
   type Page,
   type TestInfo,
 } from "@playwright/test";
 import { z } from "zod";
 
-const RUN_COUNT = 3;
+import {
+  MOTION_PERFORMANCE_PROFILE,
+  MOTION_PERFORMANCE_SETTLE_MS,
+} from "./support/performance-profile";
+import { readBrowserRenderingEnvironment } from "./support/rendering-environment";
+
+const RUN_COUNT = MOTION_PERFORMANCE_PROFILE.sessions;
 const PERFORMANCE_ORIGIN = "http://127.0.0.1:4322";
-const CPU_THROTTLING_RATE = 1;
-const FRAME_WORK_LIMIT_MS = 16;
-const LONG_TASK_LIMIT_MS = 50;
-const INTERACTION_LIMIT_MS = 200;
-const MOTION_SETTLE_MS = 960;
+const CPU_THROTTLING_RATE = MOTION_PERFORMANCE_PROFILE.cpuThrottleRate;
+const FRAME_WORK_LIMIT_MS = MOTION_PERFORMANCE_PROFILE.frameWorkMs;
+const LONG_TASK_LIMIT_MS = MOTION_PERFORMANCE_PROFILE.longTaskMs;
+const INTERACTION_LIMIT_MS = MOTION_PERFORMANCE_PROFILE.interactionMs;
+const MOTION_SETTLE_MS = MOTION_PERFORMANCE_SETTLE_MS;
 const SCROLL_STEP_PX = 320;
 const MAX_SCROLL_STEPS = 72;
 const MOTION_PREFERENCE_KEY = "gorilla:motion-preference:v1";
@@ -432,18 +441,12 @@ async function runJourney(
     serviceWorkers: "block",
     viewport: { height: 900, width: 1440 },
   });
-  const page = await context.newPage();
-  const session = await context.newCDPSession(page);
-  await session.send("Emulation.setCPUThrottlingRate", {
-    rate: CPU_THROTTLING_RATE,
-  });
-  await installPerformanceObservers(page);
-  await page.goto("/uz/", { waitUntil: "load" });
   const phaseEvidence: {
     evidence: PerformanceEvidence;
     name: string;
   }[] = [];
   try {
+    const page = await prepareJourney({ browser, context, runIndex, testInfo });
     phaseEvidence.push(
       await measurePhase({
         action: async (): Promise<void> => {
@@ -512,3 +515,51 @@ test("GIVEN confirmed full motion WHEN the complete product journey runs THEN no
     await runJourney(browser, runIndex, testInfo);
   }
 });
+
+async function prepareJourney(options: {
+  browser: Browser;
+  context: BrowserContext;
+  runIndex: number;
+  testInfo: TestInfo;
+}): Promise<Page> {
+  const rendering = await readBrowserRenderingEnvironment(options.browser);
+  const page = await options.context.newPage();
+  const session = await options.context.newCDPSession(page);
+  await session.send("Emulation.setCPUThrottlingRate", {
+    rate: CPU_THROTTLING_RATE,
+  });
+  await installPerformanceObservers(page);
+  const response = await page.goto("/uz/", { waitUntil: "load" });
+  if (!response?.ok())
+    throw new Error(
+      "Performance journey requires the actual successful homepage response.",
+    );
+  const entrySha256 = createHash("sha256")
+    .update(await response.body())
+    .digest("hex");
+  const buildSha256 = createHash("sha256")
+    .update(await readFile("dist/uz/index.html"))
+    .digest("hex");
+  expect(entrySha256).toBe(buildSha256);
+  await options.testInfo.attach(
+    `run-${String(options.runIndex + 1)}-rendering-environment.json`,
+    {
+      body: Buffer.from(
+        JSON.stringify(
+          {
+            ...rendering,
+            requestedCpuThrottleRate: CPU_THROTTLING_RATE,
+            throttleCommandAcknowledged: true,
+            entrySha256,
+            viewport: page.viewportSize(),
+            dpr: await page.evaluate(() => devicePixelRatio),
+          },
+          undefined,
+          2,
+        ),
+      ),
+      contentType: "application/json",
+    },
+  );
+  return page;
+}

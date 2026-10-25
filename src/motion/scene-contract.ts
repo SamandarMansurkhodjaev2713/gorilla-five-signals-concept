@@ -32,6 +32,8 @@ export type ScenePhase =
   "idle" | "mounting" | "active" | "destroying" | "destroyed";
 
 export interface SceneHandle {
+  /** Settles after setup; canceled handles stay destroyed and cannot be committed. */
+  readonly ready: Promise<void>;
   readonly id: SceneId;
   readonly capability: MotionCapability;
   getPhase(): ScenePhase;

@@ -1,0 +1,60 @@
+.signal-channel__copy {
+  position: relative;
+  z-index: 5;
+  display: grid;
+  min-inline-size: 0;
+  grid-row: 3;
+  container-type: inline-size;
+  align-content: start;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border-block-start: var(--size-rule-hairline) solid
+    color-mix(in srgb, var(--flavor-signal) 54%, var(--color-border-subtle));
+  background: linear-gradient(180deg, rgb(0 0 0 / 94%), var(--color-ink-950));
+}
+
+.signal-channel__copy .type-label {
+  color: var(--channel-accent);
+}
+
+.signal-channel__copy h2 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 4.8vw, 6rem);
+  letter-spacing: var(--tracking-title);
+  line-height: var(--line-height-solid);
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.signal-channel__notes {
+  margin: 0;
+  color: var(--channel-accent);
+  font-size: var(--font-size-body-lg);
+  font-weight: 750;
+}
+
+.signal-channel__description {
+  max-inline-size: 54ch;
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.signal-channel__copy .text-link {
+  justify-self: start;
+  margin-block-start: var(--space-2);
+}
+
+.empty-state {
+  display: grid;
+  min-block-size: 34rem;
+  grid-column: 1 / -1;
+  grid-row: 1 / 4;
+  place-content: center;
+  gap: var(--space-3);
+  margin: 0;
+  padding: var(--space-7);
+  color: var(--color-text-secondary);
+  text-align: center;
+}

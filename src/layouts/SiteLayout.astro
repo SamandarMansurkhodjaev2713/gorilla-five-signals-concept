@@ -154,6 +154,10 @@ const fontPreloads = [
       )}
     />
     <slot name="head" />
+    <script
+      is:inline
+      id="product-history-bridge"
+      src={withBasePath("/scripts/product-history-bridge.js")}></script>
     <ClientRouter fallback="swap" />
     <script>
       import "@/scripts/motion-runtime";

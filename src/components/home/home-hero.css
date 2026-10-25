@@ -18,6 +18,12 @@
   padding: var(--space-5) var(--space-gutter) var(--space-5);
 }
 
+.hero-artstage {
+  --hero-can-entry-travel: var(--hero-can-entry-travel-desktop);
+
+  display: contents;
+}
+
 .hero-frame::before {
   position: absolute;
   z-index: -2;

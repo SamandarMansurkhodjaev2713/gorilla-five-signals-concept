@@ -16,16 +16,18 @@ and finite motion.
 
 ## Current status
 
-The public site is an active art-direction rebuild. Its architecture, localized
-routes, product detail worlds, accessibility modes, and deployment pipeline are
-implemented; the home-page scroll film and final motion polish are still being
-iterated. The current Pages build is published for review, not presented as a
-finished commercial release.
+The public Pages build is a stable review baseline. The active feature branch
+adds the authored Product Atlas, Signal Duel, and five distinct product-detail
+worlds. The latest candidate passes the canonical nine-run Lighthouse gate;
+complete-journey frame performance, physical-device and legal screenshot sign-off
+remain open. Pages is held until those release conditions are met. The concept
+is not presented as a finished commercial release.
 
 ## Experience
 
-- Five localized product worlds: Original, Zero Sugar, Extra, Mango Coconut,
-  and Lychee Pear.
+- Five localized product worlds plus an authored frequency-based Product Atlas.
+- A responsive Signal Duel that preserves up to three selected products on
+  every viewport.
 - Uzbek, Russian, and English routes with canonical, alternate, and sitemap
   metadata.
 - Full, lite, paused, reduced-motion, and no-script experience paths.
@@ -37,7 +39,9 @@ finished commercial release.
 ## Stack
 
 - Astro 7 with strict TypeScript and static output
-- GSAP for finite, context-scoped motion choreography
+- native Web Animations for guarded finite entrances and product presentation
+- GSAP for scroll choreography and scoped fallback when native capability or
+  presentation preconditions fail
 - Zod for environment and content-boundary validation
 - Vitest, Playwright, Axe, and Lighthouse for release evidence
 - pnpm with pinned Node.js and package-manager versions
@@ -49,6 +53,8 @@ corepack enable
 pnpm install --frozen-lockfile
 pnpm dev
 ```
+
+Use Node.js 24.16.0 from `.node-version`/`.nvmrc` before running these commands.
 
 The local site opens at `http://localhost:4321/` and redirects to the Uzbek
 route by default.
@@ -67,6 +73,16 @@ the SBOM, dependency licenses, and high-severity dependency advisories.
 The host-specific film generator is verified only on its registered Windows
 toolchain; the Linux Pages builder verifies immutable shipped-media checksums
 and never regenerates release media.
+
+Lighthouse retains each run's trace and DevTools log under the ignored
+`test-results/lighthouse/` directory. Keep these local diagnostics private;
+use them to investigate failures rather than repeatedly rerunning an unexplained
+slow result. A passing source workflow is not a runtime performance approval.
+
+`pnpm media:grain` rebuilds the original deterministic 96×96 material-grain
+texture. The provenance gate checks its fixed RGBA policy, repeatability,
+neutral transparency, encoded size and registered checksum. Brand packshots
+and films are not changed by this generator.
 
 ## Architecture
 
@@ -92,11 +108,29 @@ Start with the [concept direction](docs/product/GORILLA_CONCEPT.md),
 [engineering standard](docs/quality/ENGINEERING_STANDARD.md), and
 [asset provenance ledger](docs/content/ASSET_PROVENANCE.md).
 
+Motion lifecycle decisions cover
+[cancellable Hero preparation](docs/decisions/ADR-0008-owned-staged-scene-activation.md),
+[exact Reactor presentation ownership](docs/decisions/ADR-0009-reactor-transition-presentation-owner.md),
+the [product/route history boundary](docs/decisions/ADR-0010-product-history-route-boundary.md),
+the [guarded native Reactor candidate](docs/decisions/ADR-0011-reactor-native-presentation-player.md),
+the [shared finite native owner](docs/decisions/ADR-0012-shared-finite-native-entrances.md),
+and [adaptive native home entrances](docs/decisions/ADR-0013-native-home-entrances.md).
+Current limitations and measured gates remain in [QA status](docs/quality/QA_STATUS.md).
+`pnpm typecheck` also strictly checks the tiny external browser bootstrap through
+`tsconfig.browser-scripts.json`; it is not excluded merely because it runs before
+the framework modules.
+
 ## Deployment
 
 Every push to `main` builds a fresh public artifact and deploys it with the
 official GitHub Pages actions. The public build sets an explicit origin and
 repository base path; source code never hardcodes the hosting subdirectory.
+
+`main` requires a pull request, an up-to-date branch, successful source-quality
+and CodeQL checks, and resolved review conversations. Force pushes and branch
+deletion are disabled, including for administrators. These automated checks do
+not replace browser, visual, performance, or legal release approval. See the
+[GitHub configuration record](docs/release/GITHUB_CONFIGURATION.md).
 
 GitHub Pages does not apply the repository's Cloudflare-style `_headers` file.
 Document-level CSP and referrer fallbacks remain active, while HSTS and other

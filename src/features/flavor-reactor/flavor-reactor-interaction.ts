@@ -49,6 +49,10 @@ function hasHorizontalIntent(deltaX: number, deltaY: number): boolean {
   return Math.abs(deltaX) > Math.abs(deltaY) * HORIZONTAL_INTENT_RATIO;
 }
 
+function isPrimaryActivation(event: PointerEvent): boolean {
+  return event.pointerType === "mouse" ? event.button === 0 : event.isPrimary;
+}
+
 export function mountFlavorReactorInteraction(
   context: InteractionContext,
 ): () => void {
@@ -78,7 +82,11 @@ export function mountFlavorReactorInteraction(
   };
 
   const handlePointerDown = (event: Event): void => {
-    if (!(event instanceof PointerEvent) || isInteractiveTarget(event.target)) {
+    if (
+      !(event instanceof PointerEvent) ||
+      !isPrimaryActivation(event) ||
+      isInteractiveTarget(event.target)
+    ) {
       return;
     }
     pointer = {
@@ -117,9 +125,23 @@ export function mountFlavorReactorInteraction(
     }
   };
 
+  const cancelPointer = (event: PointerEvent): void => {
+    if (pointer?.id !== event.pointerId) {
+      return;
+    }
+    pointer = null;
+    resetDrag();
+  };
+
   const handlePointerEnd = (event: Event): void => {
     if (event instanceof PointerEvent) {
       finishPointer(event);
+    }
+  };
+
+  const handlePointerCancel = (event: Event): void => {
+    if (event instanceof PointerEvent) {
+      cancelPointer(event);
     }
   };
 
@@ -145,7 +167,8 @@ export function mountFlavorReactorInteraction(
   context.listen(stage, "pointerdown", handlePointerDown);
   context.listen(stage, "pointermove", handlePointerMove, { passive: false });
   context.listen(stage, "pointerup", handlePointerEnd);
-  context.listen(stage, "pointercancel", handlePointerEnd);
+  context.listen(stage, "pointercancel", handlePointerCancel);
+  context.listen(stage, "lostpointercapture", handlePointerCancel);
   context.listen(context.root, "keydown", handleKeyboard);
 
   return (): void => {

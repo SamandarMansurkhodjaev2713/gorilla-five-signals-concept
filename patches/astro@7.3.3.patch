@@ -1,0 +1,114 @@
+diff --git a/dist/transitions/ready-owner.d.ts b/dist/transitions/ready-owner.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..ffe8b44882bef4652578afba902894ee3c89270c
+--- /dev/null
++++ b/dist/transitions/ready-owner.d.ts
+@@ -0,0 +1,28 @@
++export type ReadyOutcome =
++  | { readonly kind: "ready" }
++  | { readonly kind: "superseded"; readonly reason: "owned-supersession" }
++  | { readonly kind: "ready-failed"; readonly error: unknown }
++  | { readonly kind: "update-failed"; readonly diagnosticOwner: "astro-router"; readonly error: unknown };
++
++export declare function observeReadyOutcome(
++  transition: Pick<ViewTransition, "ready" | "updateCallbackDone">,
++  ownership: { readonly isSuperseded: () => boolean },
++): Promise<ReadyOutcome>;
++
++export type ReadyOutcomeEvent =
++  | { readonly status: "superseded"; readonly reason: "owned-supersession" }
++  | { readonly status: "update-failed"; readonly diagnosticOwner: "astro-router" };
++
++export declare function ownReadyOutcome(
++  transition: Pick<ViewTransition, "ready" | "updateCallbackDone">,
++  ownership: { readonly isSuperseded: () => boolean },
++  platform: {
++    readonly reportError: (error: unknown) => void;
++    readonly reportOutcome: (outcome: ReadyOutcomeEvent) => void;
++  },
++): Promise<void>;
++
++export declare function skipOwnedTransition(
++  transition: Pick<ViewTransition, "skipTransition">,
++  ownership: { readonly markSuperseded: () => void },
++): void;
+diff --git a/dist/transitions/ready-owner.js b/dist/transitions/ready-owner.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..83b56dbf0a85e3c658155979841bd948cd24aa01
+--- /dev/null
++++ b/dist/transitions/ready-owner.js
+@@ -0,0 +1,32 @@
++/** Observe visual readiness without taking ownership of DOM-update diagnostics. */
++export function observeReadyOutcome(transition, ownership) {
++  return transition.ready.then(
++    () => ({ kind: "ready" }),
++    (readyError) => transition.updateCallbackDone.then(
++      () => ownership.isSuperseded() && readyError instanceof DOMException && readyError.name === "AbortError"
++        ? { kind: "superseded", reason: "owned-supersession" }
++        : { kind: "ready-failed", error: readyError },
++      (updateError) => ({ kind: "update-failed", diagnosticOwner: "astro-router", error: updateError }),
++    ),
++  );
++}
++
++/** A narrow owner: callback diagnostics stay with the existing router. */
++export function ownReadyOutcome(transition, ownership, platform) {
++  return observeReadyOutcome(transition, ownership).then((outcome) => {
++    if (outcome.kind === "ready") return;
++    if (outcome.kind === "ready-failed") {
++      platform.reportError(outcome.error);
++      return;
++    }
++    platform.reportOutcome(outcome.kind === "superseded"
++      ? { status: outcome.kind, reason: outcome.reason }
++      : { status: outcome.kind, diagnosticOwner: outcome.diagnosticOwner });
++  }).catch((error) => platform.reportError(error));
++}
++
++/** A failed native skip must not acquire cancellation ownership. */
++export function skipOwnedTransition(transition, ownership) {
++  transition.skipTransition();
++  ownership.markSuperseded();
++}
+diff --git a/dist/transitions/router.js b/dist/transitions/router.js
+index fd3641c24e2e628d9d650a13425198e2b2bb987f..a7177f8aab4cbe213b74bb81521520f2d9904972 100644
+--- a/dist/transitions/router.js
++++ b/dist/transitions/router.js
+@@ -1,8 +1,18 @@
+ import { internalFetchHeaders } from "virtual:astro:adapter-config/client";
+ import { doPreparation, doSwap, onPageLoad, triggerEvent, updateScrollPosition } from "./events.js";
+ import { detectScriptExecuted } from "./swap-functions.js";
++import { ownReadyOutcome, skipOwnedTransition } from "./ready-owner.js";
+ const inBrowser = import.meta.env.SSR === false;
+ const supportsViewTransitions = inBrowser && !!document.startViewTransition;
++const READY_OUTCOME_EVENT = "astro:transition-outcome";
++function ownNativeReadyOutcome(currentTransition) {
++  ownReadyOutcome(currentTransition.viewTransition, {
++    isSuperseded: () => currentTransition.transitionSkipped,
++  }, {
++    reportError: (error) => reportError(error),
++    reportOutcome: (outcome) => document.dispatchEvent(new CustomEvent(READY_OUTCOME_EVENT, { detail: outcome })),
++  }).catch((error) => reportError(error));
++}
+ const transitionEnabledOnThisPage = () => inBrowser && !!document.querySelector('[name="astro-view-transitions-enabled"]');
+ const samePage = (thisLocation, otherLocation) => thisLocation.pathname === otherLocation.pathname && thisLocation.search === otherLocation.search;
+ let mostRecentNavigation;
+@@ -297,7 +307,9 @@ async function transition(direction, from, to, options, historyState, hasUAVisua
+     if (mostRecentTransition) {
+       if (mostRecentTransition.viewTransition) {
+         try {
+-          mostRecentTransition.viewTransition.skipTransition();
++          skipOwnedTransition(mostRecentTransition.viewTransition, {
++            markSuperseded: () => { mostRecentTransition.transitionSkipped = true; },
++          });
+         } catch {
+         }
+         try {
+@@ -318,6 +330,7 @@ async function transition(direction, from, to, options, historyState, hasUAVisua
+     currentTransition.viewTransition = document.startViewTransition(
+       async () => await updateDOM(prepEvent, options, currentTransition, historyState)
+     );
++    ownNativeReadyOutcome(currentTransition);
+   } else {
+     const updateDone = (async () => {
+       await Promise.resolve();

@@ -40,12 +40,13 @@ test.describe("product detail art direction", () => {
       await expectNoHorizontalOverflow(page);
 
       const fingerprint = await art
-        .locator(".flavor-art__field")
+        .locator("[data-world-material-primary]")
         .evaluate((element) => {
           const style = getComputedStyle(element);
           return [
-            style.backgroundImage,
-            style.borderBlockStartStyle,
+            element.parentElement?.dataset.worldGeometry ?? "missing",
+            element.className,
+            style.borderRadius,
             style.clipPath,
             style.transform,
           ].join("|");

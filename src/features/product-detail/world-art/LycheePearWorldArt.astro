@@ -1,0 +1,24 @@
+---
+interface Props {
+  indexLabel: string;
+}
+
+const { indexLabel } = Astro.props;
+---
+
+<div
+  class="product-world-art product-world-art--lychee-pear"
+  data-detail-art="lychee-pear"
+  data-world-geometry="prismatic-lens"
+  aria-hidden="true"
+>
+  <div class="lychee-lens" data-world-material-primary>
+    <span class="lychee-lens__pane lychee-lens__pane--one"></span>
+    <span class="lychee-lens__pane lychee-lens__pane--two"></span>
+    <span class="lychee-lens__orbit lychee-lens__orbit--outer"></span>
+    <span class="lychee-lens__orbit lychee-lens__orbit--inner"></span>
+    <span class="lychee-lens__droplet lychee-lens__droplet--one"></span>
+    <span class="lychee-lens__droplet lychee-lens__droplet--two"></span>
+  </div>
+  <span class="world-art-index">{indexLabel}</span>
+</div>

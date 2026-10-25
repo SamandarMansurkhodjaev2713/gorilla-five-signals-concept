@@ -1,0 +1,199 @@
+.product-detail {
+  --detail-can-max-inline: 40rem;
+  --detail-control-min: 3rem;
+  --detail-hero-min: calc(100svh - var(--size-header));
+  --detail-shadow: 0 2.25rem 2rem rgb(0 0 0 / 62%);
+  --detail-volume-edge: color-mix(
+    in srgb,
+    var(--flavor-signal) 42%,
+    transparent
+  );
+
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  background: var(--flavor-surface);
+}
+
+.product-detail .product-hero {
+  position: relative;
+  display: grid;
+  min-block-size: var(--detail-hero-min);
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(23rem, auto) minmax(22rem, 1fr);
+  overflow: clip;
+  background: var(--flavor-surface);
+}
+
+.product-detail :is(.product-world-field, .product-world-volume) {
+  position: absolute;
+  z-index: var(--z-base);
+  inset: 0;
+  overflow: clip;
+  pointer-events: none;
+}
+
+.product-detail .product-world-volume {
+  perspective: 72rem;
+  transform-style: preserve-3d;
+}
+
+.product-detail :is(.product-world-plane, .product-world-horizon) {
+  position: absolute;
+  display: block;
+  border: var(--size-rule-hairline) solid var(--detail-volume-edge);
+}
+
+.product-detail .product-world-plane {
+  inset: 8%;
+  transform-origin: center;
+}
+
+.product-detail .product-world-plane--mid {
+  inset: 19%;
+}
+
+.product-detail .product-world-horizon {
+  inset: auto 4% 12%;
+  block-size: 34%;
+  border-width: var(--size-rule-hairline) 0 0;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--flavor-signal) 10%, transparent),
+    transparent 62%
+  );
+  transform: perspective(32rem) rotateX(67deg);
+  transform-origin: center top;
+}
+
+.product-detail :is(.product-world-impact, .product-world-particle) {
+  position: absolute;
+  display: block;
+  background: var(--flavor-signal);
+}
+
+.product-detail .product-world-impact {
+  inline-size: clamp(8rem, 20vw, 20rem);
+  aspect-ratio: 1;
+  border-radius: var(--radius-pill);
+  opacity: 0.16;
+  filter: blur(2.5rem);
+}
+
+.product-detail .product-world-particle {
+  inline-size: clamp(0.2rem, 0.42vw, 0.42rem);
+  block-size: clamp(1.5rem, 5vw, 5.5rem);
+  opacity: 0.55;
+}
+
+.product-detail .product-world-vector {
+  position: absolute;
+  display: block;
+  border: var(--size-rule-hairline) solid var(--flavor-signal);
+  opacity: 0.7;
+}
+
+.product-detail .product-heading {
+  position: relative;
+  z-index: var(--z-content);
+  display: grid;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-gutter) var(--space-4);
+}
+
+.product-detail .product-heading__index {
+  color: var(--flavor-signal);
+}
+
+.product-detail[data-flavor="extra"] .product-heading__index {
+  color: var(--color-paper-50);
+}
+
+.product-detail .product-heading h1 {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  overflow-wrap: normal;
+  line-height: 0.78;
+}
+
+.product-detail .product-heading__title-line {
+  position: relative;
+  display: block;
+  inline-size: 100%;
+  max-inline-size: 100%;
+  white-space: nowrap;
+}
+
+.product-detail [data-title-scale="standard"] h1 {
+  font-size: clamp(3.2rem, 18vw, 7rem);
+}
+
+.product-detail [data-title-scale="compact"] h1 {
+  font-size: clamp(2.8rem, 16vw, 6.5rem);
+}
+
+.product-detail [data-title-scale="extended"] h1 {
+  font-size: clamp(2.25rem, 14vw, 5.75rem);
+}
+
+.product-detail .product-heading__description {
+  max-inline-size: 32rem;
+  color: color-mix(in srgb, var(--color-text-primary) 90%, transparent);
+  font-size: max(1rem, var(--font-size-body-lg));
+  line-height: 1.45;
+}
+
+.product-detail .actions {
+  display: grid;
+  min-inline-size: 0;
+  max-inline-size: 32rem;
+  gap: var(--space-2);
+}
+
+.product-detail .actions .control--primary {
+  --control-background: var(--flavor-signal);
+  --control-border: var(--flavor-signal);
+  --control-foreground: var(--flavor-on-signal);
+
+  gap: var(--space-3);
+  justify-content: space-between;
+  min-inline-size: 0;
+}
+
+.product-detail .control,
+.product-detail .product-compare-link {
+  min-block-size: var(--detail-control-min);
+}
+
+.product-detail .product-compare-link {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  padding-inline: var(--space-2);
+}
+
+.product-detail .product-action-mark {
+  position: relative;
+  display: block;
+  flex: 0 0 auto;
+  inline-size: 1rem;
+  block-size: 1rem;
+  border-block-start: var(--size-rule-strong) solid currentcolor;
+  border-inline-end: var(--size-rule-strong) solid currentcolor;
+}
+
+.product-detail .product-action-mark::after {
+  position: absolute;
+  inset-block-start: 46%;
+  inset-inline-end: -12%;
+  inline-size: 1.2rem;
+  block-size: var(--size-rule-strong);
+  background: currentcolor;
+  content: "";
+  transform: rotate(-45deg);
+  transform-origin: right center;
+}

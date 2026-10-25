@@ -3,9 +3,9 @@ import type { UserMotionPreference } from "./capability-policy";
 
 const STORAGE_KEY = "gorilla:motion-preference:v1";
 const PREFERENCE_VALUES = ["system", "full", "lite", "reduced"] as const;
-const PREFERENCE_SELECTOR = "[data-motion-preference]";
+const PREFERENCE_SELECTOR = "button[data-motion-preference]";
 const CURRENT_SELECTOR = "[data-motion-current]";
-const TOGGLE_SELECTOR = "[data-motion-toggle]";
+const TOGGLE_SELECTOR = "button[data-motion-toggle]";
 
 export const MOTION_PREFERENCE_EVENT = "gorilla:motion-preference";
 

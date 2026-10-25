@@ -1,8 +1,8 @@
 {
   "answer": {
-    "en": "The purchased can label contains the most complete and current information. Values appear on this site only after verification against Uzbekistan packaging or an approved product record.",
-    "ru": "Самая полная и актуальная информация находится на этикетке приобретённой банки. Значения на сайте публикуются только после сверки с упаковкой для Узбекистана или подтверждённым документом о продукте.",
-    "uz": "Eng to‘liq va joriy ma’lumot xarid qilingan bankaning yorlig‘ida bo‘ladi. Saytdagi raqamlar faqat O‘zbekiston qadoqlari yoki tasdiqlangan mahsulot hujjati bilan solishtirilgandan keyin e’lon qilinadi."
+    "en": "Check ingredients and nutrition on the label of the can you are buying.",
+    "ru": "Состав и пищевую ценность смотрите на этикетке приобретаемой банки.",
+    "uz": "Tarkib va ozuqaviy qiymatni xarid qilayotgan bankangiz yorlig‘idan tekshiring."
   },
   "faqId": "product-information",
   "question": {

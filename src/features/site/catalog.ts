@@ -44,7 +44,7 @@ const PRODUCT_ORDER = new Map<string, number>([
   ["mango-coconut", 3],
   ["lychee-pear", 4],
 ]);
-const RESPONSIVE_IMAGE_WIDTHS = [320, 480] as const;
+const RESPONSIVE_IMAGE_WIDTHS = [160, 320, 480] as const;
 const RESPONSIBLE_WARNING_ID = "responsible-use";
 const FIND_CTA_TYPE = "find";
 

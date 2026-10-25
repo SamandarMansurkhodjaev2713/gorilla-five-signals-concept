@@ -1,5 +1,16 @@
 import { expect, test } from "@playwright/test";
 
+import {
+  closeConsumerMotionControls,
+  openConsumerMotionControls,
+  openEntryMotionControls,
+} from "./support/consumer-motion-controls";
+
+import { nativeBoundaryFailures } from "./support/native-boundary-contract";
+import {
+  installNativeBoundaryNavigation,
+  readNativeBoundaryEvidence,
+} from "./support/native-transition-boundary";
 import { collectRuntimeErrors, expectSemanticPage } from "./support/site";
 
 const ENTRY_CONTENT_SELECTOR = [
@@ -7,7 +18,7 @@ const ENTRY_CONTENT_SELECTOR = [
   ".entry-age",
   "#responsible-entry-title",
   "#responsible-entry-warning",
-  ".entry-motion",
+  ".entry-motion-options > summary",
   ".entry-language",
   ".entry-actions",
   ".entry-details",
@@ -32,6 +43,8 @@ test.describe("responsible entry and route signal continuity", () => {
     const dialog = page.locator("[data-responsible-entry]");
 
     await expect(dialog).toHaveAttribute("open", "");
+    await expect(dialog).not.toContainText("ENTRY SIGNAL");
+    await expect(dialog.locator(".entry-frequency")).toBeVisible();
     await page.keyboard.press("Escape");
     await expect(dialog).toHaveAttribute("open", "");
     await expect(dialog.locator("[data-responsible-leave]")).toBeFocused();
@@ -44,6 +57,7 @@ test.describe("responsible entry and route signal continuity", () => {
       await page.setViewportSize(viewport);
       await expectSemanticPage(page, "uz");
       const dialog = page.locator("[data-responsible-entry]");
+      await expect(dialog.locator(".entry-frequency")).toBeVisible();
       const geometry = await dialog
         .locator(ENTRY_CONTENT_SELECTOR)
         .evaluateAll((elements) =>
@@ -130,7 +144,7 @@ test.describe("responsible entry and route signal continuity", () => {
       .toBe("true");
   });
 
-  test("GIVEN Full is selected at entry WHEN Continue is pressed THEN the authored tier reaches the runtime and remains visibly discoverable", async ({
+  test("GIVEN optional Full entry settings WHEN Continue is pressed THEN the authored tier remains discoverable in the consumer menu", async ({
     page,
   }) => {
     await page.setViewportSize({ height: 844, width: 390 });
@@ -138,6 +152,12 @@ test.describe("responsible entry and route signal continuity", () => {
     await expectSemanticPage(page, "uz");
     const dialog = page.locator("[data-responsible-entry]");
     const full = dialog.locator('[data-motion-preference="full"]');
+    await expect(dialog.locator(".entry-motion-options")).not.toHaveAttribute(
+      "open",
+      "",
+    );
+    await expect(full).toBeHidden();
+    await openEntryMotionControls(page);
 
     await expect(
       dialog.locator('[data-motion-preference="system"]'),
@@ -150,15 +170,13 @@ test.describe("responsible entry and route signal continuity", () => {
       "data-motion-tier",
       "full",
     );
-    const headerToggle = page.locator(".site-header > [data-motion-toggle]");
-    await expect(headerToggle).toBeVisible();
-    await expect
-      .poll(() =>
-        headerToggle.evaluate((element) =>
-          getComputedStyle(element, "::after").content.replaceAll('"', ""),
-        ),
-      )
-      .toBe("To‘liq");
+    const menuToggle = await openConsumerMotionControls(page);
+    await expect(menuToggle).toHaveAttribute("aria-pressed", "false");
+    await expect(menuToggle).toHaveAccessibleName("Harakatni to‘xtatish");
+    await expect(
+      page.locator('.menu-motion-console [data-motion-preference="full"]'),
+    ).toHaveAttribute("aria-pressed", "true");
+    await closeConsumerMotionControls(page);
     await expect
       .poll(() =>
         page.evaluate(() =>
@@ -175,6 +193,7 @@ test.describe("responsible entry and route signal continuity", () => {
     await expectSemanticPage(page, "uz");
     const dialog = page.locator("[data-responsible-entry]");
 
+    await openEntryMotionControls(page);
     await dialog.locator('[data-motion-preference="reduced"]').click();
     await expect(page.locator("html")).toHaveAttribute(
       "data-motion-preference",
@@ -212,6 +231,13 @@ test.describe("responsible entry and route signal continuity", () => {
     await expectSemanticPage(page, "uz");
     const dialog = page.locator("[data-responsible-entry]");
 
+    await expect(dialog.locator(".entry-motion-options")).not.toHaveAttribute(
+      "open",
+      "",
+    );
+    await expect(
+      dialog.locator('[data-motion-preference="system"]'),
+    ).toBeHidden();
     await expect(
       dialog.locator('[data-motion-preference="system"]'),
     ).toHaveAttribute("aria-pressed", "true");
@@ -254,6 +280,51 @@ test.describe("responsible entry and route signal continuity", () => {
         page.locator("[data-route-signal]").getAttribute("data-route-phase"),
       )
       .toBe("idle");
+    expect(errors).toEqual([]);
+  });
+
+  test("GIVEN a native transition starts WHEN a newer real route intent arrives THEN Contact wins with phase-correct cancellation and no runtime error", async ({
+    page,
+  }, testInfo) => {
+    test.skip(
+      !(await page.evaluate(
+        () => typeof document.startViewTransition === "function",
+      )),
+      "This regression requires the real native View Transition API.",
+    );
+    const errors = await collectRuntimeErrors(page);
+    await installNativeBoundaryNavigation(page);
+    await expectSemanticPage(page, "uz");
+    await page
+      .locator('.desktop-navigation a[href="/uz/compare/"]')
+      .dispatchEvent("click");
+
+    await expect(page).toHaveURL(/\/uz\/contact\/$/u);
+    await expect(page.locator("main h1")).toBeFocused();
+    await expect(page.locator("[data-route-signal-code]")).toHaveText(
+      "CONTACT",
+    );
+    await expect(page.locator("[data-route-signal]")).toHaveAttribute(
+      "data-route-phase",
+      "idle",
+    );
+    const evidence = await readNativeBoundaryEvidence(page);
+    await testInfo.attach("native-boundary-evidence", {
+      body: JSON.stringify(evidence, null, 2),
+      contentType: "application/json",
+    });
+    expect(nativeBoundaryFailures(evidence), JSON.stringify(evidence)).toEqual(
+      [],
+    );
+    await page.goBack();
+    expect(["/uz/", "/uz/compare/"]).toContain(new URL(page.url()).pathname);
+    await page.goForward();
+    await expect(page).toHaveURL(/\/uz\/contact\/$/u);
+    await expect(page.locator("main h1")).toBeVisible();
+    await expect(page.locator("[data-route-signal]")).toHaveAttribute(
+      "data-route-phase",
+      "idle",
+    );
     expect(errors).toEqual([]);
   });
 

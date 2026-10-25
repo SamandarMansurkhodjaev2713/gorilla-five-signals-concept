@@ -1,0 +1,57 @@
+.product-detail .product-world-art,
+.product-detail .product-world-art > div {
+  position: absolute;
+  inset: 0;
+}
+
+.product-detail .product-world-art {
+  overflow: clip;
+  container-type: size;
+}
+
+.product-detail .product-world-art span {
+  position: absolute;
+  display: block;
+}
+
+.product-detail .world-art-index {
+  inset-inline-end: -0.05em;
+  inset-block-end: -0.24em;
+  color: color-mix(in srgb, var(--flavor-signal) 10%, transparent);
+  font-family: var(--font-display);
+  font-size: clamp(15rem, 58cqi, 48rem);
+  font-weight: 800;
+  line-height: 0.72;
+  letter-spacing: -0.1em;
+}
+
+.product-detail .product-world-particle--alpha {
+  inset: 14% auto auto 17%;
+  transform: rotate(13deg);
+}
+
+.product-detail .product-world-particle--beta {
+  inset: 22% 9% auto auto;
+  transform: rotate(-21deg) scaleY(0.72);
+}
+
+.product-detail .product-world-particle--gamma {
+  inset: auto auto 17% 29%;
+  transform: rotate(32deg) scaleY(0.58);
+}
+
+.product-detail .product-world-particle--delta {
+  inset: 54% 21% auto auto;
+  transform: rotate(76deg) scaleY(0.42);
+}
+
+.product-detail .product-world-particle--epsilon {
+  inset: 7% auto auto 57%;
+  transform: rotate(-53deg) scaleY(0.34);
+}
+
+@media (forced-colors: active) {
+  .product-detail :is(.product-world-art, .product-world-readout) {
+    display: none;
+  }
+}

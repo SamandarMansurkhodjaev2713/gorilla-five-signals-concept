@@ -141,6 +141,48 @@
   }
 }
 
+@media (orientation: landscape) and (max-height: 31.25rem) and (max-width: 63.99rem) {
+  .manifesto,
+  .manifesto-frame {
+    min-block-size: 34rem;
+  }
+
+  .manifesto-frame {
+    grid-template-columns: minmax(0, 1.2fr) minmax(14rem, 0.8fr);
+    align-content: center;
+    gap: var(--space-4) var(--space-6);
+    padding-block: 4.75rem var(--space-6);
+  }
+
+  .manifesto-kicker,
+  .manifesto-transmission,
+  .manifesto-output {
+    grid-column: 1 / -1;
+  }
+
+  .manifesto-carrier {
+    inset-block-start: 1.5rem;
+    inset-inline-start: 69%;
+    inline-size: clamp(9rem, 20vw, 12rem);
+  }
+
+  .manifesto-thought {
+    grid-column: 1;
+    margin-block-start: 0;
+    font-size: clamp(3.5rem, 8.5vw, 5.2rem);
+  }
+
+  .manifesto-intro {
+    z-index: 4;
+    grid-column: 2;
+    grid-row: 2;
+    align-self: end;
+    max-inline-size: 27ch;
+    padding: var(--space-3);
+    background: color-mix(in srgb, var(--color-surface-page) 84%, transparent);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .manifesto-carrier,
   .manifesto-transmission i {

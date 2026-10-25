@@ -8,6 +8,16 @@ export interface FlavorTrajectory {
   readonly shardRotation: number;
 }
 
+export const FLAVOR_MOTION_SLUGS = [
+  "original",
+  "zero",
+  "extra",
+  "mango-coconut",
+  "lychee-pear",
+] as const;
+
+export type FlavorMotionSlug = (typeof FLAVOR_MOTION_SLUGS)[number];
+
 export const FLAVOR_DEPARTURE_SPEC = Object.freeze({
   copyTravelRatio: -0.45,
   materialScale: 1.04,
@@ -24,6 +34,12 @@ export const FLAVOR_TIMELINE_POSITION = Object.freeze({
   word: 0.16,
 });
 
+export const FLAVOR_LITE_SPEC = Object.freeze({
+  copyTravelRatio: 0.28,
+  productScale: 0.96,
+  productTravelRatio: 0.18,
+});
+
 export const DEFAULT_FLAVOR_TRAJECTORY: FlavorTrajectory = {
   copyXPercent: 14,
   copyY: 24,
@@ -34,7 +50,9 @@ export const DEFAULT_FLAVOR_TRAJECTORY: FlavorTrajectory = {
   shardRotation: -18,
 };
 
-export const FLAVOR_TRAJECTORIES: Readonly<Record<string, FlavorTrajectory>> = {
+export const FLAVOR_TRAJECTORIES: Readonly<
+  Record<FlavorMotionSlug, FlavorTrajectory>
+> = {
   original: DEFAULT_FLAVOR_TRAJECTORY,
   zero: {
     copyXPercent: 0,
@@ -73,3 +91,22 @@ export const FLAVOR_TRAJECTORIES: Readonly<Record<string, FlavorTrajectory>> = {
     shardRotation: 32,
   },
 };
+
+const FLAVOR_MOTION_SLUG_SET: ReadonlySet<string> = new Set(
+  FLAVOR_MOTION_SLUGS,
+);
+
+function isFlavorMotionSlug(value: string): value is FlavorMotionSlug {
+  return FLAVOR_MOTION_SLUG_SET.has(value);
+}
+
+export function getFlavorTrajectory(
+  slug: string | undefined,
+): FlavorTrajectory {
+  if (slug === undefined || !isFlavorMotionSlug(slug)) {
+    throw new Error(
+      `Missing flavor-reactor motion trajectory for "${slug ?? ""}".`,
+    );
+  }
+  return FLAVOR_TRAJECTORIES[slug];
+}

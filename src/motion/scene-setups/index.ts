@@ -5,29 +5,22 @@ import {
   setupContactScene,
   setupCultureAtlasScene,
   setupCultureScene,
+  setupFaqScene,
   setupFindHandoffScene,
   setupLocatorScene,
 } from "./editorial";
 import { setupHero } from "./hero";
+import { setupFooterScene } from "./footer-motion";
 import { setupManifesto } from "./manifesto";
 import { setupMaterialFilm } from "./media";
 import { setupNavigation } from "./navigation";
-import { setupInteractiveProduct } from "./product";
+import { setupInteractiveProduct, setupProductLab } from "./product";
 import { setupProductDetailWorld } from "./product-detail-world-motion";
 import {
-  createFiniteReveal,
   createSignalSequence,
   markSceneReady,
   playOnceWhenVisible,
 } from "./shared";
-
-const setupRevealScene: SceneSetup = (context): (() => void) => {
-  const cleanupReady = markSceneReady(context);
-  playOnceWhenVisible(context, (): void => {
-    createFiniteReveal(context);
-  });
-  return cleanupReady;
-};
 
 const setupSignalScene: SceneSetup = (context): (() => void) => {
   const cleanupReady = markSceneReady(context);
@@ -43,7 +36,7 @@ export const SCENE_SETUPS: Readonly<Record<SceneId, SceneSetup>> = {
   hero: setupHero,
   "range-manifesto": setupManifesto,
   "flavor-explorer": setupInteractiveProduct,
-  "product-lab": setupRevealScene,
+  "product-lab": setupProductLab,
   "product-world": setupProductDetailWorld,
   "product-compare": setupInteractiveProduct,
   "material-film": setupMaterialFilm,
@@ -51,8 +44,8 @@ export const SCENE_SETUPS: Readonly<Record<SceneId, SceneSetup>> = {
   "store-locator": setupLocatorScene,
   "culture-atlas": setupCultureAtlasScene,
   "find-handoff": setupFindHandoffScene,
-  "faq-safety": setupRevealScene,
+  "faq-safety": setupFaqScene,
   "contact-partnership": setupContactScene,
   "contact-switchboard": setupContactSwitchboardScene,
-  footer: setupSignalScene,
+  footer: setupFooterScene,
 };

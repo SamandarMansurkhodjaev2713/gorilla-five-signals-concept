@@ -1,14 +1,11 @@
-import { createOwnedScene } from "../create-scene";
 import { runCleanupStack } from "../cleanup-stack";
 import type { MotionEngine } from "../motion-engine";
-import {
-  SCENE_DEFINITIONS,
-  type MotionCapability,
-  type SceneDefinition,
-} from "../scene-contract";
+import { type MotionCapability, type SceneDefinition } from "../scene-contract";
 import { createSceneRegistry, type SceneRegistry } from "../scene-registry";
-import { SCENE_SETUPS } from "../scene-setups";
+import { mountImmediateScenes, mountScene } from "./immediate-scene-mount";
+import { createSceneEnvironmentOwner } from "./scene-environment-owner";
 import { mountMaterialFilmController } from "../scene-setups/media";
+import { resetProductWorldPresentation } from "../scene-setups/product-world-presentation";
 
 const PROXIMITY_MARGIN = "320px 0px";
 const PRODUCT_WORLD_SCENE = "product-world";
@@ -17,15 +14,6 @@ const STATIC_WORLD_ENTRANCE = "static";
 
 export interface MotionSceneEnvironment {
   destroy(): void;
-}
-
-function rootsFor(
-  documentValue: Document,
-  definition: SceneDefinition,
-): readonly HTMLElement[] {
-  return Array.from(
-    documentValue.querySelectorAll<HTMLElement>(definition.selector),
-  );
 }
 
 export function createReducedEnvironment(
@@ -43,6 +31,7 @@ export function createReducedEnvironment(
       root.dataset.motionScene === PRODUCT_WORLD_SCENE &&
       root.dataset.productWorld !== undefined
     ) {
+      resetProductWorldPresentation(root);
       root.dataset.worldEntranceReady = STATIC_WORLD_ENTRANCE;
     }
     if (root.dataset.motionScene === "material-film") {
@@ -76,73 +65,13 @@ export function createReducedEnvironment(
   };
 }
 
-function mountScene(
-  root: HTMLElement,
-  definition: SceneDefinition,
-  capability: MotionCapability,
-  engine: MotionEngine,
-  registry: SceneRegistry,
-): void {
-  registry.mount(
-    createOwnedScene({
-      id: definition.id,
-      root,
-      capability,
-      engine,
-      setup: SCENE_SETUPS[definition.id],
-    }),
-  );
-}
-
-function waitForAnimationFrame(windowValue: Window): Promise<void> {
-  return new Promise((resolve) =>
-    windowValue.requestAnimationFrame((): void => resolve()),
-  );
-}
-
-async function mountImmediateScenes(options: {
-  readonly documentValue: Document;
-  readonly capability: MotionCapability;
-  readonly engine: MotionEngine;
-  readonly registry: SceneRegistry;
-  readonly deferred: Map<Element, SceneDefinition>;
-  readonly report: (sceneId: string, error: unknown) => void;
-}): Promise<void> {
-  const windowValue = options.documentValue.defaultView;
-  if (windowValue === null) {
-    throw new Error("The motion document has no owning window.");
-  }
-
-  for (const definition of SCENE_DEFINITIONS) {
-    for (const root of rootsFor(options.documentValue, definition)) {
-      if (definition.mountOnceVisible) {
-        options.deferred.set(root, definition);
-        continue;
-      }
-
-      try {
-        await waitForAnimationFrame(windowValue);
-        mountScene(
-          root,
-          definition,
-          options.capability,
-          options.engine,
-          options.registry,
-        );
-      } catch (error: unknown) {
-        options.report(definition.id, error);
-      }
-    }
-  }
-}
-
 function mountObservedScene(options: {
   readonly entry: IntersectionObserverEntry;
   readonly definition: SceneDefinition;
   readonly capability: MotionCapability;
   readonly engine: MotionEngine;
   readonly registry: SceneRegistry;
-  readonly report: (sceneId: string, error: unknown) => void;
+  readonly report: (sceneId: string | undefined, error: unknown) => void;
 }): void {
   if (!(options.entry.target instanceof HTMLElement)) {
     options.report(options.definition.id, new Error("Scene root is not HTML."));
@@ -150,12 +79,9 @@ function mountObservedScene(options: {
   }
 
   try {
-    mountScene(
-      options.entry.target,
-      options.definition,
-      options.capability,
-      options.engine,
-      options.registry,
+    const handle = mountScene({ ...options, root: options.entry.target });
+    void handle.ready.catch((error: unknown): void =>
+      options.report(options.definition.id, error),
     );
   } catch (error: unknown) {
     options.report(options.definition.id, error);
@@ -167,7 +93,7 @@ function createDeferredObserver(options: {
   readonly capability: MotionCapability;
   readonly engine: MotionEngine;
   readonly registry: SceneRegistry;
-  readonly report: (sceneId: string, error: unknown) => void;
+  readonly report: (sceneId: string | undefined, error: unknown) => void;
 }): IntersectionObserver {
   return new IntersectionObserver(
     (entries, observer): void => {
@@ -191,33 +117,29 @@ export async function createEnhancedEnvironment(options: {
   readonly documentValue: Document;
   readonly capability: MotionCapability;
   readonly engine: MotionEngine;
-  readonly report: (sceneId: string, error: unknown) => void;
+  readonly signal: AbortSignal;
+  readonly report: (sceneId: string | undefined, error: unknown) => void;
 }): Promise<MotionSceneEnvironment> {
   const registry = createSceneRegistry();
   const deferred = new Map<Element, SceneDefinition>();
-  await mountImmediateScenes({ ...options, registry, deferred });
-
-  if (deferred.size === 0) {
-    return { destroy: (): void => registry.destroy() };
-  }
-
-  const observer = createDeferredObserver({ ...options, registry, deferred });
-  let destroyed = false;
-
-  for (const root of deferred.keys()) {
-    observer.observe(root);
-  }
-
-  return {
-    destroy: (): void => {
-      if (destroyed) {
-        return;
-      }
-      destroyed = true;
-      runCleanupStack(
-        [(): void => registry.destroy(), (): void => observer.disconnect()],
-        "The enhanced motion environment failed to destroy completely.",
+  const owner = createSceneEnvironmentOwner({ ...options, registry, deferred });
+  try {
+    await mountImmediateScenes({ ...options, registry, deferred });
+    if (options.signal.aborted || deferred.size === 0) return owner;
+    const observer = createDeferredObserver({ ...options, registry, deferred });
+    owner.assignObserver(observer);
+    for (const root of deferred.keys()) observer.observe(root);
+    return owner;
+  } catch (cause: unknown) {
+    try {
+      owner.destroy();
+    } catch (cleanupError: unknown) {
+      throw new AggregateError(
+        [cause, cleanupError],
+        "Motion activation and rollback failed.",
+        { cause: cleanupError },
       );
-    },
-  };
+    }
+    throw cause;
+  }
 }

@@ -1,0 +1,103 @@
+@media (max-width: 79.99rem) {
+  .selector-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .slot-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .slot-grid label[hidden] {
+    display: none;
+  }
+
+  .signal-channel__copy h2 {
+    --compare-title-column-fit: 20cqi;
+
+    font-size: min(clamp(2.5rem, 6.5vw, 5rem), var(--compare-title-column-fit));
+  }
+}
+
+@media (max-width: 48rem) {
+  .duel-lead {
+    min-block-size: min(38rem, calc(100svh - var(--size-header)));
+    padding-block: var(--space-5);
+  }
+
+  .duel-lead::before {
+    inset-inline-start: 33.333%;
+  }
+
+  .duel-lead::after {
+    inset-inline-end: 33.333%;
+  }
+
+  .duel-lead__axis {
+    inset-block: 22% 18%;
+  }
+
+  .duel-lead h1 {
+    font-size: clamp(3.7rem, 18vw, 6rem);
+    line-height: 0.8;
+  }
+
+  .duel-lead h1 span {
+    max-inline-size: 8ch;
+  }
+
+  .duel-lead h1 span:last-child {
+    max-inline-size: 7.5ch;
+    text-align: end;
+  }
+
+  .duel-lead__footer {
+    display: grid;
+  }
+
+  .duel-lead__trace {
+    min-inline-size: 0;
+    inline-size: 100%;
+    block-size: 2rem;
+  }
+
+  .duel-lead__stamp {
+    display: none;
+  }
+
+  .signal-duel {
+    gap: var(--space-7);
+    padding-block-start: var(--space-6);
+  }
+
+  .selector-panel {
+    gap: var(--space-5);
+    padding-block: var(--space-4);
+  }
+
+  .slot-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .compare-actions {
+    display: grid;
+  }
+
+  .compare-actions .control {
+    inline-size: 100%;
+  }
+
+  .signal-duel[data-compare-enhanced="true"] tbody :is(th, td) {
+    font-size: var(--font-size-caption);
+    line-height: 1.45;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 31.25rem) and (max-width: 63.99rem) {
+  .duel-lead {
+    min-block-size: 28rem;
+  }
+
+  .duel-lead h1 {
+    font-size: clamp(3.6rem, 12vw, 6.5rem);
+  }
+}

@@ -104,7 +104,6 @@ Source: `src/motion/tokens.ts` and mirrored CSS custom properties.
 - `exit` / `power3.in` — shorter departure;
 - `material` / `expo.out` — light/crop movement;
 - `snap` / `power3.out` — selected state alignment;
-- `settle` / constrained back easing — tiny non-spatial feedback only.
 
 Linear easing is allowed only for a real progress indicator. Repeating animation is not used for decoration.
 
@@ -353,3 +352,49 @@ ID are rejected and diagnosed because ownership would otherwise be ambiguous.
 Scene code queries only below its supplied root. Document-wide root and
 preference-control discovery occurs only in the lifecycle orchestrator, never
 inside feature choreography.
+
+## Cancellable preparation contract
+
+Immediate scenes may register finite synchronous setup stages. Their handles are
+owned before `ready` is awaited; one stage runs per native animation frame and
+scene abort cancels pending work. Global Full readiness follows successful
+activation of every immediate scene, not merely creation of its handle. Current
+generation startup failure selects Reduced fallback; obsolete failures cannot
+replace a newer environment.
+
+Full Hero prepares sixteen individual tween targets, then pointer depth, then
+playback. Preparation must restore the SSR pose before each paint; no hidden
+heading, frequency bar or normalized orbit transform may leak between stages.
+Playback preserves the authored 1.665-second timeline. Partial cleanup invalidates
+only touched caches and restores all original inline declarations/priorities.
+Lite and Reduced retain their existing content and interaction contracts.
+
+This contract does not waive startup or frame budgets. Direct native callback
+tracing is required alongside LoAF attribution because a callback exceeding 16ms
+can occur in a frame shorter than the LoAF reporting threshold. See
+[ADR-0008](../decisions/ADR-0008-owned-staged-scene-activation.md) and the
+[staged Hero review](../quality/STAGED_HERO_REVIEW_2026-10-25.md).
+
+## Reactor transition and history ownership
+
+One transition owns its nested GSAP context and exact inline snapshot of the
+incoming/outgoing worlds. Cleanup stops that context with `kill(false)` and
+restores all eight owned declarations with their priorities. Each new tween uses
+`parseTransform: true` rather than relying on a previous normalized transform
+cache. No blanket five-world reset or private GSAP mutation is allowed.
+
+A selection's incoming parent remains under a preparation-opacity lease while
+the outgoing world stays visible. Start poses are installed after a paint
+opportunity, then the hold is released before paint. Initial entry never hides
+its only world. Intent guards protect both owned RAF stages; failure and
+cancellation restore snapshots and both previous lease values.
+
+Product history is an application-owned same-page interaction. Only validated,
+versioned, allowlisted same-path entries are consumed through the early native
+history bridge and the controller's owned channel subscription. Framework state
+is preserved unchanged. Real route transitions
+remain Astro-owned; do not forge its indices or scroll metadata.
+
+See [ADR-0009](../decisions/ADR-0009-reactor-transition-presentation-owner.md),
+[ADR-0010](../decisions/ADR-0010-product-history-route-boundary.md) and the
+[five-lens review](../quality/REACTOR_TRANSITION_REVIEW_2026-10-25.md).

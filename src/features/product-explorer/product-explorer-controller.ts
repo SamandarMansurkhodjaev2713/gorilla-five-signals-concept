@@ -16,6 +16,8 @@ import {
   type SelectionDirection,
 } from "./product-explorer-state";
 import {
+  ownedProductFromHistory,
+  PRODUCT_HISTORY_BRIDGE_EVENT,
   requestedProductFromUrl,
   updateLocaleProductLinks,
   updateProductUrl,
@@ -39,6 +41,7 @@ class ProductExplorerSession implements ProductExplorerController {
   private readonly productsBySlug: ReadonlyMap<string, ExplorerProduct>;
   private readonly slugs: readonly string[];
   private readonly slugSet: ReadonlySet<string>;
+  private readonly ownerPathname: string;
   private interactionCleanup: (() => void) | null = null;
   private mediaPreloader: ProductExplorerMediaPreloader | null = null;
   private selectedSlug: string;
@@ -55,6 +58,7 @@ class ProductExplorerSession implements ProductExplorerController {
     );
     this.slugs = products.map((product) => product.slug);
     this.slugSet = new Set(this.slugs);
+    this.ownerPathname = new URL(windowValue.location.href).pathname;
     this.selectedSlug = initialSlug;
   }
 
@@ -72,9 +76,11 @@ class ProductExplorerSession implements ProductExplorerController {
       (): void => this.selectRelative("next"),
       { signal: this.abortController.signal },
     );
-    this.windowValue.addEventListener("popstate", this.handlePopState, {
-      signal: this.abortController.signal,
-    });
+    this.windowValue.addEventListener(
+      PRODUCT_HISTORY_BRIDGE_EVENT,
+      this.handleHistoryBridgeEvent,
+      { signal: this.abortController.signal },
+    );
     this.interactionCleanup = mountFlavorReactorInteraction({
       root: this.elements.root,
       listen: this.listen,
@@ -124,18 +130,28 @@ class ProductExplorerSession implements ProductExplorerController {
     }
   };
 
-  private readonly handlePopState = (): void => {
-    const requested = requestedProductFromUrl(
-      this.windowValue.location.href,
-      this.slugSet,
-    );
-    const slug = resolveInitialProduct(this.slugs, requested);
-    if (slug !== null) {
+  private readonly handleHistoryBridgeEvent = (event: Event): void => {
+    if (!(event instanceof CustomEvent)) return;
+    const nativeEvent: unknown = event.detail;
+    if (!(nativeEvent instanceof PopStateEvent)) return;
+    const slug = ownedProductFromHistory({
+      allowedSlugs: this.slugSet,
+      currentHref: this.windowValue.location.href,
+      ownerPathname: this.ownerPathname,
+      state: nativeEvent.state,
+    });
+    if (slug === null) return;
+    try {
       this.render(slug, true);
+    } finally {
+      nativeEvent.stopImmediatePropagation();
     }
   };
 
   private select(slug: string): void {
+    if (slug === this.selectedSlug) {
+      return;
+    }
     updateProductUrl(this.windowValue, slug, "push");
     this.render(slug, true);
   }

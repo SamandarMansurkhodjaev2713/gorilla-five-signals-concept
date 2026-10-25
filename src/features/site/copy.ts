@@ -22,6 +22,7 @@ export type SiteCopy = Readonly<{
   legal: string;
   market: string;
   materialIntro: string;
+  materialTitle: string;
   menu: string;
   materialStudy: string;
   navigation: Readonly<Record<NavigationKey, string>>;
@@ -83,14 +84,14 @@ const values = {
     uz: "Toshkentda yaratilgan mustaqil dizayn konsepti. U sayt Gorilla tomonidan buyurtma qilingan yoki boshqarilishini anglatmaydi.",
   },
   contactIntro: {
-    en: "Choose the right official destination. This concept does not collect personal information.",
-    ru: "Выберите подходящий официальный канал. Эта концепция не собирает персональные данные.",
-    uz: "Tegishli rasmiy yo‘nalishni tanlang. Ushbu konsept shaxsiy ma’lumot yig‘maydi.",
+    en: "Contact Gorilla",
+    ru: "Связаться с Gorilla",
+    uz: "Gorilla bilan bog‘lanish",
   },
   cultureIntro: {
-    en: "A Tashkent-made study of type, material, contrast, and five packaging signals.",
-    ru: "Созданное в Ташкенте исследование типографики, материала, контраста и пяти сигналов упаковки.",
-    uz: "Toshkentda yaratilgan tipografika, material, kontrast va beshta qadoq signali tadqiqoti.",
+    en: "Explore five Gorilla flavors and choose your favorite.",
+    ru: "Познакомьтесь с пятью вкусами Gorilla и выберите свой.",
+    uz: "Gorilla’ning besh ta’mini ko‘ring va o‘zingizga yoqqanini tanlang.",
   },
   findIntro: {
     en: "Verified store addresses are not available yet. Use a clearly labelled third-party search and confirm availability with the retailer.",
@@ -129,9 +130,14 @@ const values = {
     uz: "Bozor",
   },
   materialStudy: {
-    en: "Material study",
-    ru: "Исследование материала",
-    uz: "Material tadqiqoti",
+    en: "Gorilla film",
+    ru: "Ролик о Gorilla",
+    uz: "Gorilla haqida rolik",
+  },
+  materialTitle: {
+    en: "All five",
+    ru: "Все пять",
+    uz: "Besh ta’m",
   },
   materialIntro: {
     en: "One frame. Five characters. Aluminium, water, light, and the city after dark.",
@@ -150,9 +156,9 @@ const values = {
     uz: "Mahsulot ma’lumoti",
   },
   productInfoUnavailable: {
-    en: "Numeric nutrition details are intentionally omitted until they can be verified against current packaging.",
-    ru: "Числовые данные о пищевой ценности намеренно не публикуются до сверки с актуальной упаковкой.",
-    uz: "Raqamli ozuqaviy ma’lumotlar joriy qadoq bilan tekshirilmaguncha ataylab ko‘rsatilmaydi.",
+    en: "Check the current can label for complete product information.",
+    ru: "Полную информацию о продукте смотрите на актуальной этикетке банки.",
+    uz: "Mahsulot haqidagi to‘liq ma’lumotni bankaning joriy yorlig‘idan tekshiring.",
   },
   productSystem: {
     en: "Product system",
@@ -160,9 +166,9 @@ const values = {
     uz: "Mahsulot tizimi",
   },
   productTruth: {
-    en: "Product truth",
-    ru: "Достоверность продукта",
-    uz: "Mahsulot haqiqati",
+    en: "Before you choose",
+    ru: "Перед выбором",
+    uz: "Tanlashdan oldin",
   },
   previous: {
     en: "Previous signal",
@@ -253,6 +259,7 @@ export function getSiteCopy(locale: SupportedLocale): SiteCopy {
     legal: values.legal[locale],
     market: values.market[locale],
     materialIntro: values.materialIntro[locale],
+    materialTitle: values.materialTitle[locale],
     menu: values.menu[locale],
     materialStudy: values.materialStudy[locale],
     navigation: {

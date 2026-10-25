@@ -65,8 +65,7 @@ const initialLocator = createLocatorPresentation(selectedLabel, selectedSlug);
   >
     <div class="locator-panel" data-motion-reveal>
       <p class="type-label">{text.eyebrow}</p>
-      <h1>{copy.navigation.find}</h1>
-      <h2 class="type-title-sm">{text.title}</h2>
+      <h1>{text.title}</h1>
       <div class="locator-fields">
         <div class="city-context">
           <span>{text.city}</span>
@@ -108,11 +107,6 @@ const initialLocator = createLocatorPresentation(selectedLabel, selectedSlug);
         }
       </div>
       <p class="locator-notice">{text.notice}</p>
-      <p class="source-date">
-        {text.source}: <time datetime={handoff.data.verifiedAt}>
-          {handoff.data.verifiedAt}
-        </time>
-      </p>
       <p class="current-query" data-locator-status aria-live="polite">
         {initialLocator.status}
       </p>

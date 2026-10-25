@@ -1,0 +1,24 @@
+---
+interface Props {
+  indexLabel: string;
+}
+
+const { indexLabel } = Astro.props;
+---
+
+<div
+  class="product-world-art product-world-art--zero"
+  data-detail-art="zero"
+  data-world-geometry="lateral-chamber"
+  aria-hidden="true"
+>
+  <div class="zero-chamber" data-world-material-primary>
+    <span class="zero-chamber__ring zero-chamber__ring--outer"></span>
+    <span class="zero-chamber__ring zero-chamber__ring--inner"></span>
+    <span class="zero-chamber__scan"></span>
+    <span class="zero-chamber__droplet zero-chamber__droplet--one"></span>
+    <span class="zero-chamber__droplet zero-chamber__droplet--two"></span>
+    <span class="zero-chamber__droplet zero-chamber__droplet--three"></span>
+  </div>
+  <span class="world-art-index">{indexLabel}</span>
+</div>

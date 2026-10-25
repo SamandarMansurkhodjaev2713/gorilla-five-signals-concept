@@ -33,7 +33,8 @@ export default defineConfig({
     { name: "chromium-performance", use: { browserName: "chromium" } },
   ],
   webServer: {
-    command: "corepack pnpm run preview --host 127.0.0.1 --port 4322",
+    command:
+      "corepack pnpm run preview --ignore-lock --host 127.0.0.1 --port 4322",
     reuseExistingServer: false,
     stderr: "pipe",
     stdout: "ignore",

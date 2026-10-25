@@ -47,7 +47,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "corepack pnpm run preview --host 127.0.0.1 --port 4321",
+    command:
+      "corepack pnpm run preview --ignore-lock --host 127.0.0.1 --port 4321",
     url: APPLICATION_ORIGIN,
     reuseExistingServer: !process.env.CI,
     stdout: "ignore",

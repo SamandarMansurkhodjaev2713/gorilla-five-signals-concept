@@ -61,9 +61,6 @@ const isCurrent = (href: string) =>
       alt={localize(logo.data.alt, locale)}
     />
   </a>
-  <p class="site-header__signal" aria-hidden="true">
-    <span>FIVE</span> / FREQUENCIES
-  </p>
   <nav class="desktop-navigation" aria-label={copy.menu}>
     {
       navigation.map((item) => (
@@ -90,20 +87,6 @@ const isCurrent = (href: string) =>
       ))
     }
   </div>
-  <button
-    class="motion-toggle"
-    type="button"
-    aria-pressed="false"
-    data-motion-toggle
-    data-motion-pause-label={motionCopy.toggle}
-    data-motion-resume-label={motionCopy.resume}
-    data-motion-status-label={motionCopy.status}
-    data-motion-tier-full={motionCopy.preferenceLabels.full}
-    data-motion-tier-lite={motionCopy.preferenceLabels.lite}
-    data-motion-tier-reduced={motionCopy.preferenceLabels.reduced}
-  >
-    {motionCopy.toggle}
-  </button>
   <details class="mobile-navigation" data-motion-menu>
     <summary>{copy.menu}</summary>
     <div class="mobile-navigation__panel" data-motion-menu-panel tabindex="-1">
@@ -113,6 +96,12 @@ const isCurrent = (href: string) =>
           <span aria-hidden="true">×</span>
           {copy.closeMenu}
         </button>
+        <noscript>
+          <a class="menu-close" href={currentPathname} data-native-menu-close>
+            <span aria-hidden="true">×</span>
+            {copy.closeMenu}
+          </a>
+        </noscript>
       </header>
 
       <nav aria-label={copy.menu}>
@@ -134,6 +123,16 @@ const isCurrent = (href: string) =>
       <fieldset class="menu-motion-console">
         <legend>{motionCopy.title}</legend>
         <p>{motionCopy.menuDescription}</p>
+        <button
+          class="motion-toggle"
+          type="button"
+          aria-pressed="false"
+          data-motion-toggle
+          data-motion-pause-label={motionCopy.toggle}
+          data-motion-resume-label={motionCopy.resume}
+        >
+          {motionCopy.toggle}
+        </button>
         <div>
           {
             MOTION_PREFERENCES.map((preference) => (
@@ -186,7 +185,11 @@ const isCurrent = (href: string) =>
         display: none;
       }
 
-      .site-header :is(.site-header__signal, .motion-toggle) {
+      .site-header .menu-motion-console .motion-toggle {
+        display: none;
+      }
+
+      .site-header .mobile-navigation button.menu-close {
         display: none;
       }
 

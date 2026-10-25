@@ -1,0 +1,107 @@
+---
+import { localePath } from "@/features/site/localization";
+
+import ProductAtlasChapter from "./product-atlas-chapter.astro";
+import type {
+  ProductAtlasEntry,
+  ProductAtlasViewModel,
+} from "./product-atlas-view-model";
+
+interface Props {
+  atlas: ProductAtlasViewModel;
+  entries: readonly ProductAtlasEntry[];
+}
+
+const { atlas, entries } = Astro.props;
+---
+
+<section
+  class="archive-index material-grain"
+  data-atlas-root
+  data-flavor={atlas.products[0]?.slug}
+  data-selected-label={atlas.text.activeFrequency}
+  style="--archive-index: 0"
+>
+  <aside class="archive-scan" aria-label={atlas.text.collectionWall}>
+    <div class="archive-scan__sticky">
+      <header class="archive-scan__header">
+        <div>
+          <p class="type-label">{atlas.text.collectionWall}</p>
+        </div>
+        <p
+          class="archive-scan__status type-data"
+          aria-live="polite"
+          data-atlas-status
+        >
+          {atlas.text.activeFrequency}: {atlas.products[0]?.name} · 01 / 05
+        </p>
+      </header>
+
+      <nav
+        class="archive-wall"
+        aria-label={atlas.copy.chooseSignal}
+        data-atlas-nav
+      >
+        {
+          entries.map(({ index, number, product }) => (
+            <a
+              href={`#signal-${product.slug}`}
+              id={`archive-link-${product.slug}`}
+              data-atlas-link
+              data-product-slug={product.slug}
+              data-flavor={product.slug}
+              aria-controls={`signal-${product.slug}`}
+              aria-current={index === 0 ? "location" : undefined}
+            >
+              <span class="archive-wall__number">{number}</span>
+              <span class="archive-wall__can" aria-hidden="true">
+                <img
+                  src={product.imagePath}
+                  srcset={product.imageSrcSet}
+                  sizes="(min-width: 64rem) 10vw, 16vw"
+                  width={product.width}
+                  height={product.height}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+              </span>
+              <strong>{product.name}</strong>
+              <i aria-hidden="true" />
+            </a>
+          ))
+        }
+      </nav>
+
+      <div class="archive-scan__readout" aria-hidden="true">
+        <span>{atlas.text.scrollToScan}</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="archive-chapters">
+    {
+      entries.map((entry) => (
+        <ProductAtlasChapter atlas={atlas} entry={entry} />
+      ))
+    }
+  </div>
+</section>
+
+<footer class="archive-decision">
+  <div>
+    <p class="type-label">03 / {atlas.copy.productTruth}</p>
+    <p>{atlas.copy.fiveStates}</p>
+  </div>
+  <div class="archive-decision__actions">
+    <a
+      class="control control--primary"
+      href={localePath(atlas.locale, "/compare")}
+    >
+      {atlas.copy.navigation.compare}
+    </a>
+    <a class="text-link" href={localePath(atlas.locale, "/find")}>
+      {atlas.copy.navigation.find} ↗
+    </a>
+  </div>
+</footer>

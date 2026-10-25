@@ -2,6 +2,7 @@
 import WarningPanel from "@/components/site/WarningPanel.astro";
 import type { SupportedLocale } from "@/config/site";
 import type { ProductView } from "@/features/site/catalog";
+import { comparisonLabelParts } from "@/features/site/comparison-label";
 import type { SiteCopy } from "@/features/site/copy";
 import { localePath } from "@/features/site/localization";
 import "@/features/home-signal/home-truth-duel.css";
@@ -17,10 +18,16 @@ interface Props {
 const { copy, locale, products, warning } = Astro.props;
 const firstProduct = products.at(0);
 const lastProduct = products.at(-1);
+const comparisonParts = comparisonLabelParts(locale, copy.navigation.compare);
 
 if (firstProduct === undefined || lastProduct === undefined) {
   throw new Error("The homepage signal duel requires approved products.");
 }
+const duelComparePath = `${localePath(locale, "/compare")}?${new URLSearchParams(
+  {
+    products: [firstProduct.slug, lastProduct.slug].join(","),
+  },
+).toString()}`;
 ---
 
 <div class="home-truth-duel surface-paper">
@@ -59,11 +66,14 @@ if (firstProduct === undefined || lastProduct === undefined) {
   <section class="home-duel" data-motion-scene="product-compare">
     <a
       class="home-duel__arena"
-      href={localePath(locale, "/compare")}
+      href={duelComparePath}
       aria-label={`${copy.navigation.compare}: ${firstProduct.name} / ${lastProduct.name}`}
       data-motion-reveal
     >
-      <span class="home-duel__frequency" aria-hidden="true">01</span>
+      <span
+        class="home-duel__frequency home-duel__frequency--left"
+        aria-hidden="true">01</span
+      >
       <div class="home-duel__product home-duel__product--left">
         <img
           src={firstProduct.imagePath}
@@ -75,7 +85,6 @@ if (firstProduct === undefined || lastProduct === undefined) {
           loading="lazy"
           decoding="async"
         />
-        <strong>{firstProduct.name}</strong>
       </div>
 
       <span class="home-duel__beam" aria-hidden="true"></span>
@@ -91,13 +100,24 @@ if (firstProduct === undefined || lastProduct === undefined) {
           loading="lazy"
           decoding="async"
         />
-        <strong>{lastProduct.name}</strong>
       </div>
-      <span class="home-duel__frequency" aria-hidden="true">05</span>
+      <span
+        class="home-duel__frequency home-duel__frequency--right"
+        aria-hidden="true">05</span
+      >
 
       <span class="home-duel__action">
-        <small>04—05 / {copy.navigation.compare}</small>
-        <b>{copy.navigation.compare}</b>
+        <small aria-hidden="true">01 ↔ 05</small>
+        <b
+          >{
+            comparisonParts.map((part, index) => (
+              <Fragment>
+                {index > 0 && <wbr />}
+                {part}
+              </Fragment>
+            ))
+          }</b
+        >
         <i aria-hidden="true">↗</i>
       </span>
     </a>

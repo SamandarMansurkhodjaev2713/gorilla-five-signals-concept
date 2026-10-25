@@ -1,9 +1,11 @@
 import { expect, test } from "@playwright/test";
 
+import { expectPaintedTargets } from "./support/painted-targets";
 import {
   collectRuntimeErrors,
   expectNoHorizontalOverflow,
   expectSemanticPage,
+  PRODUCT_SLUGS,
 } from "./support/site";
 
 const ROUTE_CONTRACTS = [
@@ -107,13 +109,7 @@ test.describe("route-specific motion contracts", () => {
     const locator = page.locator("[data-locator-handoff]");
     const select = locator.locator("[data-locator-product]");
 
-    for (const slug of [
-      "original",
-      "zero",
-      "extra",
-      "mango-coconut",
-      "lychee-pear",
-    ]) {
+    for (const slug of PRODUCT_SLUGS) {
       await select.selectOption(slug);
     }
     await expect(locator).toHaveAttribute("data-flavor", "lychee-pear");
@@ -126,6 +122,14 @@ test.describe("route-specific motion contracts", () => {
       "data-motion-tier",
       "reduced",
     );
+    await expect(locator.locator("[data-motion-find-visual]")).toHaveCount(
+      PRODUCT_SLUGS.length,
+    );
+    await expectPaintedTargets(
+      locator.locator("[data-motion-find-visual]:not([hidden])"),
+      1,
+    );
+    await expectPaintedTargets(locator.locator("[data-locator-google]"), 1);
     const inlineTransforms = await locator
       .locator("[data-motion-find-visual], [data-locator-google]")
       .evaluateAll((elements) =>
@@ -133,7 +137,9 @@ test.describe("route-specific motion contracts", () => {
           element instanceof HTMLElement ? element.style.transform : "invalid",
         ),
       );
-    expect(inlineTransforms.every((value) => value === "")).toBe(true);
+    expect(inlineTransforms).toEqual(
+      Array.from({ length: PRODUCT_SLUGS.length + 1 }, () => ""),
+    );
     expect(errors).toEqual([]);
   });
 });

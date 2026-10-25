@@ -1,0 +1,22 @@
+---
+interface Props {
+  indexLabel: string;
+}
+
+const { indexLabel } = Astro.props;
+---
+
+<div
+  class="product-world-art product-world-art--original"
+  data-detail-art="original"
+  data-world-geometry="axis-split"
+  aria-hidden="true"
+>
+  <div class="original-metal" data-world-material-primary>
+    <span class="original-metal__wet original-metal__wet--one"></span>
+    <span class="original-metal__wet original-metal__wet--two"></span>
+    <span class="original-metal__etch"></span>
+  </div>
+  <span class="original-fracture"></span>
+  <span class="world-art-index">{indexLabel}</span>
+</div>

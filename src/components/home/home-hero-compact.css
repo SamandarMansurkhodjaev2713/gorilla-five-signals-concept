@@ -1,0 +1,129 @@
+@media (max-width: 22rem) {
+  .hero[data-motion-scene="hero"],
+  .hero .hero-frame {
+    min-block-size: 0;
+  }
+
+  .hero .hero-frame::before,
+  .hero .hero-frame::after {
+    display: none;
+  }
+
+  .hero-artstage {
+    --hero-can-entry-travel: var(--hero-can-entry-travel-compact);
+    --hero-compact-can-width-cap: calc(
+      (100vw - (2 * var(--space-gutter))) /
+        (
+          var(--hero-primary-projected-width-ratio) *
+            var(--hero-can-scale-envelope)
+        )
+    );
+    --hero-compact-can-height: min(
+      40svh,
+      25rem,
+      var(--hero-compact-can-width-cap)
+    );
+
+    position: relative;
+    display: flow-root;
+    min-block-size: calc(
+      (var(--hero-compact-can-height) * var(--hero-can-scale-envelope)) +
+        (2 * var(--hero-can-entry-travel)) + (2 * var(--space-4))
+    );
+    padding-block: var(--space-4);
+    isolation: isolate;
+    overflow: clip;
+  }
+
+  .hero-artstage::before {
+    position: absolute;
+    z-index: -2;
+    inset-block-start: 45%;
+    inset-inline-start: 50%;
+    inline-size: min(124vw, 34rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--color-brand-lime);
+    translate: -50% -50%;
+    content: "";
+  }
+
+  .hero-artstage::after {
+    position: absolute;
+    z-index: -1;
+    inset: auto -45% -24% 42%;
+    block-size: 45%;
+    background: var(--color-ink-950);
+    clip-path: polygon(18% 0, 100% 0, 100% 100%, 0 100%);
+    content: "";
+  }
+
+  .hero .hero-kicker {
+    margin-block: 0;
+  }
+
+  .hero .hero-heading {
+    position: relative;
+    inset: auto;
+    margin-block-start: var(--space-4);
+  }
+
+  .hero .hero-heading h1 span {
+    overflow-wrap: anywhere;
+  }
+
+  .hero .hero-signal-plate {
+    max-inline-size: min(11ch, calc(100% - (2 * var(--space-3))));
+    margin-inline: var(--space-3);
+    overflow-wrap: anywhere;
+    transform: none;
+  }
+
+  .hero .hero-primary-can {
+    --hero-can-height: var(--hero-compact-can-height);
+    inline-size: calc(
+      var(--hero-can-height) * var(--hero-primary-aspect-ratio)
+    );
+  }
+
+  .hero .hero-copydeck {
+    position: relative;
+    inset: auto;
+    inline-size: 100%;
+    max-inline-size: none;
+    padding-inline: 0;
+  }
+
+  .hero .hero-copydeck > p {
+    display: block;
+    max-inline-size: calc(100% - (2 * var(--space-3)));
+    margin-inline: var(--space-3);
+    overflow-wrap: anywhere;
+  }
+
+  .hero .hero-actions > a {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    inline-size: 100%;
+    padding-inline: var(--space-2);
+    overflow-wrap: normal;
+  }
+
+  .hero-kicker__group {
+    display: inline-block;
+    max-inline-size: 100%;
+  }
+}
+
+@media (max-width: 22rem) and (max-height: 45rem) and (orientation: landscape) {
+  .hero-artstage {
+    --hero-compact-can-height: min(28rem, var(--hero-compact-can-width-cap));
+  }
+}
+
+@media (max-width: 22rem) and (forced-colors: active) {
+  .hero-artstage::before,
+  .hero-artstage::after {
+    display: none;
+  }
+}
