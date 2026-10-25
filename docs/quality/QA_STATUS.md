@@ -1,5 +1,48 @@
 # QA status
 
+## Service block-flow rollback and causal control — 2026-10-25
+
+The FAQ root block-flow experiment remains rolled back and unpromoted. Current
+production source uses the original grid, `git diff -- src` is empty, and the
+local entry SHA-256 is exactly
+`91962ea9f6c37b9fc748b1381c98277edef073f7b923f09108897ecb18b3d2bb`.
+Restored-source quality passes formatting, lint, 357 strict files, 462 units,
+coverage 96.79/93.95/97.42/97.67, 47 pages, SBOM 617 and audit 0.
+
+The block candidate's bounded Chrome control reduced the FAQ frame median from
+172.859ms to 102.123ms, but remained over budget. Its source gate passed on the
+separate SHA `46cdae…`, then its functional matrix passed 46/51 and failed five
+WebKit cases. The restored grid causal control also passes 46/51 and fails the
+exact same case identities: two desktop Full runtime-ready waits remain
+`loading`, two desktop Lite journeys reach the 45s overall test deadline, and one
+entry-locale navigation does not change URL. CSS is therefore not established
+as the cause. The earlier 48-case grid pass is historical; neither latest
+51-case matrix is reclassified as passing.
+
+The retained implementation-independent RU 390 disclosure-geometry regression
+passes Chrome, Firefox and WebKit. It verifies root/index/contact height sums,
+real growth when all three answers open, equal contact displacement and exact
+close restoration. No block-flow CSS or block-specific contract remains in
+production source or Pages.
+
+Block flow is deferred pending independent startup isolation. Read-only startup
+inspection finds load/idle awaits, engine imports, three immediate-RAF gates and
+18 Full Hero stage RAFs, with no font or media await. The next bounded probe must
+record scheduling/delivery and runtime/scene states without changing timeouts.
+The existing canonical nine-run Lighthouse evidence on audit SHA `b449…` is
+reused because production bytes/source are restored; no new audit run is
+claimed. Main/Pages remain held.
+
+Evidence:
+
+- `.tmp/quality-service-block-final-2026-10-25.log`
+- `.tmp/service-block-functional-fail-2026-10-25/`
+- `.tmp/quality-service-flow-restored-2026-10-25.log`
+- `.tmp/service-flow-restored-functional-2026-10-25.log`
+- [FAQ diagnostic](FAQ_RENDER_DIAGNOSTIC_2026-10-25.md)
+- [ADR-0016](../decisions/ADR-0016-service-block-flow.md)
+- [five-lens review](SERVICE_BLOCK_REVIEW_2026-10-25.md)
+
 ## Footer-only finite native entrance — 2026-10-25
 
 Footer is now the sixth adapter over the shared finite native player and
